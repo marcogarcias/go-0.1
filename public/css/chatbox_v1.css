@@ -1,0 +1,850 @@
+#btn-openChat {
+  align-items: center;
+  background: #00E7FF;
+  bottom: 20px;
+  border-radius: 50%;
+  box-shadow: 0px 3px 16px 0px rgb(0 0 0 / 60%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+  color: #5A5EB9;
+  cursor: pointer;
+  display: flex;
+  font-size: 30px;
+  height: 70px;
+  justify-content: center;
+  padding: 15px;
+  position: fixed;
+  right: 20px;
+  text-align: center;
+  width: 70px;
+  z-index: 999;
+}
+
+#btn-openChat .newMsgGeneralIcon{
+  align-items: center;
+  background: #f00;
+  display: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  height: 35px;
+  justify-content: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 35px;
+}
+
+
+#chatbox{
+  width:290px;
+  background:#fff;
+  border-radius:6px;
+  overflow:hidden;
+  height:484px;
+  position:absolute;
+  bottom: 0%;
+  right: 0%;
+  margin-left:-155px;
+}
+
+#friendslist{
+  position:absolute;
+  top:0;
+  left:0;
+  width:290px;
+  height:484px;
+}
+
+#topmenu{
+  height: 50px;
+  width: 100%;
+  border-bottom: 1px solid #d8dfe3;  
+}
+
+#topmenu div{
+  display: inline-block;
+}
+
+#titleChat{
+  font-weight: bolder !important;
+  width: 85%;
+}
+
+#closeCont{
+  color: #353367;
+  cursor: pointer;
+  font-size: 30px;
+  width: 10%;
+  transition: transform 0.3s;
+}
+
+#closeCont:hover{
+  transform: rotate(90deg);
+}
+
+/*#topmenu span{
+  float:left; 
+  width: 96px;
+  height: 70px;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/top-menu.png") -3px -118px no-repeat;
+}*/
+
+#topmenu span.friends{margin-bottom:-1px;}
+#topmenu span.chats{background-position:-95px 25px; cursor:pointer;}
+#topmenu span.chats:hover{background-position:-95px -46px; cursor:pointer;}
+#topmenu span.history{background-position:-190px 24px; cursor:pointer;}
+#topmenu span.history:hover{background-position:-190px -47px; cursor:pointer;}
+
+.friend{
+  border-bottom: 1px solid #e7ebee;
+  width: 100%;
+}
+
+.friend .cont{
+  align-items: center;
+  display: flex;
+}
+
+.friend:hover{
+  background:#f1f4f6;
+  cursor:pointer;
+}
+
+.friend img{
+  border-radius: 50%;
+  float: left;
+  margin: 15px;
+  width: 38px;
+}
+
+.floatingImg{
+  width:40px;
+  border-radius:50%;
+  position:absolute;
+  top:0;
+  left:12px;
+  border:3px solid #fff;
+}
+/*.friend p{
+  padding: 9px 0 0 0;     
+  float:left;
+  width:220px;
+}*/
+.friend .cont div strong{
+  display: block;
+  color:#597a96; 
+  font-weight:600;
+  font-size:15px;
+}
+
+.friend .cont div span{
+  display: block;
+  color:#aab8c2;
+  font-size:13px;
+  font-weight:400;
+}
+
+.friend .msgNew{
+  color: #f00;
+  font-size: 20px;
+  margin-left: 40px;
+}
+
+.friend .status{
+  background:#26c281;
+  border-radius:50%;  
+  width:9px;
+  height:9px;
+  position:absolute;
+  top:31px;
+  right:17px;
+}
+.friend .status.away{background:#ffce54;}
+.friend .status.inactive{background:#eaeef0;}
+
+#search{
+  /*background:#e3e9ed url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/search.png") -11px 0 no-repeat;
+  height:60px;
+  width:290px;
+  position:absolute;
+  bottom:0;
+  left:0;*/
+}
+#searchfield{
+  background:#e3e9ed;
+  margin:21px 0 0 55px;
+  border:none;
+  padding:0;
+  font-size:14px;
+  font-family:"Open Sans", sans-serif; 
+  font-weight:400px;
+  color:#8198ac;
+}
+#searchfield:focus{
+   outline: 0;
+}
+#chatview{
+  width:290px;
+  height:484px;
+  position:absolute;
+  top:0;
+  left:0; 
+  display:none;
+  background:#fff;
+}
+#profile{
+  height:153px;
+  overflow:hidden;
+  text-align:center;
+  color:#fff;
+}
+.p1 #profile{
+  background:#fff url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png") 0 0 no-repeat;
+}
+#profile .avatar{
+  width:68px;
+  border:3px solid #fff;
+  margin:23px 0 0;
+  border-radius:50%;
+}
+#profile  p{
+  font-weight:600;
+  font-size:15px;
+  margin:118px 0 -1px;
+  opacity:0;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+     -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+      -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+       -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+          transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000); 
+}
+#profile  p.animate{
+  margin-top:97px;
+  opacity:1;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+     -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+      -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+       -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+          transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000); 
+}
+#profile  span{
+  font-weight:400;
+  font-size:11px;
+}
+#chat-messages{
+  opacity:0;
+  margin-top:30px;
+  width:290px;
+  height:270px;
+  overflow-y:scroll;  
+  overflow-x:hidden;
+  padding-right: 20px;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+     -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+      -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+       -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+          transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+#chat-messages.animate{
+  opacity:1;
+  margin-top:0;
+}
+#chat-messages label{
+  color:#aab8c2;
+  font-weight:600;
+  font-size:12px;
+  text-align:center;
+  margin:15px 0;
+  width:290px;
+  display:block;  
+}
+#chat-messages div.message{
+  padding:0 0 30px 58px;
+  clear:both;
+  margin-bottom:45px;
+}
+#chat-messages div.message.right{
+    padding: 0 58px 30px 0;
+    margin-right: -19px;
+    margin-left: 19px;
+}
+#chat-messages .message img{
+    float: left;
+    height: 30px;
+    margin-left: -38px;
+    border-radius: 50%;
+    width: 30px;
+    margin-top: 12px;
+}
+#chat-messages div.message.right img{
+  float: right; 
+    margin-left: 0;
+  margin-right: -38px;  
+}
+.message .bubble{ 
+  background:#f0f4f7;
+  font-size:13px;
+  font-weight:600;
+  padding:12px 13px;
+  border-radius:5px 5px 5px 0px;
+  color:#8495a3;
+  position:relative;
+  float:left;
+}
+#chat-messages div.message.right .bubble{
+  float:right;
+  border-radius:5px 5px 0px 5px ;
+}
+.bubble .corner{
+  background:url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-corner.png") 0 0 no-repeat;
+  position:absolute;
+  width:7px;
+  height:7px;
+  left:-5px;
+  bottom:0;
+}
+div.message.right .corner{
+  background:url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-cornerR.png") 0 0 no-repeat;
+  left:auto;
+  right:-5px;
+}
+.bubble span{
+    color: #aab8c2;
+    font-size: 11px;
+    position: absolute;
+    right: 0;
+    bottom: -22px;
+}
+#sendmessage{
+  height:60px;
+  border-top:1px solid #e7ebee; 
+  position:absolute;
+  bottom:0;
+  right:0px;
+  width:290px;
+  background:#fff;
+  padding-bottm:50px;
+}
+
+#sendmessage input{
+  color:#aab8c2;
+  background:#fff;
+  border:none;
+  font-size:14px;
+  font-family:"Open Sans", sans-serif; 
+  font-weight:400px;
+  margin:21px 0 0 21px;
+  padding:0;
+  width: 70%;
+}
+
+#sendmessage input:focus{
+   outline: 0;
+}
+
+#sendmessage #send{
+  cursor: pointer;
+  border:none;
+  height:30px;
+  position:absolute;
+  right: 15px;
+  top: 23px;
+  width:30px;
+}
+#sendmessage button:hover{
+  cursor:pointer;
+  background-position: 0 0 ;
+}
+#sendmessage button:focus{
+   outline: 0;   
+}
+
+#close{
+  position:absolute;
+  top: 8px; 
+  opacity:0.8;
+  right: 10px;
+  width:20px;
+  height:20px;
+  cursor:pointer;
+}
+#close:hover{
+  opacity:1;
+}
+.cx, .cy{
+  background:#fff;
+  position:absolute;
+  width:0px;
+  top:15px;
+  right:15px;
+  height:3px;
+  -webkit-transition: all 250ms ease-in-out;
+     -moz-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+     -o-transition: all 250ms ease-in-out;
+      transition: all 250ms ease-in-out;
+}
+.cx.s1, .cy.s1{ 
+  right:0;  
+  width:20px; 
+  -webkit-transition: all 100ms ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ms ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+.cy.s2{ 
+  -ms-transform: rotate(50deg); 
+  -webkit-transform: rotate(50deg); 
+  transform: rotate(50deg);    
+  -webkit-transition: all 100ms ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ms ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+.cy.s3{ 
+  -ms-transform: rotate(45deg); 
+  -webkit-transform: rotate(45deg); 
+  transform: rotate(45deg);    
+  -webkit-transition: all 100ms ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ms ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+.cx.s1{ 
+  right:0;  
+  width:20px; 
+  -webkit-transition: all 100ms ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ms ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+.cx.s2{ 
+  -ms-transform: rotate(140deg); 
+  -webkit-transform: rotate(140deg); 
+  transform: rotate(140deg);     
+  -webkit-transition: all 100ms ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+.cx.s3{ 
+  -ms-transform: rotate(135deg); 
+  -webkit-transform: rotate(135deg); 
+  transform: rotate(135deg);     
+  -webkit-transition: all 100ease-out;
+     -moz-transition: all 100ms ease-out;
+    -ms-transition: all 100ms ease-out;
+     -o-transition: all 100ms ease-out;
+      transition: all 100ms ease-out;
+}
+#chatview, #sendmessage { 
+  overflow:hidden; 
+  border-radius:6px; 
+}
+
+/* ********************************* */
+/* *** INICIA - chatview cliente *** */
+/* ********************************* */
+#chatbox-client{
+  width: 290px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 484px;
+  position: fixed;
+  bottom: -100%;
+  right: -100%;
+  margin-left: -155px;
+  z-index: 999;
+}
+
+#chatbox-client #chatview, #chatbox-client #sendmessage {
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+#chatbox-client #chatview {
+  width: 290px;
+  height: 484px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  background: #fff;
+}
+
+#chatbox-client .p1 #profile {
+  /*background-color: #6DB3F2;*/
+  background: linear-gradient( rgba(0, 0, 0, 0.6) 100%, rgba(0, 0, 0, 0.6)100%), url(../img/site/logo-sm.gif);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+#chatbox-client #profile {
+  height: 153px;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+}
+
+#chatbox-client #close {
+  position: absolute;
+  top: 8px;
+  opacity: 0.8;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+#chatbox-client .cy.s3 {
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cy.s2 {
+  -ms-transform: rotate(50deg);
+  -webkit-transform: rotate(50deg);
+  transform: rotate(50deg);
+
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx.s1, #chatbox-client .cy.s1 {
+  right: 0;
+  width: 20px;
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx, #chatbox-client .cy {
+  background: #fff;
+  position: absolute;
+  width: 0px;
+  top: 15px;
+  right: 15px;
+  height: 3px;
+  -webkit-transition: all 250ms ease-in-out;
+  -moz-transition: all 250ms ease-in-out;
+  -ms-transition: all 250ms ease-in-out;
+  -o-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+}
+
+#chatbox-client .cx.s3 {
+  -ms-transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  transform: rotate(135deg);
+  
+  -webkit-transition: all 100ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx.s2 {
+  -ms-transform: rotate(140deg);
+  -webkit-transform: rotate(140deg);
+  transform: rotate(140deg);
+  
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx.s1 {
+  right: 0;
+  width: 20px;
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx.s1, .cy.s1 {
+  right: 0;
+  width: 20px;
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -ms-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+
+#chatbox-client .cx, .cy {
+  background: #fff;
+  position: absolute;
+  width: 0px;
+  top: 15px;
+  right: 15px;
+  height: 3px;
+  -webkit-transition: all 250ms ease-in-out;
+  -moz-transition: all 250ms ease-in-out;
+  -ms-transition: all 250ms ease-in-out;
+  -o-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+}
+
+#chatbox-client #profile p.animate {
+  margin-top: 97px;
+  opacity: 1;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+
+#chatbox-client #profile p {
+  font-weight: 600;
+  font-size: 15px;
+  margin: 118px 0 -1px;
+  opacity: 0;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+
+#chatbox-client #profile span {
+  font-weight: 400;
+  font-size: 11px;
+}
+
+#chatbox-client #profile p.animate {
+  margin-top: 97px;
+  opacity: 1;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+
+#chatbox-client #profile p {
+  font-weight: 600;
+  font-size: 15px;
+  margin: 118px 0 -1px;
+  opacity: 0;
+  -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+  transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+
+#chatbox-client #profile span {
+  font-weight: 400;
+  font-size: 11px;
+}
+
+#chatbox-client #chat-messages.animate {
+    opacity: 1;
+    margin-top: 0;
+}
+
+#chatbox-client #chat-messages {
+    opacity: 0;
+    margin-top: 30px;
+    width: 290px;
+    height: 270px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 20px;
+    -webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+    -moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+    -ms-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+    -o-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+    transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
+}
+
+#chatbox-client #chat-messages label {
+    color: #aab8c2;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    margin: 15px 0;
+    width: 290px;
+    display: block;
+}
+
+#chatbox-client #chat-messages div.message {
+    padding: 0 0 30px 58px;
+    clear: both;
+    margin-bottom: 45px;
+}
+
+#chatbox-client #chat-messages .message img {
+    float: left;
+    height: 30px;
+    margin-left: -38px;
+    border-radius: 50%;
+    width: 30px;
+    margin-top: 12px;
+}
+
+#chatbox-client .message .bubble {
+    background: #f0f4f7;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 13px;
+    border-radius: 5px 5px 5px 0px;
+    color: #8495a3;
+    position: relative;
+    float: left;
+}
+
+#chatbox-client .bubble .corner {
+    background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-corner.png) 0 0 no-repeat;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    left: -5px;
+    bottom: 0;
+}
+
+#chatbox-client .bubble span {
+    color: #aab8c2;
+    font-size: 11px;
+    position: absolute;
+    right: 0;
+    bottom: -22px;
+}
+
+#chatbox-client #chat-messages div.message.right {
+    padding: 0 58px 30px 0;
+    margin-right: -19px;
+    margin-left: 19px;
+}
+
+#chatbox-client #chat-messages div.message {
+    padding: 0 0 30px 58px;
+    clear: both;
+    margin-bottom: 45px;
+}
+
+#chatbox-client #chat-messages div.message.right img {
+    float: right;
+    margin-left: 0;
+    margin-right: -38px;
+}
+
+#chatbox-client #chat-messages .message img {
+    float: left;
+    height: 30px;
+    margin-left: -38px;
+    border-radius: 50%;
+    width: 30px;
+    margin-top: 12px;
+}
+
+#chatbox-client #chat-messages div.message.right .bubble {
+    float: right;
+    border-radius: 5px 5px 0px 5px;
+}
+
+#chatbox-client div.message.right .corner {
+    background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-cornerR.png) 0 0 no-repeat;
+    left: auto;
+    right: -5px;
+}
+
+#chatbox-client #chatview, #chatbox-client #sendmessage {
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+#chatbox-client #sendmessage {
+    height: 60px;
+    border-top: 1px solid #e7ebee;
+    position: absolute;
+    bottom: 0;
+    right: 0px;
+    width: 290px;
+    background: #fff;
+    padding-bottom: 50px;
+}
+
+#chatbox-client #sendmessage input {
+    background: #fff;
+    margin: 21px 0 0 21px;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400px;
+    color: #aab8c2;
+}
+
+#chatbox-client #sendmessage input {
+    border: 0;
+}
+
+#chatbox-client #sendmessage button {
+    background: #fff url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/send.png) 0 -41px no-repeat;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 15px;
+    top: 23px;
+    border: none;
+}
+
+#chatbox-client .floatingImg {
+    width: 40px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    border: 3px solid #fff;
+}
+
+/* ********************************** */
+/* *** TERMINA - chatview cliente *** */
+/* ********************************** */
+
+#chatbox-stablish{
+  width: 290px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 484px;
+  position: fixed;
+  bottom: -100%;
+  right: -100%;
+  margin-left: -155px;
+  z-index: 999;
+}
+
+/* ************************************** */
+/* *** INICIA - chatview stablishment *** */
+/* ************************************** */
+
+
+
+/* *************************************** */
+/* *** TERMINA - chatview stablishment *** */
+/* *************************************** */

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="700"
+   viewBox="0 0 132.29166 185.20834"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="test2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="227.33722"
+     inkscape:cy="346.06526"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="53.967293"
+       y="415.54815"
+       width="408.80224"
+       height="144.36251"
+       id="rect53268" />
+    <rect
+       x="95.791944"
+       y="287.37583"
+       width="307.61356"
+       height="51.268927"
+       id="rect42482" />
+    <rect
+       x="129.5215"
+       y="319.75621"
+       width="221.2659"
+       height="25.634463"
+       id="rect37084" />
+    <rect
+       x="105.23622"
+       y="186.18716"
+       width="241.50363"
+       height="22.936099"
+       id="rect27090" />
+    <rect
+       x="39.126287"
+       y="45.872199"
+       width="420.94488"
+       height="82.300121"
+       id="rect4424" />
+  </defs>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="opacity:1">
+    <rect
+       style="fill:#ececec;stroke-width:0.264583"
+       id="rect1150"
+       width="131.00841"
+       height="185.26804"
+       x="0.88613784"
+       y="0.52916664" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text4422"
+       style="font-style:normal;font-weight:normal;font-size:64px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect4424);fill:#000000;fill-opacity:1;stroke:none"
+       x="78.427734"
+       y="0"><tspan
+         x="88.989258"
+         y="104.26219"
+         id="tspan66613">PRUEBA 2</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,10.352163,116.72957)"
+       id="text27088"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect27090);fill:#000000;fill-opacity:1;stroke:none"
+       x="93.082848"
+       y="0"><tspan
+         x="132.11702"
+         y="203.2177"
+         id="tspan66617"><tspan
+           style="text-align:center;text-anchor:middle"
+           id="tspan66615">iMAGEN VECTORIAL</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,5.7115385,67.82452)"
+       id="text37082"
+       style="font-style:normal;font-weight:normal;font-size:21.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect37084);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="129.52148"
+         y="339.21888"
+         id="tspan66619">iMAGEN VECTORIAL</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,3.9266827,56.401442)"
+       id="text42480"
+       style="font-style:normal;font-weight:normal;font-size:29.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect42482);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="95.791016"
+         y="314.13666"
+         id="tspan66621">iMAGEN VECTORIAL</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,2.8557692,-61.042067)"
+       id="text53266"
+       style="font-style:normal;font-weight:normal;font-size:85.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect53268);fill:#000000;fill-opacity:1;stroke:none"
+       x="50.966797"
+       y="0"><tspan
+         x="112.36822"
+         y="494.46546"
+         id="tspan66625"><tspan
+           style="font-weight:bold;font-family:Ravie;-inkscape-font-specification:'Ravie Bold';text-align:center;text-anchor:middle"
+           id="tspan66623">TEST</tspan></tspan></text>
+    <path
+       sodipodi:type="star"
+       style="fill:#4d4d4d"
+       id="path66425"
+       inkscape:flatsided="false"
+       sodipodi:sides="5"
+       sodipodi:cx="195.63144"
+       sodipodi:cy="349.43823"
+       sodipodi:r1="83.004868"
+       sodipodi:r2="45.552635"
+       sodipodi:arg1="0.79689191"
+       sodipodi:arg2="2.0826642"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 253.64628,408.80225 -80.32682,-19.64981 -16.21899,33.80567 -6.13427,-82.46747 -37.16304,-4.97864 76.53563,-31.31789 -6.74904,-36.88264 53.43588,63.11195 32.99192,-17.81609 -43.51044,70.32322 z"
+       transform="matrix(0.26458333,0,0,0.26458333,11.780048,9.9951923)"
+       inkscape:transform-center-x="0.98453861"
+       inkscape:transform-center-y="-1.1386206" />
+  </g>
+</svg>

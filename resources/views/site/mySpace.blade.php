@@ -1,7 +1,13 @@
 @extends('layouts.site')
 @section('title', 'Mi espacio')
+@section('css')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.css" integrity="sha512-6QxSiaKfNSQmmqwqpTNyhHErr+Bbm8u8HHSiinMEz0uimy9nu7lc/2NaXJiUJj2y4BApd5vgDjSHyLzC8nP6Ng==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+@endsection
+
 @section('js')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('js/menus.js') }}"></script>
+  <script src="{{ asset('js/stab.js') }}"></script>
 @endsection
 
 @section('returnBtn', route('home'))
@@ -15,59 +21,143 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 sections">
     @if($iAmStab && is_object($myStab))
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
-          <div class="text-center">
-            <a class="btn btn-line" href="#">{{ __('Visitas').': '.$myStab['range'] }}</a>
+      <div id="buttons-seccions">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
+            <div class="text-center">
+              <a class="btn btn-line" href="#">{{ __('Visitas').': '.$myStab['range'] }}</a>
+            </div>
+          </div>
+
+          <!--
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
+            <div class="text-center">
+              <a class="btn btn-purple" href="#" data-toggle="modal" data-target="#addVacant-modal">{{ __('Agregar vacante') }}</a>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
+            <div class="text-center">
+              <a class="btn btn-purple" href="#" data-toggle="modal" data-target="#addAd-modal">{{ __('Agregar anuncio') }}</a>
+            </div>
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
-          <div class="text-center">
-            <a class="btn btn-purple" href="#" data-toggle="modal" data-target="#addVacant-modal">{{ __('Agregar vacante') }}</a>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
+            <div class="text-center">
+              <a class="btn btn-purple" href="{{ route('stablishment', $myStab['idstablishment']) }}">{{ __('Ir a publicación') }}</a>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
+            <div class="text-center">
+              <a class="btn btn-purple" href="{{ route('home') }}">{{ __('Inicio') }}</a>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
+            <div class="text-center">
+              <a id="btnChat" class="btn btn-purple" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">{{ __($chat ? 'Desactivar chat':'Activar chat') }}</a>
+            </div>
+          </div>
+          -->
+        </div>
+
+        <!--
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
+            <div class="text-center">
+              <a id="btn-stab" class="btn btn-purple btn-menu" href="#" data-toggle="modal" data-target="#window-modal">{{ __('Datos de empresa') }}</a>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
+            <div class="text-center">
+              <a id="btn-menus" class="btn btn-purple btn-menu" href="#" data-toggle="modal" data-target="#window-modal">{{ __('Menus') }}</a>
+            </div>
+          </div>
+        </div>
+        -->
+
+        <div class="row mt-5">
+          <div class="col-4 col-md-3 mb-4">
+            <a href="{{ route('home') }}">
+              <div class="card btnTable">
+                <div class="btnTableImgCont">
+                  <img src="{{ asset('img/site/btn/btn-myspace-home.png') }}" class="card-img-top" alt="Inicio">
+                </div>
+                <div>
+                  <h4 class="p-3 text-center">Inicio</h4>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <div id="btn-stab" class="card btnTable" data-toggle="modal" data-target="#window-modal">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-stablishment.png') }}" class="card-img-top" alt="Empresa">
+              </div>
+              <div>
+                <h4 class="p-3 text-center">Empresa</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <div id="btn-menus" class="card btnTable" data-toggle="modal" data-target="#window-modal">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-menus.png') }}" class="card-img-top" alt="Menus">
+              </div>
+              <div>
+                <h4 class="p-3 text-center">Menus</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <a href="{{ route('stablishment', $myStab['idstablishment']) }}">
+              <div class="card btnTable">
+                <div class="btnTableImgCont">
+                  <img src="{{ asset('img/site/btn/btn-myspace-x1.png') }}" class="card-img-top" alt="Publicación">
+                </div>
+                <div>
+                  <h4 class="p-3 text-center">Publicación</h4>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <div class="card btnTable" data-toggle="modal" data-target="#addAd-modal">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-addAd.png') }}" class="card-img-top" alt="Anuncio">
+              </div>
+              <div>
+                <h4 class="p-3 text-center">Anuncio</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <div class="card btnTable" data-toggle="modal" data-target="#addVacant-modal">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-vacant.png') }}" class="card-img-top" alt="Vacantes">
+              </div>
+              <div>
+                <h4 class="p-3 text-center">Vacantes</h4>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3 mb-4">
+            <div class="card btnTable" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-chat.png') }}" class="card-img-top" alt="Activar chat">
+              </div>
+              <div>
+                <h4 class="p-3 text-center">Activar chat</h4>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
-          <div class="text-center">
-            <a class="btn btn-purple" href="#" data-toggle="modal" data-target="#addAd-modal">{{ __('Agregar anuncio') }}</a>
-          </div>
-        </div>
+        <br>
       </div>
-
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
-          <div class="text-center">
-            <a class="btn btn-purple" href="{{ route('stablishment', $myStab['idstablishment']) }}">{{ __('Ir a publicación') }}</a>
-          </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
-          <div class="text-center">
-            <a class="btn btn-purple" href="{{ route('home') }}">{{ __('Inicio') }}</a>
-          </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mb-2">
-          <div class="text-center">
-            <a id="btnChat" class="btn btn-purple" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">{{ __($chat ? 'Desactivar chat':'Activar chat') }}</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
-          <div class="text-center">
-            <a class="btn btn-purple" href="#" data-toggle="modal" data-target="#addStab-modal">{{ __('Datos de empresa') }}</a>
-          </div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
-          <div class="text-center">
-            <a id="btnMenus" class="btn btn-purple" href="#" data-toggle="modal" data-target="#window-modal">{{ __('Menus') }}</a>
-          </div>
-        </div>
-      </div>
-      <br>
     @endif
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -107,18 +197,19 @@
   </div>
 </div>
 
+
 @if($iAmStab)
-<div class="modal fade" id="window-modal" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
+<div class="modal fade" id="window-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">#MODAL-TITLE#</h5>
+        <h5 class="modal-title">CARGANDO CONTENIDO...</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        #MODAL-CONTENT#
+        CARGANDO CONTENIDO...
       </div>
     </div>
   </div>
@@ -393,9 +484,9 @@ window.addEventListener('load', function() {
   $(document).ready(function() {
     let cfg = {
       showBtnHelp: false, 
-      urlAjax: '{{ route("delStablishment") }}',
+      urlAjax: '{{ route("delStablishment") }}'
     };
-    let cfgMenus = {};
+    //let cfgMenus = {};
     @if($iAmStab)
       cfg.urlAddStab = '{{ route("myspace.addStab") }}';
 
@@ -413,11 +504,19 @@ window.addEventListener('load', function() {
       cfg.urlEnableChat = '{{ route("myspace.enableChat") }}';
       
       // configuración para el js de menus.js
-      cfgMenus.urlLoadMenus = '{{ route("myspace.loadMenus") }}';
-      cfgMenus.urlAddMenu = '{{ route("myspace.addMenu") }}';
-      cfgMenus.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
-      cfgMenus.urlDelProduct = '{{ route("myspace.delProduct") }}';
-      menus.init(cfgMenus);
+      cfg.menu = {};
+      cfg.menu.haveMenus = "{{ count($menus) }}";
+      cfg.menu.urlLoadMenus = '{{ route("myspace.loadMenus") }}';
+      cfg.menu.urlAddMenu = '{{ route("myspace.addMenu") }}';
+      cfg.menu.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
+      cfg.menu.urlDelProduct = '{{ route("myspace.delProduct") }}';
+      //menus.init(cfgMenus);
+
+      // configuración para el js del establecimiento.js
+      cfg.stab = {};
+      cfg.stab.urlAsset = "{{ asset("/") }}"
+      cfg.stab.urlLoadStab = '{{ route("myspace.loadStab") }}';
+      cfg.stab.urlUpdateStablishment = '{{ route("myspace.updateStablishment") }}';
     @endif
     go.initStablisments(cfg);
 

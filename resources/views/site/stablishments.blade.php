@@ -53,7 +53,7 @@
             <tr class="">
               <td class="stablish-logo">
                 <a href="{{ route('stablishment', $stab->idstablishment) }}">
-                  <img src="{{ asset('img/site/stablishments/logos/'.$stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
+                  <img src="{{ asset($stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
                 </a>
               </td>
               <td class="stablish-visit">
@@ -63,7 +63,7 @@
                 <div class="row">
                   <div class="text-center stablish-logo-2">
                     <a href="{{ route('stablishment', $stab->idstablishment) }}">
-                      <img src="{{ asset('img/site/stablishments/logos/'.$stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
+                      <img src="{{ asset($stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
                     </a>
                   </div>
                   <div class="text-center stablish-visit-2">

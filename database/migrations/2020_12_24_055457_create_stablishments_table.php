@@ -35,6 +35,7 @@ class CreateStablishmentsTable extends Migration
       $table->integer('range')->nullable()->default(0);
       $table->boolean('offer')->nullable()->default(false);
       $table->boolean('disabled')->nullable()->default(false);
+      $table->boolean('disabledGlobal')->nullable()->default(false);
       $table->date('expiration')->nullable();
       $table->boolean('enablechat')->nullable()->default(true);
       $table->integer('user_id')->nullable()->default(0);

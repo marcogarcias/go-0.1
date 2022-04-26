@@ -96,6 +96,29 @@ let go={
         }
       });
     });
+
+    // eventos para la librería Cropper
+    $modal = $('.imagecrop');
+    $image = document.getElementById('image');
+    cropper;
+
+    $(document).off("change", "#logotipo");
+    $(document).on('change', '#logotipo', function(e){
+      //stab.loadPrevLogotipo(this);
+      //stab.loadEditLogotipo(e);
+      stab.initLoadFile(e);
+    });
+
+    $(document).on('shown.bs.modal', '.imagecrop', function(){
+      stab.initCropper();
+    }).on('hidden.bs.modal', '.imagecrop', function(){
+      cropper.destroy();
+      cropper = null;
+    });
+
+    $(document).on('click', '#crop', function(){
+      stab.cropImage();
+    });
   },
   // inicializando los anuncios
   initAds: function(){
@@ -110,12 +133,45 @@ let go={
   initStablisments: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
     let jobsSection = cfg.jobsSection ? cfg.jobsSection : false;
+    let haveMenu = parseInt(cfg.menu.haveMenus);
+    let cfgMenus = cfg.menu ? cfg.menu : {};
+    let cfgStab = cfg.stab ? cfg.stab : {};
     go.chat = cfg.chat === 'true';
 
     this.redimentions(cfg.showBtnHelp);
+    if(!haveMenu){
+      $('#window-modal').modal('show');
+      setTimeout(function(){
+        menus.init(cfgMenus);
+      }, 1000);
+    }
     // eventos
     $('#filtersOpen').on('click', function(){
       $('#filters').slideToggle(1000);
+    });
+
+    /*$('#buttons-seccions .btn-menu').on('click', function(){
+      let type = $(this).attr('id').split('-');;
+      switch(type[1]){
+        case 'stab':
+          stab.init(cfgStab);
+          break;
+        case 'menus':
+          menus.init(cfgMenus);
+          break;
+      }
+    });*/
+
+    $('#btn-stab, #btn-menus').on('click', function(){
+      let type = $(this).attr('id').split('-');;
+      switch(type[1]){
+        case 'stab':
+          stab.init(cfgStab);
+          break;
+        case 'menus':
+          menus.init(cfgMenus);
+          break;
+      }
     });
 
     $('.stablish-cont').on('click', '.stablish-add, .stablish-del', function(e){

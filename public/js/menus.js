@@ -7,14 +7,16 @@ let menus = {
     let urlLoadProducts = cfg.urlLoadProducts ? cfg.urlLoadProducts : '';
     let urlDelProduct = cfg.urlDelProduct ? cfg.urlDelProduct : '';
 
-    $('#btnMenus').on('click', (e)=>{
+    menus.modalCreate(urlLoadMenus);
+    /*$('#btnMenus').on('click', (e)=>{
       menus.modalCreate(urlLoadMenus);
-    });
-
+    });*/
+    $(document).off("change", "#menuList");
     $(document).on('change', '#menuList', function(){
       menus.selectedMenu(urlLoadMenus, $(this).val());
     });
 
+    $(document).off("shown.bs.collapse", "#collapseOne");
     $(document).on('shown.bs.collapse', '#collapseOne', function () {
       $('#productosDiv').empty();
       let hash = $('#hashMenu').val();
@@ -34,21 +36,25 @@ let menus = {
       }
     });
 
+    $(document).off("hidden.bs.collapse", "#collapseOne");
     $(document).on('hidden.bs.collapse', '#collapseOne', function () {
       $('#productosDiv').empty();
     });
 
+    $(document).off("click", "#addProduct");
     $(document).on('click', '#addProduct', function(e){
       e.preventDefault();
       menus.addProduct();
     });
 
+    $(document).off("click", ".delProduct");
     $(document).on('click', '.delProduct', function(e){
       e.preventDefault();
       let hashProduct = $(this).attr('id').split('-');
       menus.delProduct(urlDelProduct, hashProduct[1]);
     });
 
+    $(document).off("click", "#addMenu");
     $(document).on('click', '#addMenu', (e)=>{
       e.preventDefault();
       menus.addMenu(urlAddMenu, (res)=>{
@@ -123,7 +129,7 @@ let menus = {
   createMenuAccordion: (menu)=>{
     menu = (typeof menu === 'object') ? menu : {};
     let hash = menu.hash ? menu.hash : 'hash_'+utils.hash1();
-    let btnName = (menu.hash ? 'Actualizár' : 'Nuevo')+' menú';
+    let btnName = (menu.hash ? 'Actualizár' : 'Subir')+' menú';
     let title = menu.title ? menu.title : 'Nuevo menú';
     let name = menu.name ? menu.name : '';
     let description = menu.description ? menu.description : '';
@@ -199,17 +205,17 @@ let menus = {
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <label for="prod-name-${hash}">Producto <span  class="text-danger font-weight-bolder">*</span></label>
             <input type="text" class="form-control" id="prod-name-${hash}" name="prod-name-${hash}" value="${ name }" placeholder="Nombre del producto">
-            <div id="err-prod-name-${hash}" class="invalid-feedback" style="display: block;"></div>
+            <div id="prod-name-${hash}-error" class="invalid-feedback" style="display: block;"></div>
           </div>
           <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-xl-3">
             <label for="prod-precio-${hash}">Precio <span  class="text-danger font-weight-bolder">*</span></label>
             <input type="number" class="form-control" id="prod-precio-${hash}" name="prod-precio-${hash}" value="${ price }" placeholder="Precio del producto">
-            <div id="err-prod-precio-${hash}" class="invalid-feedback" style="display: block;"></div>
+            <div id="prod-precio-${hash}-error" class="invalid-feedback" style="display: block;"></div>
           </div>
           <div class="col-xs-4 col-sm-4 col-md-64col-lg-4 col-xl-4">
             <label for="prod-description-${hash}">Descripción</label>
             <input type="text" class="form-control" id="prod-description-${hash}" name="prod-description-${hash}"value="${ description }" placeholder="Descripción del producto">
-            <div id="err-prod-description-${hash}" class="invalid-feedback" style="display: block;"></div>
+            <div id="prod-description-${hash}-error" class="invalid-feedback" style="display: block;"></div>
           </div>
           <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" style="display: flex; align-items: center;">
             <a id="delProduct-${ hash }" class="delProduct" href="#" style="color: #f00; font-size: 40px;">
@@ -253,6 +259,9 @@ let menus = {
         if(callback && (typeof callback === 'function')){
           callback(res);
         }
+      }else if(res['validate']){
+        utils.validateSetErrors(res['validate']);
+        console.log('mostrando errores de validacion: ', res);
       }
     });
   },

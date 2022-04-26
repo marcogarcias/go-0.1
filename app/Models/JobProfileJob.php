@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Section extends Model
-{
+class JobProfileJob extends Model{
   use HasFactory;
-  protected $table = 'sections';
-  protected $primaryKey = 'idsection';
+  protected $table = 'jobprofile_jobs';
+  protected $primaryKey = 'idProfileJob';
   protected $fillable = [
-    'name', 
-    'description',
-    'image',
+    'jobProfile_id', 
+    'job_id',
+    'disabled',
     'deleted'
   ];
 }

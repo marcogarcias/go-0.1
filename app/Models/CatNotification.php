@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Section extends Model
-{
+class CatNotification extends Model{
   use HasFactory;
-  protected $table = 'sections';
-  protected $primaryKey = 'idsection';
+  protected $table = 'cat_notifications';
+  protected $primaryKey = 'idNotification';
   protected $fillable = [
     'name', 
     'description',
-    'image',
+    'icon',
+    'color',
+    'disabled',
     'deleted'
   ];
 }

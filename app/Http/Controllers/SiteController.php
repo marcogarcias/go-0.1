@@ -19,6 +19,9 @@ use App\Models\StablishmentMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Support\Facades\Storage;
 
 class SiteController extends Controller
 {
@@ -101,10 +104,12 @@ class SiteController extends Controller
   public function stablishment($stab=0){
     //DB::enableQueryLog();
     $idUser = Auth::id() ? Auth::id() : 0;
+    $menus_ = $menus = [];
     $stablish = Stablishment::select(
       's.idstablishment', 's.name', 's.description', 's.direction', 
-      's.image', 's.summary', 's.whatsapp', 's.facebook', 's.range', 's.enablechat', 
-      's.instagram', 's.twitter', 's.youtube', 's.user_id', 'sec.idsection', 'sec.image AS secImage')
+      's.image', 's.summary', 's.whatsapp', 's.facebook', 's.range', 
+      's.enablechat', 's.instagram', 's.twitter', 's.youtube', 
+      's.lat', 's.lng', 's.user_id', 'sec.idsection', 'sec.image AS secImage')
       ->from('stablishments AS s')
       //'t.name AS tagName', 't.description AS tagDesc', 't.image AS tagImage')
       ->join('municipios AS m', 'm.idmunicipio', '=', 's.municipio_id')
@@ -119,14 +124,47 @@ class SiteController extends Controller
       ->where('e.deleted', 0)
       ->where('sec.deleted', 0)
       ->first();
-      
+
+    $menus_ = StablishmentMenu::
+        select('sm.idmenu', 'sm.name', 'sm.description', 'mp.idproduct', 'mp.name AS prodName', 
+          'mp.description AS prodDesc', 'mp.price', 'mp.price_discount')
+        ->from('stablishments_menus AS sm')
+        ->join('menus_products AS mp', 'sm.idmenu', '=', 'mp.menu_id')
+        ->where('sm.disabled', 0)
+        ->where('mp.disabled', 0)
+        ->where('sm.deleted', 0)
+        ->where('mp.deleted', 0)
+        ->where('sm.stablishment_id', $stab)
+        ->get();
+
+    foreach ($menus_ as $menu) {
+      $hash = md5($menu->idmenu);
+      $prod = [
+        'name'=> $menu->prodName,
+        'description'=> $menu->prodDesc,
+        'price'=> $menu->price,
+        'priceDisc'=> $menu->price_discount,
+        'hash'=> Crypt::encryptString($menu->idproduct)
+      ];
+      if(!isset($menus[$hash])){
+        $menus[$hash] = [
+          'menu'=>[
+            'name'=>$menu->name, 
+            'description'=>$menu->description
+          ], 
+          'products'=>[]
+        ];
+      }
+      $menus[$hash]['products'][] = $prod;
+    }
+
     if(!is_object($stablish))
       return redirect()->route('home');
     $stablish->range += 1;
     $stablish->save();
     $jobs = self::myJobs_($stablish['idstablishment']);
     $ads = self::myAds_($stablish['idstablishment']);
-    return view('site.stablishment', compact('idUser', 'stablish', 'jobs', 'ads'));
+    return view('site.stablishment', compact('idUser', 'stablish', 'menus', 'jobs', 'ads'));
   }
 
   /**
@@ -231,7 +269,7 @@ class SiteController extends Controller
   public function addMenu(Request $req){
     $res=array('success'=>false, 'action'=>'add');
     if($req->ajax()){
-      $idStab; $idMenu; $menu; $idProduct; $action; $validate;
+      $idStab = $idMenu = $menu = $idProduct = $action = $validate = null;
       $prods = [];
       $idStab = Crypt::decryptString(session('idStablishment'));
       $data = $req->input('data');
@@ -243,7 +281,13 @@ class SiteController extends Controller
       $menuDescripcion = isset($data[2]) && $data[2]['name']=='menuDescripcion' ? $data[2]['value'] : '';
       $menuDisable = isset($data[3]) && $data[3]['name']=='menuDisable' ? true : false;
 
-      if($menuName){
+      // validando campos de nombre de menú y su descripción
+      $validateRes = validate([
+        'menuName' => [$menuName, 'required|min:2|max:50'],
+        'menuDescripcion' => [$menuDescripcion, 'max:250']
+      ]);
+
+      if(empty($validateRes)){
         // agregando los productos a un array
         foreach ($data as $d) {
           if(strpos($d['name'], 'prod') !== false && $d['value']){
@@ -271,13 +315,11 @@ class SiteController extends Controller
             [
               'name' => $prod['name'],
               'price' => $prod['precio'],
-              'description' => $prod['description'],
+              'description' => isset($prod['description']) ? $prod['description'] : '',
               'menu_id' => $menu->idmenu
             ]
           );
         }
-      }else{
-        //$validate = ['menuName'=>];
       }
 
 /*echo '<pre>';
@@ -290,10 +332,11 @@ die('...');*/
         $res['code']='success';
         $res['message']="Se ha {$action} el menú '{$menuName}'";
       }else{
+        $action = $idMenu ? 'actualizar' : 'crear';
         $res['success']=false;
         $res['code']='warning';
-        $res['message']='No se pudo {$action} el menú.';
-        $res['validate']=$validate;
+        $res['message']="No se pudo {$action} el menú.";
+        $res['validate']=$validateRes;
       }
       $res['action']= $idMenu ? 'upd' : 'add';
 
@@ -373,6 +416,50 @@ die('...');*/
         $res['code']='error';
         $res['message']= 'El producto no pudo ser eliminado.';
       }
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
+   * Carga los datos de una empresa
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function loadStab(Request $req){
+    $res=array('success'=>false, 'action'=>'load');
+    if($req->ajax()){
+      $isStab =  session('isStablishment');
+      $idStab = Crypt::decryptString(session('idStablishment'));
+
+      // obteniendo datos del establecimiento del usuario
+      $stab = Stablishment::
+        select('s.*')
+        ->from('stablishments AS s')
+        ->where('s.deleted', 0)
+        ->where('s.idstablishment', $idStab)
+        ->first();
+
+      $stab_tags = [];
+      $stab_tags_ = StablishmentTag::where('stablishment_id', $idStab)
+      ->where('deleted', 0)
+      ->get();
+      foreach ($stab_tags_ as $tag)
+        $stab_tags[] = $tag->tag_id;
+
+      $zones = Zone::where('deleted', 0)->get();
+      $sections = Section::where('deleted', 0)->get();
+      $tags = Tag::where('section_id', $stab->section_id)->where('deleted', 0)->get();
+
+      $res['success']=true;
+      $res['code']='success';
+      $res['stab']= $stab;
+      $res['stab_tags']= $stab_tags;
+      $res['zones']= $zones;
+      $res['sections']= $sections;
+      $res['tags']= $tags;
+
 
       $res = response()->json($res, 200);
     }
@@ -1013,7 +1100,7 @@ die('...');*/
   static public function createStablishment(array $data){
     $user = self::createUser($data);
     $facebook = $instagram = $youtube = $twitter = '';
-    $imageName = 'default.png';
+    $imageName = "img/site/stablishments/logos/default.png";
     /*if($request->hasFile("logotipo")){
       $imageName = str_replace(' ', '_', request('nombre')).'-logo.png';
       $image = $request->file("logotipo");
@@ -1032,6 +1119,24 @@ die('...');*/
     if($data['twitter'])
       $twitter = str_replace(array('http://', 'https://'), '', $data['twitter']);
 
+    // guardando la imagen de la empresa si agregó una
+    if($data['logotipoBase64'] || $data['logotipoBase64'] != '0'){
+      $pathImageAr = makeDir();
+      $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+      $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+      $image_parts = explode(";base64,", $data['logotipoBase64']);
+      $image_types_aux = explode("image/", $image_parts[0]);
+      $image_type = $image_types_aux[1];
+      $image_base64 = base64_decode($image_parts[1]);
+      $filename = time().".".$image_type;
+      $file = $pathImageAbs.$filename;
+      if(file_put_contents($file, $image_base64)){
+
+      }else{
+        $message = "La imagen no se cargó correctamente.";
+      }
+    }
+
     $stab = Stablishment::create([
       'name'=>isset($data['nameStab']) ? $data['nameStab'] : '',
       'description'=>isset($data['descripcion']) ? $data['descripcion'] : '',
@@ -1039,7 +1144,7 @@ die('...');*/
       'direction'=>isset($data['direccion']) ? $data['direccion'] : '',
       'lat'=>isset($data['latitud']) ? $data['latitud'] : '',
       'lng'=>isset($data['longitud']) ? $data['longitud'] : '',
-      'image'=>$imageName,
+      'image'=>$pathImageRel.$filename,
       //'summary'=>$summaryName,
       'phone'=>isset($data['telefono']) ? $data['telefono'] : '',
       'whatsapp'=>isset($data['whatsapp']) ? $data['whatsapp'] : '',
@@ -1060,6 +1165,7 @@ die('...');*/
 
     if(isset($stab->idstablishment) && $stab->idstablishment){
       $idStab = $stab->idstablishment;
+      session(['idStablishment' => Crypt::encryptString($idStab)]);
       $tags = $data['tags'];
 
       if(is_array($tags)){
@@ -1072,6 +1178,134 @@ die('...');*/
       }
     }
     return $user;
+  }
+
+  /**
+   * Almacena/actualizar un establecimiento
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function updateStablishment(Request $req)
+  {
+    $res=array('success'=>false);
+    if($req->ajax()){
+      $data = $req->input('data');
+      $idStab; $stabRes; $pathImageAr; $pathImageAbs;
+      $pathImageRel = $filename = '';
+      $message = '';
+
+      $name = $req->input('nombre');
+      $description = $req->input('descripcion');
+      $description2 = $req->input('descripcion2');
+      $direction = $req->input('direccion');
+      $lat = $req->input('latitud');
+      $lng = $req->input('longitud');
+      $phone = $req->input('telefono');
+      $whatsapp = $req->input('whatsapp');
+      $facebook = $req->input('facebook');
+      $instagram = $req->input('instagram');
+      $twitter = $req->input('twitter');
+      $youtube = $req->input('youtube');
+      $hour = $req->input('horario');
+      $offer = $req->input('oferta');
+      $zone_id = $req->input('zona');
+      $section_id = $req->input('section');
+      $tags = $req->input('tags');
+
+      $validateRes = validate([
+        'nombre' => [$name, 'required|max:155'],
+        'descripcion' => [$description, 'required|max:200'],
+        'descripcion2' => [$description2, 'required|max:100'],
+        'direccion' => [$direction, 'max:200'],
+        'latitud' => [$lat, 'max:100'],
+        'longitud' => [$lng, 'max:100'],
+        'telefono' => [$phone, 'max:20'],
+        'whatsapp' => [$whatsapp, 'max:10'],
+        'facebook' => [$facebook, 'max:200'],
+        'instagram' => [$instagram, 'max:200'],
+        'twitter' => [$twitter, 'max:200'],
+        'youtube' => [$youtube, 'max:200'],
+        'horario' => [$hour, 'max:200'],
+        'zona' => [$zone_id, 'required'],
+        'section' => [$section_id, 'required']
+      ]);
+
+      // si la validación es un éxito se procede a actualizar los datos de la empresa
+      if(empty($validateRes)){
+        if($req->input('logotipoBase64')){
+          $pathImageAr = makeDir();
+          $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+          $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+          $image_parts = explode(";base64,", $req->input('logotipoBase64'));
+          $image_types_aux = explode("image/", $image_parts[0]);
+          $image_type = $image_types_aux[1];
+          $image_base64 = base64_decode($image_parts[1]);
+          $filename = time().".".$image_type;
+          $file = $pathImageAbs.$filename;
+          if(file_put_contents($file, $image_base64)){
+
+          }else{
+            $message = "La imagen no se cargó correctamente.";
+          }
+        }
+
+        $idStab = Crypt::decryptString(session('idStablishment'));
+        $stab = Stablishment::find($idStab);
+
+        $stabData = [
+          'name'=>$name,
+          'description'=>$description,
+          'description2'=>$description2,
+          'direction'=>$direction,
+          'lat'=>$lat,
+          'lng'=>$lng,
+          //'summary'=>$summaryName,
+          'phone'=>$phone,
+          'whatsapp'=>$whatsapp,
+          'facebook'=>$facebook,
+          'instagram'=>$instagram,
+          'twitter'=>$twitter,
+          'youtube'=>$youtube,
+          'hour'=>$hour,
+          'offer'=>$offer?1:0,
+          'zone_id'=>$zone_id,
+          'section_id'=>$section_id
+        ];
+
+        if($pathImageRel && $filename)
+          $stabData['image'] = $pathImageRel.$filename;
+
+        $stabRes = $stab->update($stabData);
+
+        // si la actualización de datos es correcta, se procede a borrar los tags que se tengas y se agregan los nuevos
+        if($stabRes && is_array($tags) && count($tags)){
+          // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
+          StablishmentTag::
+            where('deleted', 0)
+            ->where('stablishment_id', $idStab)
+            ->update(['deleted'=>1]);
+
+          // agregar o actualizar las subsecciones/tags
+          foreach ($tags as $tag) {
+            StablishmentTag::updateOrCreate(
+              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
+              [ 'deleted'=>0 ]
+            );
+          }
+
+          $message = "Datos guardados de la empresa.".($message?" {$message}":"");
+          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);          
+        }else{
+          $message = "No se pudo actualizar los datos de la empresa, intenta más tarde.";
+          $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+        }
+      }else{
+        $message = "Revisa los campos en rojo.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$validateRes), 200);
+      }
+    }
+    //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
+    return $res;
   }
 
   /**

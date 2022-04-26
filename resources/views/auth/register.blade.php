@@ -1,7 +1,14 @@
 @extends('layouts.site')
 @section('title', 'Registrarse')
 @section('css')
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.css" integrity="sha512-6QxSiaKfNSQmmqwqpTNyhHErr+Bbm8u8HHSiinMEz0uimy9nu7lc/2NaXJiUJj2y4BApd5vgDjSHyLzC8nP6Ng==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ asset('css/register.css?').microtime() }}" rel="stylesheet">
+@endsection
+
+
+@section('js')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{{ asset('js/stab.js') }}"></script>
 @endsection
 
 @section('content')
@@ -140,9 +147,15 @@
                     {!! $errors->first('longitud', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
-                    <label for="logotipo">{{ __('Logotipo (Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)') }}</label>
-                    <input type="file"  class="form-control-file" id="logotipo" name="logotipo">
-                    {!! $errors->first('logotipo', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+                    <div class="col-8 col-md-3">
+                      <div id="prev-logotipo" style="background-image: url(http://i.pravatar.cc/500?img=7) background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="logotipo">{{ __('Logotipo (dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)') }}</label>
+                    <input type="file"  class="form-control-file" id="logotipo" name="logotipo" accept=".png, .jpg, .jpeg">
+                    <input type="hidden" id="logotipoBase64" name="logotipoBase64">
+                    <div id="logotipo-error" class="error" style="display: block;"></div>
                   </div>
                   <div class="form-group">
                     <label for="telefono">{{ __('Teléfono') }} ({{ __('máximo 13 carácteres ') }})</label>
@@ -216,6 +229,32 @@
           </div>
 
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal imagecrop fade" id="window-modal-croop" tabindex="-1" role="dialog" aria-labelledby="window-modal-croop" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar imagen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="img-container">
+          <div class="row">
+            <div class="col-md-11">
+              <img id="image" src="" style="display: block; max-width: 100%;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary crop" id="crop">Recortar imagen</button>
       </div>
     </div>
   </div>

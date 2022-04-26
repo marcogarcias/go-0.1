@@ -49,8 +49,8 @@ class LoginController extends Controller
     public function redirectPath()
     {
       $myStab = Stablishment::select('stab.idstablishment', 
-      'stab.name', 'stab.description', 'stab.image',
-      'stab.user_id', 'stab.range', 'stab.enablechat')
+        'stab.name', 'stab.description', 'stab.image',
+        'stab.user_id', 'stab.range', 'stab.enablechat')
       ->from('stablishments AS stab')
       ->where('stab.deleted', 0)
       ->where('stab.user_id', auth()->id())

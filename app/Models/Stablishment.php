@@ -30,6 +30,7 @@ class Stablishment extends Model
     'range',
     'offer',
     'disabled',
+    'disabledGlobal',
     'visible',
     'expiration',
     'municipio_id',

@@ -80,6 +80,19 @@ Route::post('/myspace/delProduct', [
   ]
 )->name('myspace.delProduct')->middleware('auth');
 
+// RUTAS DE MI ESPACIO PARA LA EMPRESA
+Route::post('/myspace/loadStab', [
+    App\Http\Controllers\SiteController::class, 
+    'loadStab'
+  ]
+)->name('myspace.loadStab')->middleware('auth');
+
+Route::post('/myspace/updateStablishment', [
+    App\Http\Controllers\SiteController::class, 
+    'updateStablishment'
+  ]
+)->name('myspace.updateStablishment')->middleware('auth');
+
 Route::post('/myspace/updJob', [
     App\Http\Controllers\SiteController::class, 
     'updJob'

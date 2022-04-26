@@ -4,26 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStablishmentsMenusTable extends Migration{
+class CreateCatNotificationsTable extends Migration{
   /**
    * Run the migrations.
    *
    * @return void
    */
   public function up(){
-    Schema::create('stablishments_menus', function (Blueprint $table) {
+    Schema::create('cat_notifications', function (Blueprint $table) {
       $table->engine = 'InnoDB';
-      $table->bigIncrements('idmenu');
+      $table->bigIncrements('idNotification');
       $table->string('name')->index();
-      $table->text('description')->nullable();
+      $table->string('description');
+      $table->string('icon');
+      $table->string('color');
       $table->boolean('disabled')->nullable()->default(false);
-      $table->unsignedBigInteger('stablishment_id');
       $table->boolean('deleted')->nullable()->default(false);
       $table->timestamps();
-
-      $table->foreign('stablishment_id')
-        ->references('idstablishment')
-        ->on('stablishments');
     });
   }
 
@@ -33,6 +30,6 @@ class CreateStablishmentsMenusTable extends Migration{
    * @return void
    */
   public function down(){
-    Schema::dropIfExists('stablishments_menus');
+    Schema::dropIfExists('cat_notifications');
   }
 }

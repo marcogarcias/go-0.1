@@ -2,8 +2,18 @@
 .border-2{ border: 1px solid #0f0; }
 .border-3{ border: 1px solid #00f; }
 
+.error{
+  color: #f00;
+}
+
 .modal-header{
   background-color: #4147A6 !important;
+  color: #fff;
+}
+
+.modal-header .close{
+  color: #fff;
+  font-size: 2rem;
 }
 
 .modal-content-gray{
@@ -242,6 +252,29 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 }
 .mySpace-stablish-footer img{ width: 30%; }
 
+#buttons-seccions a{ text-decoration: none; }
+.btnTable{ cursor: pointer; width: 100%; }
+
+.btnTable img{
+  -webkit-transition:all .9s ease; /* Safari y Chrome */
+  -moz-transition:all .9s ease; /* Firefox */
+  -o-transition:all .9s ease; /* IE 9 */
+  -ms-transition:all .9s ease; /* Opera */
+  width:100%;
+}
+
+.btnTable:hover img{
+  opacity: 0.3;
+  -webkit-transform:scale(1.25);
+  -moz-transform:scale(1.25);
+  -ms-transform:scale(1.25);
+  -o-transform:scale(1.25);
+  transform:scale(1.25);
+}
+
+.btnTableImgCont{ background: rgba(0, 0, 0, 1); overflow:hidden; }
+#prev-logotipo{ height: 90px; width: 100%; }
+
 
 /* ******************************** */
 /* INICIO - Detalle establecimiento */
@@ -249,6 +282,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 
 .stablish-summary{ width: 100%; }
 .stablish-summary img{ width: 100%; }
+.menuCont{
+  background: #333;
+  border-radius: 20px;
+}
+
 .btns-social{ margin: 2% 0; padding: 0; }
 
 .btns-social li{

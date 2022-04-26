@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Función que valida un array de datos
- * @param {Array} $rules Reglas de validación
+ * @param {Array} $data Reglas de validación
  * @return {bool} 
  */
 function validate($data = []){

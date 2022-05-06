@@ -51,6 +51,10 @@ let stab = {
     });
   },
   modalCreate: (url)=>{
+    $('#window-modal').modal({
+      backdrop: true,
+      keyboard: false
+    });
     $('#window-modal .modal-title').text('DATOS DE EMPRESA');
     let html = `
       <div class="col-12 col-md-8">

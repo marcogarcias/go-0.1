@@ -140,6 +140,10 @@ let go={
 
     this.redimentions(cfg.showBtnHelp);
     if(!haveMenu){
+      $('#window-modal').modal({
+        backdrop: "static",
+        keyboard: false
+      });
       $('#window-modal').modal('show');
       setTimeout(function(){
         menus.init(cfgMenus);

@@ -80,7 +80,7 @@
         -->
 
         <div class="row mt-5">
-          <div class="col-4 col-md-3 mb-4">
+          <div class="col-6 col-md-3 mb-4">
             <a href="{{ route('home') }}">
               <div class="card btnTable">
                 <div class="btnTableImgCont">
@@ -92,8 +92,8 @@
               </div>
             </a>
           </div>
-          <div class="col-4 col-md-3 mb-4">
-            <div id="btn-stab" class="card btnTable" data-toggle="modal" data-target="#window-modal">
+          <div class="col-6 col-md-3 mb-4">
+            <div id="btn-stab" class="card btnTable">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-stablishment.png') }}" class="card-img-top" alt="Empresa">
               </div>
@@ -102,8 +102,8 @@
               </div>
             </div>
           </div>
-          <div class="col-4 col-md-3 mb-4">
-            <div id="btn-menus" class="card btnTable" data-toggle="modal" data-target="#window-modal">
+          <div class="col-6 col-md-3 mb-4">
+            <div id="btn-menus" class="card btnTable">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-menus.png') }}" class="card-img-top" alt="Menus">
               </div>
@@ -112,7 +112,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4 col-md-3 mb-4">
+          <div class="col-6 col-md-3 mb-4">
             <a href="{{ route('stablishment', $myStab['idstablishment']) }}">
               <div class="card btnTable">
                 <div class="btnTableImgCont">
@@ -124,7 +124,7 @@
               </div>
             </a>
           </div>
-          <div class="col-4 col-md-3 mb-4">
+          <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-toggle="modal" data-target="#addAd-modal">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-addAd.png') }}" class="card-img-top" alt="Anuncio">
@@ -134,7 +134,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4 col-md-3 mb-4">
+          <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-toggle="modal" data-target="#addVacant-modal">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-vacant.png') }}" class="card-img-top" alt="Vacantes">
@@ -144,7 +144,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4 col-md-3 mb-4">
+          <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-chat.png') }}" class="card-img-top" alt="Activar chat">
@@ -199,14 +199,16 @@
 
 
 @if($iAmStab)
-<div class="modal fade" id="window-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
+<div class="modal fade" id="window-modal" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">CARGANDO CONTENIDO...</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        @if(count($menus))
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        @endif
       </div>
       <div class="modal-body">
         CARGANDO CONTENIDO...

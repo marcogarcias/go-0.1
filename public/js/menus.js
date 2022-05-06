@@ -64,6 +64,10 @@ let menus = {
     });
   },
   modalCreate: (url)=>{
+    $('#window-modal').modal({
+      backdrop: true,
+      keyboard: false
+    });
     $('#window-modal .modal-title').text('Menú');
     let html = `
       <div class="row mb-3">

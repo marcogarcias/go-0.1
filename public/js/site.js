@@ -80,7 +80,8 @@ let go={
     $('#user').trigger('click');
 
     // evento para desplegar los tags de acuerdo a la sección
-    $('#section').on('change', function(){
+    $(document).on('change', '#section', function(){
+      console.log('secciones...');
       sec = $(this).val();
       go.loadAjaxPost(cfg.tagsurl, {sec: sec}, function(res){
         if(res.success && res.tags){
@@ -132,10 +133,12 @@ let go={
   },
   initStablisments: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
+    cfg.menu = (typeof cfg.menu === 'object') ? cfg.menu : {};
     let jobsSection = cfg.jobsSection ? cfg.jobsSection : false;
     let haveMenu = parseInt(cfg.menu.haveMenus);
     let cfgMenus = cfg.menu ? cfg.menu : {};
     let cfgStab = cfg.stab ? cfg.stab : {};
+    let urlTags = cfg.urlTags ? cfg.urlTags : {};
     go.chat = cfg.chat === 'true';
 
     this.redimentions(cfg.showBtnHelp);
@@ -146,7 +149,7 @@ let go={
       });
       $('#window-modal').modal('show');
       setTimeout(function(){
-        menus.init(cfgMenus);
+        typeof menus !== 'undefined' && menus.init(cfgMenus);
       }, 1000);
     }
     // eventos
@@ -165,6 +168,24 @@ let go={
           break;
       }
     });*/
+
+    $(document).on('change', '#section', function(){
+      console.log('secciones...');
+      sec = $(this).val();
+      go.loadAjaxPost(urlTags, {sec: sec}, function(res){
+        if(res.success && res.tags){
+          html='';
+          for(let tag in res.tags){
+            html += ''+
+              '<div class="custom-control custom-checkbox custom-control-inline">'+
+                '<input type="checkbox" class="custom-control-input" id="'+res.tags[tag].idtag+'" name="tags[]" value="'+res.tags[tag].idtag+'">'+
+                '<label class="custom-control-label" for="'+res.tags[tag].idtag+'">'+res.tags[tag].name+'</label>'+
+              '</div>';
+          }
+          $('#tags').empty().append(html);
+        }
+      });
+    });
 
     $('#btn-stab, #btn-menus').on('click', function(){
       let type = $(this).attr('id').split('-');;

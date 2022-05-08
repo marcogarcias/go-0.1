@@ -13,6 +13,7 @@ let chatClient = {
   urlLoadAllUsers: '',
   urlLoadNewMsgGeneral: '',
   init: (cfg)=>{
+    return false;
     console.log('iniciando chat');
     let messagesNew = '';
     chatClient.setProps(cfg);

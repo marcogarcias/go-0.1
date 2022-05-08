@@ -485,7 +485,8 @@
 window.addEventListener('load', function() {
   $(document).ready(function() {
     let cfg = {
-      showBtnHelp: false, 
+      showBtnHelp: false,
+      urlTags: '{{ route("loadRegisterTags") }}',
       urlAjax: '{{ route("delStablishment") }}'
     };
     //let cfgMenus = {};

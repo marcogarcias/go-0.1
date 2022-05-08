@@ -248,7 +248,7 @@ let stab = {
     }
 
     for(let s in sections){
-      sel = sections[s].idsection == stab.zone_id ? 'selected' : '';
+      sel = sections[s].idsection == stab.section_id ? 'selected' : '';
       option = `<option value="${sections[s].idsection}" ${sel}>${sections[s].name}</option>`;
       $('#section').append(option);
     }

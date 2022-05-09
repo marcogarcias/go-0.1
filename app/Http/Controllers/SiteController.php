@@ -1242,7 +1242,8 @@ die('...');*/
           $image_base64 = base64_decode($image_parts[1]);
           $filename = time().".".$image_type;
           $file = $pathImageAbs.$filename;
-          if(file_put_contents($file, $image_base64)){
+          $saveImg = file_put_contents($file, $image_base64);
+          if($saveImg){
 
           }else{
             $message = "La imagen no se cargó correctamente.";

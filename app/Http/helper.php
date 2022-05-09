@@ -96,11 +96,13 @@ function maxVal($value = null, $max = 0){
  * @return {bool} 
  */
 function makeDir(){
+  $local = env('APP_ENV') == "local";
   $pathAr = ["absolute"=>"", "relative"=>""];
   $milisec = round(microtime(true) * 1000);
   $pathName = uniqueId();
   $pathToRel = "data/".date('Y')."/".date('m')."/".date('d')."/".date('H')."/".date('i')."/".date('s')."/".$milisec."/".$pathName."/";
-  $pathToAbs = public_path()."/".$pathToRel;
+  //$pathToAbs = public_path()."/".$pathToRel;
+  $pathToAbs = $local ? public_path()."/".$pathToRel : base_path()."/public_html/".$pathToRel;
   //Storage::makeDirectory($pathTo);
   mkdir($pathToAbs, 0777, true);
   $pathAr["relative"] = $pathToRel;

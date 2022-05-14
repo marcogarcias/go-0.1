@@ -1101,6 +1101,8 @@ die('...');*/
     $user = self::createUser($data);
     $facebook = $instagram = $youtube = $twitter = '';
     $imageName = "img/site/stablishments/logos/default.png";
+    $idStab; $pathImageAr; $pathImageAbs;
+    $pathImageRel = $filename = '';
     /*if($request->hasFile("logotipo")){
       $imageName = str_replace(' ', '_', request('nombre')).'-logo.png';
       $image = $request->file("logotipo");
@@ -1120,7 +1122,7 @@ die('...');*/
       $twitter = str_replace(array('http://', 'https://'), '', $data['twitter']);
 
     // guardando la imagen de la empresa si agregó una
-    if($data['logotipoBase64'] || $data['logotipoBase64'] != '0'){
+    if($data['logotipoBase64']){
       $pathImageAr = makeDir();
       $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
       $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
@@ -1144,7 +1146,7 @@ die('...');*/
       'direction'=>isset($data['direccion']) ? $data['direccion'] : '',
       'lat'=>isset($data['latitud']) ? $data['latitud'] : '',
       'lng'=>isset($data['longitud']) ? $data['longitud'] : '',
-      'image'=>$pathImageRel.$filename,
+      'image'=> $pathImageRel.$filename,
       //'summary'=>$summaryName,
       'phone'=>isset($data['telefono']) ? $data['telefono'] : '',
       'whatsapp'=>isset($data['whatsapp']) ? $data['whatsapp'] : '',
@@ -1166,7 +1168,7 @@ die('...');*/
     if(isset($stab->idstablishment) && $stab->idstablishment){
       $idStab = $stab->idstablishment;
       session(['idStablishment' => Crypt::encryptString($idStab)]);
-      $tags = $data['tags'];
+      $tags = isset($data['tags']) && is_array($data['tags']) ? $data['tags'] : [];
 
       if(is_array($tags)){
         foreach ($tags as $tag) {

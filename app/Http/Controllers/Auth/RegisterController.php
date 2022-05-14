@@ -77,7 +77,6 @@ class RegisterController extends Controller{
       $validator['direccion'] = ['string', 'max:200'];
       $validator['latitud'] = ['max:20'];
       $validator['longitud'] = ['max:20'];
-      $validator['descripcion'] = ['required', 'string', 'max:200'];
       //$validator['logotipo'] = ['image|mimes:jpeg,png|max:200|dimensions:min_width=90,min_height=55,max_width=110,max_height=75'];
       $validator['telefono'] = ['max:20'];
       $validator['whatsapp'] = ['max:20'];

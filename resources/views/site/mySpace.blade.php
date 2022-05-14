@@ -98,7 +98,7 @@
                 <img src="{{ asset('img/site/btn/btn-myspace-stablishment.png') }}" class="card-img-top" alt="Empresa">
               </div>
               <div>
-                <h4 class="p-3 text-center">Empresa</h4>
+                <h4 class="p-3 text-center">Editar empresa</h4>
               </div>
             </div>
           </div>

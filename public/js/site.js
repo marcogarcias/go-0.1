@@ -64,6 +64,8 @@ let go={
         <li>Tener chat directo con los negocios y otros usuarios de nuestra red.</li>
         <li>Acceso a bolsas de trabajo y ofertas de los negocios.</li>
         <li>Almacenamiento de tus lugares preferidos.</li>`;
+        // quitando datas para que no valide con parsley
+        go.setDataByParsley(false);
       }else{
         $('#stablishmentForm').fadeIn();
         span = 'Registrarse como empresa tienes los siguientes beneficios:';
@@ -71,6 +73,8 @@ let go={
         <li>Crear tu espacio para mostrar tus productos y servicios.</li>
         <li>Chat directo con tus posibles clientes.</li>
         <li>Solicitar personal para tus negocios.</li>`;
+        // agregando datas para que validar con parsley
+        go.setDataByParsley(true);
       }
       $('#userTypeAlert span').html(span);
       $('#userTypeAlert ul').html(li);
@@ -120,6 +124,53 @@ let go={
     $(document).on('click', '#crop', function(){
       stab.cropImage();
     });
+
+    // validando formulario de registro
+    $('#frmRegister').parsley().on('field:validated', function(){
+      //var ok = $('.parsley-error').length === 0;
+    }).on('form:submit', function(x, y, z){
+      //console.log("enviando form...", x, y, z);
+    });
+  },
+  // agrega o quita atributos data para la validación de parsley.js 
+  setDataByParsley: (valid)=>{
+    if(valid){
+      $("#nameStab").attr('required', true);
+      $("#nameStab").attr('data-parsley-maxlength', 155);
+      $("#descripcion").attr('required', true);
+      $("#descripcion").attr('data-parsley-maxlength', 200);
+      $("#descripcion2").attr('required', true);
+      $("#descripcion2").attr('data-parsley-maxlength', 100);
+      $("#direccion").attr('data-parsley-maxlength', 200);
+      $("#latitud").attr('data-parsley-maxlength', 20);
+      $("#longitud").attr('data-parsley-maxlength', 20);
+      $("#telefono").attr('data-parsley-maxlength', 20);
+      $("#whatsapp").attr('data-parsley-maxlength', 20);
+      $("#facebook").attr('data-parsley-maxlength', 200);
+      $("#instagram").attr('data-parsley-maxlength', 200);
+      $("#twitter").attr('data-parsley-maxlength', 200);
+      $("#youtube").attr('data-parsley-maxlength', 200);
+      $("#horario").attr('data-parsley-maxlength', 200);
+      $("#section").attr('required', true);
+    }else{
+      $("#nameStab").removeAttr('required');
+      $("#nameStab").removeAttr('data-parsley-maxlength');
+      $("#descripcion").removeAttr('required');
+      $("#descripcion").removeAttr('data-parsley-maxlength');
+      $("#descripcion2").removeAttr('required');
+      $("#descripcion2").removeAttr('data-parsley-maxlength');
+      $("#direccion").removeAttr('data-parsley-maxlength');
+      $("#latitud").removeAttr('data-parsley-maxlength');
+      $("#longitud").removeAttr('data-parsley-maxlength');
+      $("#telefono").removeAttr('data-parsley-maxlength');
+      $("#whatsapp").removeAttr('data-parsley-maxlength');
+      $("#facebook").removeAttr('data-parsley-maxlength');
+      $("#instagram").removeAttr('data-parsley-maxlength');
+      $("#twitter").removeAttr('data-parsley-maxlength');
+      $("#youtube").removeAttr('data-parsley-maxlength');
+      $("#horario").removeAttr('data-parsley-maxlength');
+      $("#section").removeAttr('required');
+    }
   },
   // inicializando los anuncios
   initAds: function(){

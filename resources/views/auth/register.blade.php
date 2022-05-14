@@ -7,6 +7,8 @@
 
 
 @section('js')
+  <script src="{{ asset('libs/Parsley.js-2.9.2/dist/parsley.min.js') }}" defer></script>
+  <script src="{{ asset('libs/Parsley.js-2.9.2/dist/i18n/es.js') }}" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('js/stab.js') }}"></script>
 @endsection
@@ -25,14 +27,13 @@
           <div class="card register">
             <div class="card-header">{{ __('Registro') }}</div>
             <div class="card-body">
-              <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+              <form id="frmRegister" method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group row">
                   <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Nombre') }}</label>
-
                   <div class="col-md-6">
-                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" data-parsley-minlength="5" data-parsley-maxlength="155" autofocus required>
                     @error('name')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -43,9 +44,8 @@
 
                 <div class="form-group row">
                   <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Correo electrónico') }}</label>
-
                   <div class="col-md-6">
-                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" data-parsley-minlength="10" data-parsley-maxlength="155" required>
                     @error('email')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -56,9 +56,8 @@
 
                 <div class="form-group row">
                   <label for="zone" class="col-md-4 col-form-label text-md-right">{{ __('Zona') }}</label>
-
                   <div class="col-md-6">
-                    <select id="zone" class="form-control filter @error('zone') is-invalid @enderror" name="zone">
+                    <select id="zone" class="form-control filter @error('zone') is-invalid @enderror" name="zone" required>
                       @forelse($zones as $zona)
                         <option value="{{ $zona['idzone'] }}">{{ __($zona['name']) }}</option>
                       @empty
@@ -76,7 +75,7 @@
                   <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Contraseña') }}</label>
 
                   <div class="col-md-6">
-                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
                     @error('password')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -88,7 +87,7 @@
                 <div class="form-group row">
                   <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirmar contraseña') }}</label>
                   <div class="col-md-6">
-                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
                   </div>
                 </div>
 

@@ -87,7 +87,19 @@
                   <img src="{{ asset('img/site/btn/btn-myspace-home.png') }}" class="card-img-top" alt="Inicio">
                 </div>
                 <div>
-                  <h4 class="p-3 text-center">Inicio</h4>
+                  <h5 class="p-3 text-center">Ir al inicio</h5>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-md-3 mb-4">
+            <a href="{{ route('stablishment', $myStab['idstablishment']) }}">
+              <div class="card btnTable">
+                <div class="btnTableImgCont">
+                  <img src="{{ asset('img/site/btn/btn-myspace-x1.png') }}" class="card-img-top" alt="Publicación">
+                </div>
+                <div>
+                  <h5 class="p-3 text-center">Ver mis publicaciones</h5>
                 </div>
               </div>
             </a>
@@ -98,7 +110,7 @@
                 <img src="{{ asset('img/site/btn/btn-myspace-stablishment.png') }}" class="card-img-top" alt="Empresa">
               </div>
               <div>
-                <h4 class="p-3 text-center">Editar empresa</h4>
+                <h5 class="p-3 text-center">Editar datos de empresa</h5>
               </div>
             </div>
           </div>
@@ -108,21 +120,9 @@
                 <img src="{{ asset('img/site/btn/btn-myspace-menus.png') }}" class="card-img-top" alt="Menus">
               </div>
               <div>
-                <h4 class="p-3 text-center">Menus</h4>
+                <h5 class="p-3 text-center">Editar mis Menus</h5>
               </div>
             </div>
-          </div>
-          <div class="col-6 col-md-3 mb-4">
-            <a href="{{ route('stablishment', $myStab['idstablishment']) }}">
-              <div class="card btnTable">
-                <div class="btnTableImgCont">
-                  <img src="{{ asset('img/site/btn/btn-myspace-x1.png') }}" class="card-img-top" alt="Publicación">
-                </div>
-                <div>
-                  <h4 class="p-3 text-center">Publicación</h4>
-                </div>
-              </div>
-            </a>
           </div>
           <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-toggle="modal" data-target="#addAd-modal">
@@ -130,7 +130,7 @@
                 <img src="{{ asset('img/site/btn/btn-myspace-addAd.png') }}" class="card-img-top" alt="Anuncio">
               </div>
               <div>
-                <h4 class="p-3 text-center">Anuncio</h4>
+                <h5 class="p-3 text-center">Crear nuevos anuncios</h5>
               </div>
             </div>
           </div>
@@ -140,20 +140,20 @@
                 <img src="{{ asset('img/site/btn/btn-myspace-vacant.png') }}" class="card-img-top" alt="Vacantes">
               </div>
               <div>
-                <h4 class="p-3 text-center">Vacantes</h4>
+                <h5 class="p-3 text-center">Publicar vacantes</h5>
               </div>
             </div>
           </div>
-          <div class="col-6 col-md-3 mb-4">
+          <!-- <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-chat.png') }}" class="card-img-top" alt="Activar chat">
               </div>
               <div>
-                <h4 class="p-3 text-center">Activar chat</h4>
+                <h5 class="p-3 text-center">Activar chat</h5>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <br>

@@ -270,6 +270,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   width:100%;
 }
 
+.btnTable h5{ font-size: 15px; }
+
 .btnTable:hover img{
   opacity: 0.3;
   -webkit-transform:scale(1.25);

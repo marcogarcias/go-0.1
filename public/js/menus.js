@@ -83,7 +83,7 @@ let menus = {
       </div>`;
     $('#window-modal .modal-body').html(html);
     menus.createSelectMenu(url);
-    menus.createMenuAccordion({'title': 'Nuevo Menú'});
+    menus.createMenuAccordion({'title': 'Crear Menú'});
   },
   createSelectMenu: (url)=>{
     menus.loadMenus(url, (res)=>{
@@ -122,7 +122,7 @@ let menus = {
   },
   setMenus: (menus)=>{
     let select = `<select id="menuList" class="custom-select">#OPTIONS#</select>`;
-    let options = `<option value="${'hash_'+utils.hash1()}" selected>Nuevo Menú</option>`;
+    let options = `<option value="${'hash_'+utils.hash1()}" selected>Lista de menus</option>`;
     for(let menu in menus){
       options += `
         <option value="${menus[menu].hash}">${menus[menu].name}</option>`;

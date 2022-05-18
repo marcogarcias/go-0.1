@@ -141,7 +141,7 @@ class SiteController extends Controller
       $hash = md5($menu->idmenu);
       $prod = [
         'name'=> $menu->prodName,
-        'description'=> $menu->prodDesc,
+        'description'=> base64_encode($menu->prodDesc),
         'price'=> $menu->price,
         'priceDisc'=> $menu->price_discount,
         'hash'=> Crypt::encryptString($menu->idproduct)
@@ -200,6 +200,7 @@ class SiteController extends Controller
       ->orderByRaw('RAND()')
       ->get();
 
+    // si el usuario que inició sesión es una empresa tambien
     if($iAmStab){
       $sections = Section::where('deleted', 0)->get();
       $zones = Zone::where('deleted', 0)->get();
@@ -217,8 +218,18 @@ class SiteController extends Controller
         $myJobs = self::myJobs_($myStab['idstablishment']);
         $myAds = self::myAds_($myStab['idstablishment']);
       }
+      $adsType = [
+        Crypt::encryptString("Horarios")=>"Horarios",
+        Crypt::encryptString("Dirección")=>"Dirección",
+        Crypt::encryptString("Teléfonos")=>"Teléfonos",
+        Crypt::encryptString("Formas de pago")=>"Formas de pago",
+        Crypt::encryptString("Cita o reservación")=>"Cita o reservación",
+        Crypt::encryptString("Entrega a domicilio")=>"Entrega a domicilio",
+        Crypt::encryptString("Oferta")=>"Oferta",
+        Crypt::encryptString("Promoción")=>"Promoción"
+      ];
     }
-    return view('site.mySpace', compact('mySpace', 'myStab', 'myJobs', 'myAds', 'chat', 'iAmStab', 'sections', 'zones', 'tags', 'menus'));
+    return view('site.mySpace', compact('mySpace', 'myStab', 'myJobs', 'myAds', 'chat', 'iAmStab', 'sections', 'zones', 'tags', 'menus', 'adsType'));
   }
 
   /**
@@ -707,16 +718,19 @@ die('...');*/
     $res=array('success'=>false, 'action'=>'add');
     if($req->ajax()){
       $data = $req->input('data');
-      $desc = isset($data[0]) && $data[0]['name']=='descripcionAd' ? $data[0]['value'] : '';
+      $name = isset($data[0]) && $data[0]['name']=='titleAd' ? $data[0]['value'] : '';
+      $name = Crypt::decryptString($name);
+      $desc = isset($data[1]) && $data[1]['name']=='descripcionAd' ? $data[1]['value'] : '';
       $desc = htmlentities(nl2br($desc), ENT_QUOTES, 'UTF-8');
-      $stab = isset($data[1]) && $data[1]['name']=='stab' ? $data[1]['value'] : '';
+      $stab = isset($data[2]) && $data[2]['name']=='stab' ? $data[2]['value'] : '';
       $stab = Crypt::decryptString($stab);
-      $idAd = isset($data[2]) && $data[2]['name']=='ad' ? $data[2]['value'] : '';
+      $idAd = isset($data[3]) && $data[3]['name']=='ad' ? $data[3]['value'] : '';
       $idAd = $idAd ? Crypt::decryptString($idAd) : false;
 
       $ad = StablishmentAd::updateOrCreate(
         ['idad' => $idAd],
         [
+          'name' => $name,
           'description' => $desc,
           'stablishment_id'=>$stab
         ]

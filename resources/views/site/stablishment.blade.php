@@ -31,10 +31,25 @@
       </div>
 
       <div class="row">
-        <div class="col-12 col-md-7 offset-md-2 mt-3 mb-3">
+        <div class="col-12 mt-3 mb-3">
+          <div class="text-center">
+            @if(floatval($stablish->lat) && floatval($stablish->lng))
+              <a class="btn btn-dark" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">{{ __('Ir al mapa') }}</a>
+            @endif
+
+            @if(count($jobs))
+              <a class="btn btn-dark ml-4" href="#" data-toggle="modal" data-target="#jobs-modal">{{ __('Vacantes') }}</a>
+            @endif
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-md-7 mt-3 mb-3 mx-auto">
+          <h1 class="text-white"><strong>{{ $stablish->name }}</strong></h1>
           <div class="text-left border text-white py-5 px-4 shadow menuCont">
             @if(count($menus))
-              <div class="col-1 offset-md-3 mb-5">
+              <div class="text-center mb-5">
                 <img style="border-radius: 10%" src="{{ asset($stablish->image) }}" alt="">
               </div>
               @foreach($menus as $menu)
@@ -43,7 +58,10 @@
                     <div>
                       <ul>
                         @foreach($menu['products'] as $prod)
-                          <li>{{ $prod['name'] }} . . . . . . . . . ${{ $prod['price'] }}</li>
+                          <li class="row">
+                            <div class="col-8 menuProd">{{ $prod['name'] }} - - - ${{ $prod['price'] }}</div>
+                            <div class="col-4 menuProdDesc {{ $prod['description'] ? '' : 'd-none' }}" data-desc="{{ $prod['description'] }}" title="Ver descripción del producto"><i class="fas fa-question-circle"></i></div>
+                          </li>
                         @endforeach
                       </ul>
                     </div>
@@ -58,32 +76,12 @@
         </div>
       </div>
 
-      @if(floatval($stablish->lat) && floatval($stablish->lng))
-      <div class="row">
-        <div class="col-md-12 mt-3 mb-3">
-          <div class="text-center">
-            <a class="btn btn-dark" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">{{ __('Ir al mapa') }}</a>
-          </div>
-        </div>
-      </div>
-      @endif
-
-      @if(count($jobs))
-      <div class="row">
-        <div class="col-md-12 mt-3 mb-3">
-          <div class="text-center">
-            <a class="btn btn-dark" href="#" data-toggle="modal" data-target="#jobs-modal">{{ __('Vacantes') }}</a>
-          </div>
-        </div>
-      </div>
-      @endif
-
       @if($ads)
       <div class="row">
         <div class="col-md-12 mb-5">
           <div class="card-transparent">
             <div class="card-header">
-              {{ __('Anuncios') }}
+              {{ __($ads->name) }}
             </div>
             <div class="card-body">
               {!! html_entity_decode($ads->description, ENT_QUOTES, 'UTF-8') !!}
@@ -172,6 +170,29 @@
   @endif
 @endauth
 
+<!-- INICIA VENTANA MODAL GRAL -->
+@if(is_array($menus) && count($menus))
+<div class="modal fade" id="window-modal" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
+  <div class="modal-dialog text-center" role="document">
+    <div class="modal-content modal-content-gray">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="row">
+          <div class="col-md-12 mb-5">
+            <div class="mt-4 text-left">
+              <div class="modal-title"> </div>
+              <div class="modal-body">
+                CARGANDO CONTENIDO...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endif
+<!-- TERMINA VENTANA MODAL GRAL -->
+
 <!-- INICIA VENTANA DE VACANTES -->
 <div class="modal fade" id="jobs-modal" tabindex="-1" role="dialog" aria-labelledby="jobs-modal" aria-hidden="true">
   <div class="modal-dialog text-center" role="document">
@@ -207,7 +228,7 @@
 <script type="application/javascript">
   window.addEventListener('load', function() {
     go.redimentions(false);
-    console.log();
+    go.initStablishment();
     @auth
       @unless(session('isStablishment'))
         let cfg = {

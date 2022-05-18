@@ -6,6 +6,7 @@ let menus = {
     let urlLoadMenus = cfg.urlLoadMenus ? cfg.urlLoadMenus  : '';
     let urlLoadProducts = cfg.urlLoadProducts ? cfg.urlLoadProducts : '';
     let urlDelProduct = cfg.urlDelProduct ? cfg.urlDelProduct : '';
+    let haveMenu = cfg.haveMenus ? parseInt(cfg.haveMenus) : 0;
 
     menus.modalCreate(urlLoadMenus);
     /*$('#btnMenus').on('click', (e)=>{
@@ -60,6 +61,8 @@ let menus = {
       menus.addMenu(urlAddMenu, (res)=>{
         //menus.createSelectMenu(urlLoadMenus);
         menus.modalCreate(urlLoadMenus);
+        if(!haveMenu)
+          location.reload();
       });
     });
   },

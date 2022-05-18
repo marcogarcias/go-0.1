@@ -296,6 +296,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   border-radius: 20px;
 }
 
+.menuCont ul{
+  font-size: 12px;
+  padding-left: 0px;
+}
+
+.menuProd{ display: inline-block; width: 45%; }
+.menuProdDesc{ display: inline-block; text-align: right; width: 45%; }
+
 .btns-social{ margin: 2% 0; padding: 0; }
 
 .btns-social li{
@@ -306,18 +314,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 }
 .btns-social li img{ width: 100%; }
 
-.job{
+.modal-content-gray .modal-title{ color: #0FF; }
+.modal-content-gray .modal-body{ color: #fff; }
 
-}
+.job-title{ color: #0FF; }
+.jon-content{ color: #fff; }
 
-.job-title{
-  color: #00FFFF;
+.modal-title{ color: #fff; }
+.modal-body{ color: #000; }
+
+.job-title, .modal-title{
   font-weight: bold;
   font-size: 23px;
 }
 
-.jon-content{
-  color: #fff;
+.jon-content, .modal-body{
   font-weight: bold;
   font-size: 19px;
 }

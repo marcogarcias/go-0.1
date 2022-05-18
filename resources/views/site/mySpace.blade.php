@@ -458,6 +458,16 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
           <form id="adsFrm" action="">
             <div class="form-group">
+              <label for="titleAd">{{ __('Título del anuncio') }}</label>
+              <select id="titleAd" class="form-control @error('titleAd') is-invalid @enderror" name="titleAd" required>
+                @forelse($adsType as $idx => $type)
+                  <option value="{{ $idx }}">{{ __($type) }}</option>
+                @empty
+                @endforelse
+              </select>
+              {!! $errors->first('titleAd', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+            </div>
+            <div class="form-group">
               <label for="descripcionAd">{{ __('Descripción del anuncio') }}</label>
               <textarea class="form-control" id="descripcionAd" name="descripcionAd" rows="3" placeholder="Descripción del anuncio">{!! isset($myAds->description) && $myAds->description ? html_entity_decode($myAds->description, ENT_QUOTES, 'UTF-8') : '' !!}</textarea>
               {!! $errors->first('descripcionAd', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
@@ -493,12 +503,14 @@ window.addEventListener('load', function() {
     @if($iAmStab)
       cfg.urlAddStab = '{{ route("myspace.addStab") }}';
 
+      // configuración para las vacantes
       cfg.jobsSection = true;
       cfg.urlAddJob = '{{ route("myspace.addJob") }}';
       cfg.urlUpdJob = '{{ route("myspace.updJob") }}';
       cfg.urlDelJob = '{{ route("myspace.delJob") }}';
       cfg.urlMyJobs = '{{ route("myspace.myJobs") }}';
 
+      // configuración para los anuncios
       cfg.urlAddAd = '{{ route("myspace.addAd") }}';
       //cfg.urlUpdAd = '';
       cfg.urlDelAd = '{{ route("myspace.delAd") }}';

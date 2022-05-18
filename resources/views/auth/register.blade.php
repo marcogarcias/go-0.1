@@ -31,74 +31,13 @@
                 @csrf
 
                 <div class="form-group row">
-                  <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Nombre') }}</label>
-                  <div class="col-md-6">
-                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" data-parsley-minlength="5" data-parsley-maxlength="155" autofocus required>
-                    @error('name')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Correo electrónico') }}</label>
-                  <div class="col-md-6">
-                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" data-parsley-minlength="10" data-parsley-maxlength="155" required>
-                    @error('email')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label for="zone" class="col-md-4 col-form-label text-md-right">{{ __('Zona') }}</label>
-                  <div class="col-md-6">
-                    <select id="zone" class="form-control filter @error('zone') is-invalid @enderror" name="zone" required>
-                      @forelse($zones as $zona)
-                        <option value="{{ $zona['idzone'] }}">{{ __($zona['name']) }}</option>
-                      @empty
-                      @endforelse
-                    </select>
-                    @error('zone')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Contraseña') }}</label>
-
-                  <div class="col-md-6">
-                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
-                    @error('password')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirmar contraseña') }}</label>
-                  <div class="col-md-6">
-                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <div class="col-md-3 offset-md-2">
+                  <div class="col-3 offset-1 mr-3">
                     <input class="form-check-input userType" type="radio" name="type" id="user" value="user">
                     <label class="form-check-label" for="user">
                       Usuario
                     </label>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-3">
                     <input class="form-check-input userType" type="radio" name="type" id="stablishment" value="stablishment" checked>
                     <label class="form-check-label" for="stablishment">
                       Empresa
@@ -112,6 +51,59 @@
                     <ul></ul>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="name">{{ __('Nombre') }}</label>
+                  <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" data-parsley-minlength="5" data-parsley-maxlength="155" autofocus required>
+                  @error('name')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+
+                <div class="form-group">
+                  <label for="email">{{ __('Correo electrónico') }}</label>
+                  <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" data-parsley-minlength="10" data-parsley-maxlength="155" required>
+                  @error('email')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+
+                <div class="form-group">
+                  <label for="zone">{{ __('Zona') }}</label>
+                  <select id="zone" class="form-control filter @error('zone') is-invalid @enderror" name="zone" required>
+                    @forelse($zones as $zona)
+                      <option value="{{ $zona['idzone'] }}">{{ __($zona['name']) }}</option>
+                    @empty
+                    @endforelse
+                  </select>
+                  @error('zone')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+
+                <div class="form-group">
+                  <label for="password">{{ __('Contraseña') }}</label>
+                  <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
+                  @error('password')
+                    <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+
+                <div class="form-group">
+                  <label for="password-confirm">{{ __('Confirmar contraseña') }}</label>
+                  <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
+                </div>
+
+                <hr>
+
                 <div id="stablishmentForm">
                   <h3>Datos de empresa</h3>
 

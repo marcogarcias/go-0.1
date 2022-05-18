@@ -172,7 +172,7 @@ let go={
       $("#section").removeAttr('required');
     }
   },
-  // inicializando los anuncios
+  // inicializando los anuncios del home
   initAds: function(){
     $('.ads-list-a').on('click', function(){
       let img = $(this).attr('data-img');
@@ -304,6 +304,21 @@ let go={
       if(callback && (typeof callback === 'function'))
         callback(stablish);
     });
+  },
+  // iniciando la sección de la publicación de la empresa
+  initStablishment: (cfg)=>{
+    cfg = (typeof cfg === 'object') ? cfg : {};
+    let title = cfg.title ? cfg.title : 'DESCRIPCIÓN';
+
+    // eventos
+    $(document).on("click", ".menuProdDesc", function(){
+      let desc = $(this).attr("data-desc");
+      desc = atob(desc);
+      $(".modal-title").text(title);
+      $(".modal-body").text(desc);
+      $("#window-modal").modal('toggle');
+    });
+    $('#window-modal .modal-title').text(title);
   },
   // eventos para la sección de la administración de "jobs"
   adminJobs: function(cfg) {
@@ -559,10 +574,11 @@ let go={
     console.log(stablish, go.stablish);
     let marker;
     let toGo = go.toGo+'/';
-    let mark = go.asset+'img/site/btn/'+stablish.secImage;
+    //let mark = go.asset+'img/site/btn/'+stablish.secImage;
+    let mark;
     mark = Number(go.stablish.idstablishment) == Number(stablish.idstablishment) ?
-      go.asset+'img/site/stablishments/logos/'+stablish.image : 
-      go.asset+'img/site/btn/'+stablish.secImage;;
+      go.asset+'../'+stablish.image : 
+      go.asset+'img/site/btn/'+stablish.secImage;
     var marcador = L.icon({
       iconUrl: mark,
       iconSize: [50, 50]

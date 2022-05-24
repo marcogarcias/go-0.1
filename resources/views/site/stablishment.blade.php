@@ -76,19 +76,21 @@
         </div>
       </div>
 
-      @if($ads)
-      <div class="row">
-        <div class="col-md-12 mb-5">
-          <div class="card-transparent">
-            <div class="card-header">
-              {{ __($ads->name) }}
-            </div>
-            <div class="card-body">
-              {!! html_entity_decode($ads->description, ENT_QUOTES, 'UTF-8') !!}
+      @if($ads && count($ads))
+        @foreach($ads as $ad)
+        <div class="row">
+          <div class="col-md-12 mb-5">
+            <div class="card-transparent">
+              <div class="card-header">
+                {{ __($ad->name) }}
+              </div>
+              <div class="card-body">
+                {!! html_entity_decode($ad->description, ENT_QUOTES, 'UTF-8') !!}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        @endforeach
       @endif
 
       <div class="row">

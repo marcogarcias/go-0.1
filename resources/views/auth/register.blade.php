@@ -206,6 +206,12 @@
 
                   <div id="tags" class="form-group"></div>
                   {!! $errors->first('tags', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+
+                  <div class="form-group">
+                    <label for="adminCode">{{ __('Código de seguridad') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                    <input type="password" class="form-control" id="adminCode" name="adminCode" value="{{ old('adminCode') }}" placeholder="XXXX-X">
+                    {!! $errors->first('adminCode', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+                  </div>
                 </div>
 
                 <div class="form-group row mb-0">

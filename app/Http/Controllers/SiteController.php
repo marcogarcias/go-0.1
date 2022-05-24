@@ -758,7 +758,7 @@ die('...');*/
    *
    * @return \Illuminate\Http\Response
    */
-  /*public function updAd(Request $req){
+  public function updAd(Request $req){
     $res=array('success'=>false, 'action'=>'upd');
     if($req->ajax()){
       $data = $req->input('data');
@@ -779,7 +779,7 @@ die('...');*/
       $res = response()->json($res, 200);
     }
     return $res;
-  }*/
+  }
 
   /**
    * Eliminar un anuncio de la empresa en cuestión
@@ -852,8 +852,8 @@ die('...');*/
         ->where('stab.deleted', 0)
         ->where('a.stablishment_id', $idStab)
         ->orderBy('a.created_at', 'desc')
-        //->get();
-        ->first();
+        ->get();
+        //->first();
     }
     return $myAds;
   }
@@ -908,7 +908,7 @@ die('...');*/
     return $res;
   }
 
-  /*private static function myAdsSetTable($myAds){
+  private static function myAdsSetTable($myAds){
     $myAdsTable = '';
     if(is_object($myAds)){
       if(count($myAds)){
@@ -934,7 +934,7 @@ die('...');*/
       }
     }
     return $myAdsTable;
-  }*/
+  }
 
   public static function getBoundaries($lat, $lng, $distance=1, $earthRadius=6371){
     $return = array();

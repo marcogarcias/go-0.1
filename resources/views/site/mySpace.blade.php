@@ -216,135 +216,6 @@
     </div>
   </div>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="addStab-modal" tabindex="-1" role="dialog" aria-labelledby="addStab-modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="image-modal">NEGOCIO</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-          <form id="stabFrm" action="">
-            <div class="form-group">
-              <label for="nombre">{{ __('Nombre') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <input type="text" class="form-control" id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre del establecimiento">
-              {!! $errors->first('nombre', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="descripcion">{{ __('Descripción') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del establecimiento">{{ old('descripcion') }}</textarea>
-              {!! $errors->first('descripcion', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="descripcion2">{{ __('Descripción 2 (mapa)') }}</label>
-              <input type="text" class="form-control" id="descripcion2" name="descripcion2" value="{{ old('descripcion2') }}" placeholder="Descripción para el mapa">
-              {!! $errors->first('descripcion2', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="direccion">{{ __('Dirección') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <input type="text" class="form-control" id="direccion" name="direccion" value="{{ old('direccion') }}" placeholder="Av. Villanueva, Col. San Juán, no. 55, C.P. 55450">
-              {!! $errors->first('direccion', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="latitud">{{ __('Latitud') }}</label>
-              <input type="text" class="form-control" id="latitud" name="latitud" value="{{ old('latitud') }}" placeholder="Latitud del establecimiento">
-              {!! $errors->first('latitud', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="longitud">{{ __('Longitud') }}</label>
-              <input type="text" class="form-control" id="longitud" name="longitud" value="{{ old('longitud') }}" placeholder="Longitud del establecimiento">
-              {!! $errors->first('longitud', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="logotipo">{{ __('Logotipo (Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)') }}</label>
-              <input type="file"  class="form-control-file" id="logotipo" name="logotipo">
-              {!! $errors->first('logotipo', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="telefono">{{ __('Teléfono') }} ({{ __('máximo 13 carácteres ') }})</label>
-              <input type="text" class="form-control" id="telefono" name="telefono" value="{{ old('telefono') }}" min="0" max="9999999999999" step="1" placeholder="5555555555">
-              {!! $errors->first('telefono', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="whatsapp">{{ __('Whatsapp') }} ({{ __('máximo 13 carácteres ') }})</label>
-              <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="{{ old('whatsapp') }}" min="0" max="9999999999999" step="1" placeholder="5555555555">
-              {!! $errors->first('whatsapp', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="facebook">{{ __('Facebook') }}</label>
-              <input type="text" class="form-control" id="facebook" name="facebook" value="{{ old('facebook') }}" placeholder="Facebook">
-              {!! $errors->first('facebook', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="instagram">{{ __('Instagram') }}</label>
-              <input type="text" class="form-control" id="instagram" name="instagram" value="{{ old('instagram') }}" placeholder="Instagram">
-              {!! $errors->first('instagram', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="twitter">{{ __('Twitter') }}</label>
-              <input type="text" class="form-control" id="twitter" name="twitter" value="{{ old('twitter') }}" placeholder="Twitter">
-              {!! $errors->first('twitter', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="youtube">{{ __('Youtube') }}</label>
-              <input type="text" class="form-control" id="youtube" name="youtube" value="{{ old('youtube') }}" placeholder="Youtube">
-              {!! $errors->first('youtube', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-            <div class="form-group">
-              <label for="horario">{{ __('Hoario') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <input type="text" class="form-control" id="horario" name="horario" value="{{ old('horario') }}" placeholder="08:00 am - 08:00 pm">
-              {!! $errors->first('horario', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-
-            <div class="form-group">
-              <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="oferta" name="oferta">
-                <label class="custom-control-label" for="oferta">{{ __('Oferta') }}</label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="zona">{{ __('Zona') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <select class="form-control" id="zona" name="zona">
-                <option value="">{{ __('Seleccione una opción') }}</option>
-              @forelse($zones as $zona)
-                <option value="{{ $zona['idzone'] }}">{{ __($zona['name']) }}</option>
-              @empty
-                
-              @endforelse
-              </select>
-              {!! $errors->first('zona', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-
-            <div class="form-group">
-              <label for="section">{{ __('Sección') }} <span  class="text-danger font-weight-bolder">*</span></label>
-              <select class="form-control" id="section" name="section">
-                <option value="">{{ __('Seleccione una opción') }}</option>
-              @forelse($sections as $sec)
-                <option value="{{ $sec['idsection'] }}">{{ __($sec['name']) }}</option>
-              @empty
-                
-              @endforelse
-              </select>
-              {!! $errors->first('section', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
-            </div>
-
-            <div id="tags" class="form-group"></div>
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="addStab" class="btn btn-primary">{{ __('Crear') }}</button>
-        <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
 @endif
 
 @if($iAmStab && is_object($myStab))
@@ -469,17 +340,57 @@
             </div>
             <div class="form-group">
               <label for="descripcionAd">{{ __('Descripción del anuncio') }}</label>
-              <textarea class="form-control" id="descripcionAd" name="descripcionAd" rows="3" placeholder="Descripción del anuncio">{!! isset($myAds->description) && $myAds->description ? html_entity_decode($myAds->description, ENT_QUOTES, 'UTF-8') : '' !!}</textarea>
+              <textarea class="form-control" id="descripcionAd" name="descripcionAd" rows="3" placeholder="Descripción del anuncio"></textarea>
               {!! $errors->first('descripcionAd', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
             </div>
             <input type="hidden" name="stab" value="{{ Crypt::encryptString($myStab['idstablishment']) }}">
-            <input type="hidden" id="ad" name="ad" class="reset" value="{{ isset($myAds['idad']) && $myAds['idad'] ? Crypt::encryptString($myAds['idad']) : '' }}">
-            <br><br>
+            <input type="hidden" id="ad" name="ad" class="reset" value="">
             <div class="form-group">
               <a href="#" id="addAd" class="btn btn-primary">{{ __('Publicar') }}</a>
-              <input type="button" class="btn btn-primary" id="delAd" value="{{ __('Borrar') }}">
+              <input type="reset" class="btn btn-primary" value="{{ __('Limpiar formulario') }}" data-frm="adsFrm">
             </div>
           </form>
+
+          <hr>
+          <div class="table-responsive">
+            <h3>Tus anuncios</h3>
+            <table id="adsTable" class="table table-striped table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                    {{ __('Elegir todo') }}<br>
+                    <div class="form-check">
+                      <input class="form-check-input position-static" type="checkbox" id="checkAll" value="">
+                    </div>
+                  </th>
+                  <th scope="col">{{ __('Tipo de anuncio') }}</th>
+                  <th scope="col">{{ __('Descripción') }}</th>
+                  <th scope="col">{{ __('Editar') }}</th>
+                  <th scope="col">{{ __('Eliminar') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($myAds as $ad)
+                  <tr id="{{ md5($ad['idad']) }}">
+                    <td>
+                      <div class="form-check">
+                        <input class="form-check-input position-static" type="checkbox" value="{{ $ad->idad }}" name="check">
+                      </div>
+                    </td>
+                    <td>{{ $ad->name }}</td>
+                    <td>{!! html_entity_decode($ad->description, ENT_QUOTES, 'UTF-8') !!}</td>
+                    <td><a href="" id="updAd" class="btn btn-outline-success" data-ad="{{ Crypt::encryptString($ad['idad']) }}" data-tr="{{ md5($ad->idad) }}" data-name="{{ $ad->name }}">Editar</a></td>
+                    <td><a href="" id="delAd" class="btn btn-outline-danger" data-ad="{{ Crypt::encryptString($ad['idad']) }}" data-tr="{{ md5($ad->idad) }}" data-name="{{ $ad->name }}">Eliminar</a></td>
+                  </tr>
+                @empty
+                <tr id="tr-none">
+                  <td scope="row" colspan="10"><h4 class="text-center">SIN REGISTROS</h4></td>
+                </tr>                  
+              @endforelse
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
       <div class="modal-footer">
@@ -512,7 +423,7 @@ window.addEventListener('load', function() {
 
       // configuración para los anuncios
       cfg.urlAddAd = '{{ route("myspace.addAd") }}';
-      //cfg.urlUpdAd = '';
+      cfg.urlUpdAd = '{{ route("myspace.updAd") }}';
       cfg.urlDelAd = '{{ route("myspace.delAd") }}';
       cfg.urlMyDatas = '{{ route("myspace.myDatas") }}';
       cfg.chat = '{{ $chat ? 'true' : 'false' }}';

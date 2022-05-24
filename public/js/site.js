@@ -152,6 +152,8 @@ let go={
       $("#youtube").attr('data-parsley-maxlength', 200);
       $("#horario").attr('data-parsley-maxlength', 200);
       $("#section").attr('required', true);
+      $("#adminCode").attr('required', true);
+      $("#adminCode").attr('data-parsley-pattern', "go123-4");
     }else{
       $("#nameStab").removeAttr('required');
       $("#nameStab").removeAttr('data-parsley-maxlength');
@@ -170,6 +172,8 @@ let go={
       $("#youtube").removeAttr('data-parsley-maxlength');
       $("#horario").removeAttr('data-parsley-maxlength');
       $("#section").removeAttr('required');
+      $("#adminCode").removeAttr('required');
+      $("#adminCode").removeAttr('data-parsley-pattern');
     }
   },
   // inicializando los anuncios del home
@@ -331,7 +335,7 @@ let go={
     //let urlMyJobs = cfg.urlMyJobs ? cfg.urlMyJobs : false;
 
     let urlAddAd = cfg.urlAddAd ? cfg.urlAddAd : false;
-    //let urlUpdAd = cfg.urlUpdAd ? cfg.urlUpdAd : false;
+    let urlUpdAd = cfg.urlUpdAd ? cfg.urlUpdAd : false;
     let urlDelAd = cfg.urlDelAd ? cfg.urlDelAd : false;
     let urlMyDatas = cfg.urlMyDatas ? cfg.urlMyDatas : false;
     let stab = $('#stab').val();
@@ -364,7 +368,8 @@ let go={
         go.myDataTable(urlMyDatas, stab, 'jobs', setDataTable);
       });
     });
-/*
+
+    // Eventos para administrar la sección de anuncios
     $('#addAd').on('click', function(e){
       e.preventDefault();
       go.addData(urlAddAd, 'adsFrm', function(res){
@@ -383,9 +388,9 @@ let go={
         go.myDataTable(urlMyDatas, stab, 'ads', setDataTable);
       });
     });
-*/
+
     // Eventos para administrar la sección de anuncios
-    $('#addAd').on('click', function(e){
+    /*$('#addAd').on('click', function(e){
       e.preventDefault();
       go.addData(urlAddAd, 'adsFrm', function(reg){
         $('#ad').val(reg['ad']);
@@ -399,7 +404,7 @@ let go={
         $('#descripcionAd').val('');
         $('#adsFrm .reset').val('');
       });
-    });
+    });*/
 
     // Eventos para administrar la sección de empresa
     $('#addStab').on('click', function(e){
@@ -421,6 +426,7 @@ let go={
     go.loadAjaxPost(url, data, function(res){
       if(res['success']){
         noReset || go.resetFrm('#'+idFrm);
+        $("#addAd").text("Agregarr");
         if(callback && (typeof callback === 'function')){
           callback(res);
         }
@@ -433,10 +439,12 @@ let go={
   updJob: function(url, job, name){
     let data = {job: job, name: name};
     let cont={};
+    $("#vacante").trigger("focus");
     go.loadAjaxPost(url, data, function(res){
       //console.log('ajax: ', res);
       if(res['success']){
         cont = res['cont'];
+        $("#addJob").text("Actualizar");
         $('#jobsFrm')[0].reset();
         $('#job').val(job);
         $('#vacante').val(cont['name']);
@@ -450,19 +458,27 @@ let go={
     });
   },
   // edita un anuncio
-  /*updAd: function(url, ad, name){
+  updAd: function(url, ad, name){
     let data = {ad: ad, name: name};
     let cont={};
+    $("#titleAd").trigger("focus");
     go.loadAjaxPost(url, data, function(res){
-      //console.log('ajax: ', res);
       if(res['success']){
         cont = res['cont'];
+        $("#addAd").text("Actualizar");
         $('#adsFrm')[0].reset();
         $('#ad').val(ad);
+        $("#titleAd option").each(function(idx, val){
+          let textVal = $(this).text();
+          if(textVal == name){
+            $(this).attr("selected", true);
+            return false;
+          }
+        });
         $('#descripcionAd').val(cont['description']);
       }
     });
-  },*/
+  },
   // elimina una vacante/anuncio
   delData: function(url, id, name, callback){
     go.loadAjaxPost(url, {id: id, name: name}, function(res){
@@ -479,7 +495,6 @@ let go={
   myDataTable: function(url, stab, ty, callback){
     let data = {stab: stab, ty: ty};
     let cont={};
-
     if(stab){
       go.loadAjaxPost(url, data, function(res){
         if(res['data']){

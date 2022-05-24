@@ -318,7 +318,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 .modal-content-gray .modal-body{ color: #fff; }
 
 .job-title{ color: #0FF; }
-.jon-content{ color: #fff; }
+.job-content{ color: #fff; }
 
 .modal-title{ color: #fff; }
 .modal-body{ color: #000; }
@@ -328,7 +328,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   font-size: 23px;
 }
 
-.jon-content, .modal-body{
+.job-content, .modal-body{
   font-weight: bold;
   font-size: 19px;
 }

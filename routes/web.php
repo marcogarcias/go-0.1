@@ -117,13 +117,13 @@ Route::post('/myspace/addAd', [
   ]
 )->name('myspace.addAd')->middleware('auth');
 
-/*
+
 Route::post('/myspace/updAd', [
     App\Http\Controllers\SiteController::class, 
     'updAd'
   ]
 )->name('myspace.updAd')->middleware('auth');
-*/
+
 
 Route::post('/myspace/delAd', [
     App\Http\Controllers\SiteController::class, 

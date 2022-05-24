@@ -158,6 +158,12 @@ let menus = {
 
                 <div class="row"> <!-- start row de menu -->
                   <div class="col-12 col-md-7">
+                  <div class="form-group">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="menuDisable" name="menuDisable" ${disabled}>
+                        <label class="custom-control-label" for="menuDisable">Deshabilitado</label>
+                      </div>
+                    </div>
                     <div class="form-group">
                       <label for="menuName">Nombre <span  class="text-danger font-weight-bolder">*</span></label>
                       <input type="text" class="form-control" id="menuName" name="menuName" value="${name}" placeholder="Nombre del menú">
@@ -168,27 +174,22 @@ let menus = {
                       <textarea class="form-control" id="menuDescripcion" name="menuDescripcion" rows="3" placeholder="Descripción del menú">${description}</textarea>
                       <div id="menuDescripcion-error" class="invalid-feedback" style="display: block;"></div>
                     </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="menuDisable" name="menuDisable" ${disabled}>
-                        <label class="custom-control-label" for="menuDisable">Deshabilitado</label>
-                      </div>
-                    </div>
                   </div>
-                  <div class="col-12 col-md-5 d-flex justify-content-center align-items-center">
-                    <a href="#" class="btn btn-purple" id="addMenu">
-                      <h1>${btnName}</h1>
-                    </a>
-                  </div>
+                  <div class="col-12 col-md-5 d-flex justify-content-center align-items-center"></div>
                 </div> <!-- end row de menu -->
 
                 <div class="row"> <!-- start row de productos -->
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3 rounded-lg" style="background-color: #f2f2f2; border: 2px solid #cecece;;">
+                  <div class="col-12 py-3 rounded-lg" style="background-color: #f2f2f2; border: 2px solid #cecece;;">
                     <h3 class="text-center">PRODUCTOS</h3>
                     <div id="productosDiv"></div>
                     <div class="text-center py-3">
                       <a href="" id="addProduct" class="btn btn-purple" style="font-size: 20px; letter-spacing: 2px;">AGREGAR PRODUCTO</a>
                     </div>
+                  </div>
+                  <div class="col-12 d-flex justify-content-center align-items-center mt-4">
+                    <a href="#" class="btn btn-purple" id="addMenu">
+                      <h1>${btnName}</h1>
+                    </a>
                   </div>
                 </div> <!-- ent row de productos -->
               </form>
@@ -224,7 +225,7 @@ let menus = {
             <input type="text" class="form-control" id="prod-description-${hash}" name="prod-description-${hash}"value="${ description }" placeholder="Descripción del producto">
             <div id="prod-description-${hash}-error" class="invalid-feedback" style="display: block;"></div>
           </div>
-          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" style="display: flex; align-items: center;">
+          <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex justify-content-center justify-items-center align-items-center text-center">
             <a id="delProduct-${ hash }" class="delProduct" href="#" style="color: #f00; font-size: 40px;">
               <i class="far fa-times-circle"></i>
             </a>

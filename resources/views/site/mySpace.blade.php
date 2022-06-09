@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('js/menus.js') }}"></script>
   <script src="{{ asset('js/stab.js') }}"></script>
+  <script src="{{ asset('js/gallery.js') }}"></script>
 @endsection
 
 @section('returnBtn', route('home'))
@@ -141,6 +142,16 @@
               </div>
               <div>
                 <h5 class="p-3 text-center">Publicar vacantes</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-4 d-none">
+            <div id="btn-gallery" class="card btnTable">
+              <div class="btnTableImgCont">
+                <img src="{{ asset('img/site/btn/btn-myspace-gallery.png') }}" class="card-img-top" alt="Galería">
+              </div>
+              <div>
+                <h5 class="p-3 text-center">Galería de empresa</h5>
               </div>
             </div>
           </div>
@@ -399,6 +410,9 @@
     </div>
   </div>
 </div>
+
+<!-- MODAL PARA EL CROP -->
+<div id="modalCrop"></div>
 @endif
 
 @push('scripts')
@@ -443,6 +457,13 @@ window.addEventListener('load', function() {
       cfg.stab.urlAsset = "{{ asset("/") }}"
       cfg.stab.urlLoadStab = '{{ route("myspace.loadStab") }}';
       cfg.stab.urlUpdateStablishment = '{{ route("myspace.updateStablishment") }}';
+
+      // configuración para el js de menus.js
+      cfg.gallery = {};
+      cfg.gallery.urlStoreGallery = '{{ route("myspace.storeGallery") }}';
+      //cfg.menu.urlAddMenu = '{{ route("myspace.addMenu") }}';
+      //cfg.menu.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
+      //cfg.menu.urlDelProduct = '{{ route("myspace.delProduct") }}';
     @endif
     go.initStablisments(cfg);
 

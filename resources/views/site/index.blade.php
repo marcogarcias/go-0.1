@@ -69,11 +69,22 @@
   </div>
 </div>
 
+<!-- Modal anuncio -->
+<div class="modal fade" id="adHome-modal" tabindex="-1" role="dialog" aria-labelledby="adHome-modal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <img src="{{ asset('img/site/adHome-iztapalapa.jpeg') }}">
+    </div>
+    <div class="btn btn-black close-modal">CERRAR</div>
+  </div>
+</div>
+
 @push('scripts')
 <script type="application/javascript">
   window.addEventListener('load', function() {
     go.redimentions(true);
     go.initAds();
+    go.initAdHome();
   });
 </script>
 @endpush

@@ -81,9 +81,11 @@
 
 
 
-#help-modal .modal-dialog{ margin: 5% auto !important; text-align: center; }
-#help-modal img{ width: 100%; }
-#help-modal .close-modal{
+#help-modal .modal-dialog, #adHome-modal .modal-dialog{ 
+  margin: 5% auto !important; text-align: center; 
+}
+#help-modal img, #adHome-modal img{ width: 100%; }
+#help-modal .close-modal, #adHome-modal .close-modal{
   margin-top: 3%;
 }
 
@@ -282,7 +284,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 }
 
 .btnTableImgCont{ background: rgba(0, 0, 0, 1); overflow:hidden; }
-#prev-logotipo{ height: 90px; width: 100%; }
+#prev-logotipo, .prev-image{ height: 90px; width: 150px; }
 
 
 /* ******************************** */
@@ -501,7 +503,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   /* INICIO - footer */
   footer{ font-size: 13px; margin: 5% 0; text-align: center; }
   .footer-warning, .footer-contac{ margin: 5px; }
-  .footer-br{ display: none; }
+  /*.footer-br{ display: none; }*/
 }
 
 /* 
@@ -512,7 +514,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 @media (min-width: 320px) and (max-width: 480px) {
   /* body{ border: 3px solid  #0ff; } */
 
-  #help-modal .modal-dialog{ margin: 10% !important; }
+  #help-modal .modal-dialog, #adHome-modal .modal-dialog{ margin: 10% !important; }
+  #adHome-modal .modal-dialog{ margin-top: 35% !important; }
   /* INICIO - header */
   .btn-back, .btn-help, .header-txt{ display: none; }
   .btn-cont{ text-align: center; }
@@ -549,5 +552,5 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   /* INICIO - footer */
   footer{ font-size: 10px; padding: 5% 0; text-align: center; }
   .footer-warning, .footer-contac{ margin: 0px; }
-  .footer-br{ display: none; }
+  /*.footer-br{ display: none; }*/
 }

@@ -186,6 +186,9 @@ let go={
       $('#ads-img').attr('alt', name);
     });
   },
+  initAdHome: function(){
+    $('#adHome-modal').modal('show');
+  },
   initStablisments: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
     cfg.menu = (typeof cfg.menu === 'object') ? cfg.menu : {};
@@ -193,6 +196,7 @@ let go={
     let haveMenu = parseInt(cfg.menu.haveMenus);
     let cfgMenus = cfg.menu ? cfg.menu : {};
     let cfgStab = cfg.stab ? cfg.stab : {};
+    let cfgGallery = cfg.gallery ? cfg.gallery : {};
     let urlTags = cfg.urlTags ? cfg.urlTags : {};
     go.chat = cfg.chat === 'true';
 
@@ -242,14 +246,17 @@ let go={
       });
     });
 
-    $('#btn-stab, #btn-menus').on('click', function(){
-      let type = $(this).attr('id').split('-');;
+    $('#btn-stab, #btn-menus, #btn-gallery').on('click', function(){
+      let type = $(this).attr('id').split('-');
       switch(type[1]){
         case 'stab':
           stab.init(cfgStab);
           break;
         case 'menus':
           menus.init(cfgMenus);
+          break;
+        case 'gallery':
+          gallery.init(cfgGallery);
           break;
       }
     });

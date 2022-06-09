@@ -23,6 +23,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/', [App\Http\Controllers\SiteController::class, 'index']
 )->name('home');
 
+Route::get('/termsAndConditions', [App\Http\Controllers\SiteController::class, 'termsAndConditions']
+)->name('termsAndConditions');
+
 Route::get('/stablishments/{sec?}', [App\Http\Controllers\SiteController::class, 'stablishments']
 )->name('stablishments');
 
@@ -92,6 +95,12 @@ Route::post('/myspace/updateStablishment', [
     'updateStablishment'
   ]
 )->name('myspace.updateStablishment')->middleware('auth');
+
+Route::post('/myspace/storeGallery', [
+  App\Http\Controllers\SiteController::class, 
+  'storeGallery'
+]
+)->name('myspace.storeGallery')->middleware('auth');
 
 Route::post('/myspace/updJob', [
     App\Http\Controllers\SiteController::class, 

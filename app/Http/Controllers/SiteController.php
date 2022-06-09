@@ -37,6 +37,15 @@ class SiteController extends Controller
   }
 
   /**
+   * Términos y condiciones y aviso de privacidad
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function termsAndConditions(){
+    return view('site.termsAndConditions');
+  }
+
+  /**
    * Lista los negocios de la sección elegida
    *
    * @return \Illuminate\Http\Response
@@ -1296,6 +1305,79 @@ die('...');*/
 
         // si la actualización de datos es correcta, se procede a borrar los tags que se tengas y se agregan los nuevos
         if($stabRes && is_array($tags) && count($tags)){
+          // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
+          StablishmentTag::
+            where('deleted', 0)
+            ->where('stablishment_id', $idStab)
+            ->update(['deleted'=>1]);
+
+          // agregar o actualizar las subsecciones/tags
+          foreach ($tags as $tag) {
+            StablishmentTag::updateOrCreate(
+              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
+              [ 'deleted'=>0 ]
+            );
+          }
+
+          $message = "Datos guardados de la empresa.".($message?" {$message}":"");
+          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);          
+        }else{
+          $message = "No se pudo actualizar los datos de la empresa, intenta más tarde.";
+          $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+        }
+      }else{
+        $message = "Revisa los campos en rojo.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$validateRes), 200);
+      }
+    }
+    //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
+    return $res;
+  }
+
+  /**
+   * Se agregan o actualizan las imágenes de la galería del negocio
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function storeGallery(Request $req){
+    $res=array('success'=>false);
+    if($req->ajax()){
+      $data = $req->input('data');
+      $idStab; $galRes; $pathImageAr; $pathImageAbs;
+      $pathImageRel = $filename = '';
+      $galleryData = [];
+      $message = '';
+
+      if($req->input('imageBase64')){
+        dd($req->input('imageBase64'));
+        $pathImageAr = makeDir();
+        $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+        $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+        $image_parts = explode(";base64,", $req->input('imageBase64'));
+        $image_types_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_types_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $filename = time().".".$image_type;
+        $file = $pathImageAbs.$filename;
+        $saveImg = file_put_contents($file, $image_base64);
+        if($saveImg){
+
+        }else{
+          $message = "La imagen no se cargó correctamente.";
+        }
+
+        $idStab = Crypt::decryptString(session('idStablishment'));
+        $stab = Stablishment::find($idStab);
+
+        if($pathImageRel && $filename)
+        $galleryData['path'] = $pathImageRel.$filename;
+        $galleryData['image'] = $filename;
+        $galleryData['stablishment_id'] = $idStab;
+
+        $galRes = $stab->update($galleryData);
+
+        // si la actualización de datos es correcta, se procede a borrar los tags que se tengas y se agregan los nuevos
+        if($galRes && is_array($tags) && count($tags)){
           // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
           StablishmentTag::
             where('deleted', 0)

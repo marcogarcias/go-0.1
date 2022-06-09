@@ -23,12 +23,11 @@
       <img class="logo-banner-img" src="{{ asset('img/site/logo-sm-slim.gif') }}" title="{{ __('Go') }}" alt="{{ __('Go') }}">
     </div>
     <div class="col-md-7 sections text-center">
-      <div class="row">
+      <!-- <div class="row">
         <div class="stablish-summary">
-          <!-- <img src="{{ asset('img/site/stablishments/summary/'.$stablish->summary) }}" title="{{ $stablish->description }}" alt="{{ $stablish->name }}"> -->
-          <!-- <embed src="{{ asset('img/site/stablishments/summary/negocio-1-summary.pdf') }}" type="application/pdf" width="100%" height="600px" /> -->
+          <img src="{{ asset('img/site/stablishments/summary/'.$stablish->summary) }}" title="{{ $stablish->description }}" alt="{{ $stablish->name }}">
         </div>
-      </div>
+      </div> -->
 
       <div class="row">
         <div class="col-12 mt-3 mb-3">
@@ -135,7 +134,7 @@
   @if(!session('isStablishment') && $stablish->enablechat)
     <div id="btn-openChat" data-userStablishment="{{ Crypt::encryptString($stablish->user_id) }}" data-userClient="{{ Crypt::encryptString($idUser) }}">
       <div class="chat-icon">
-        <i class="far fa-comment-dots"></i>    
+        <i class="far fa-comment-dots"></i>
       </div>
       <div class="newMsgGeneralIcon">
         <i class="fa fa-envelope" aria-hidden="true" title="Nuevo mensaje"></i>

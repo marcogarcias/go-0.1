@@ -122,15 +122,15 @@
         &nbsp;
       </div>
       <div class="row footer-txt">
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+        <div class="col-12 col-md-4">
           <p class="footer-warning">
             Todos los servicios son responsabilidad de los anunciantes.
           </p>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1 col-xl-1 footer-br">
-          &nbsp;
+        <div class="col-12 col-md-4 footer-br">
+          <a href="{{ route("termsAndConditions") }}" class="text-white">Términos y condiciones</a>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+        <div class="col-12 col-md-4 text-center">
           <p class="footer-contac">Se parte de nuestra comunidad y has crecer tu negocio</p>
           <p>Tel: 56-24-14-09-29</p>
         </div>

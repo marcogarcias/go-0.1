@@ -33,11 +33,15 @@
         <div class="col-12 mt-3 mb-3">
           <div class="text-center">
             @if(floatval($stablish->lat) && floatval($stablish->lng))
-              <a class="btn btn-dark" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">{{ __('Ir al mapa') }}</a>
+              <a class="mr-4" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">
+                <img src="{{ asset('img/site/btn/btn-stab-ubicacion.png') }}" title="Cerca de ti">
+              </a>
             @endif
 
             @if(count($jobs))
-              <a class="btn btn-dark ml-4" href="#" data-toggle="modal" data-target="#jobs-modal">{{ __('Vacantes') }}</a>
+              <a class="ml-4" href="#" data-toggle="modal" data-target="#jobs-modal">
+                <img src="{{ asset('img/site/btn/btn-stab-vacantes.png') }}" title="Vacantes">  
+              </a>
             @endif
           </div>
         </div>

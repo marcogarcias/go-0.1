@@ -185,7 +185,7 @@
               <div class="mySpace-stablish-body">
                 <div class="mySpace-stablish-body-img">
                   <a href="{{ route('stablishment', $my->idstablishment) }}">
-                    <img src="{{ asset('img/site/stablishments/logos/'.$my->image) }}" title="{{ __($my->description) }}" alt="{{ __($my->name) }}">
+                    <img src="{{ $my->image }}" title="{{ __($my->description) }}" alt="{{ __($my->name) }}">
                   </a>
                 </div>
               </div>

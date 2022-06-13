@@ -142,15 +142,20 @@ window.addEventListener('load', function() {
                 '<a class="btn btn-purple" href="'+gotToStab+'">Click</a>'+
               '</td>'+
               '<td class="stablish-desc">'+
-                '<div class="text-center stablish-logo-2">'+
-                  '<a href="'+gotToStab+'">'+
-                    '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
-                  '</a>'+
+                '<div class="row">'+
+                  '<div class="text-center stablish-logo-2">'+
+                    '<a href="'+gotToStab+'">'+
+                      '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
+                    '</a>'+
+                  '</div>'+
+                  '<div class="text-center stablish-visit-2">'+
+                    '<a class="btn btn-purple" href="'+gotToStab+'">Click</a>'+
+                  '</div>'+
                 '</div>'+
-                '<div class="text-center stablish-visit-2">'+
-                  '<a class="btn btn-purple" href="'+gotToStab+'">Click</a>'+
+                '<div class="row">'+
+                  stab[x].description+
                 '</div>'+
-                stab[x].description+'</td>'+
+              '</td>'+
               '<td class="stablish-offer">';
               if(stab[x].offer){
                 html+='<img src="{{ asset("img/site/btn/offer-01.png") }}" title="{{ __("Oferta disponible") }}" alt="{{ __("Oferta disponible") }}">';

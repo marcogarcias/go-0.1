@@ -135,7 +135,7 @@ window.addEventListener('load', function() {
           '<tr class="">'+
               '<td class="stablish-logo">'+
                 '<a href="'+gotToStab+'">'+
-                  '<img src="{{ asset("img/site/stablishments/logos") }}/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
+                  '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
                 '</a>'+
               '</td>'+
               '<td class="stablish-visit">'+
@@ -144,7 +144,7 @@ window.addEventListener('load', function() {
               '<td class="stablish-desc">'+
                 '<div class="text-center stablish-logo-2">'+
                   '<a href="'+gotToStab+'">'+
-                    '<img src="{{ asset("img/site/stablishments/logos") }}/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
+                    '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
                   '</a>'+
                 '</div>'+
                 '<div class="text-center stablish-visit-2">'+

@@ -184,7 +184,7 @@ class SiteController extends Controller
   public function mySpace(){
     $this->middleware('auth');
     $mySpace;
-    $myStab = $myJobs = $myAds = $sections = $zones = $tags = $menus = [];
+    $myStab = $myJobs = $myAds = $sections = $zones = $tags = $menus = $adsType = [];
     $iAmStab = auth()->user()->stablishment;
     $chat = session('chatStablishment');
     $mySpace = MyStablishment::select(

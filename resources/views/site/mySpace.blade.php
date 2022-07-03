@@ -145,7 +145,7 @@
               </div>
             </div>
           </div>
-          <div class="col-6 col-md-3 mb-4 d-none">
+          <div class="col-6 col-md-3 mb-4">
             <div id="btn-gallery" class="card btnTable">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-gallery.png') }}" class="card-img-top" alt="Galería">
@@ -454,16 +454,17 @@ window.addEventListener('load', function() {
 
       // configuración para el js del establecimiento.js
       cfg.stab = {};
-      cfg.stab.urlAsset = "{{ asset("/") }}"
+      cfg.stab.urlAsset = "{{ asset("/") }}";
       cfg.stab.urlLoadStab = '{{ route("myspace.loadStab") }}';
       cfg.stab.urlUpdateStablishment = '{{ route("myspace.updateStablishment") }}';
 
       // configuración para el js de menus.js
       cfg.gallery = {};
+      cfg.gallery.urlAsset = "{{ asset("/") }}";
       cfg.gallery.urlStoreGallery = '{{ route("myspace.storeGallery") }}';
-      //cfg.menu.urlAddMenu = '{{ route("myspace.addMenu") }}';
-      //cfg.menu.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
-      //cfg.menu.urlDelProduct = '{{ route("myspace.delProduct") }}';
+      //cfg.gallery.urlAddMenu = '{{ route("myspace.addMenu") }}';
+      cfg.gallery.urlLoadGallery = '{{ route("myspace.loadGallery") }}';
+      //cfg.gallery.urlDelProduct = '{{ route("myspace.delProduct") }}';
     @endif
     go.initStablisments(cfg);
 

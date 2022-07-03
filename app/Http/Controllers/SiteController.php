@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use File;
 use Auth;
 use App\Models\Tag;
 use App\Models\Zone;
@@ -17,6 +18,7 @@ use App\Models\StablishmentJob;
 use App\Models\StablishmentTag;
 use App\Models\StablishmentMenu;
 use Illuminate\Support\Facades\DB;
+use App\Models\StablishmentGallery;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -135,45 +137,51 @@ class SiteController extends Controller
       ->first();
 
     $menus_ = StablishmentMenu::
-        select('sm.idmenu', 'sm.name', 'sm.description', 'mp.idproduct', 'mp.name AS prodName', 
-          'mp.description AS prodDesc', 'mp.price', 'mp.price_discount')
-        ->from('stablishments_menus AS sm')
-        ->join('menus_products AS mp', 'sm.idmenu', '=', 'mp.menu_id')
-        ->where('sm.disabled', 0)
-        ->where('mp.disabled', 0)
-        ->where('sm.deleted', 0)
-        ->where('mp.deleted', 0)
-        ->where('sm.stablishment_id', $stab)
+        select("sm.idmenu", "sm.name", "sm.description", "mp.idproduct", "mp.name AS prodName", 
+          "mp.description AS prodDesc", "mp.price", "mp.price_discount")
+        ->from("stablishments_menus AS sm")
+        ->join("menus_products AS mp", "sm.idmenu", "=", "mp.menu_id")
+        ->where("sm.disabled", 0)
+        ->where("mp.disabled", 0)
+        ->where("sm.deleted", 0)
+        ->where("mp.deleted", 0)
+        ->where("sm.stablishment_id", $stab)
         ->get();
 
     foreach ($menus_ as $menu) {
       $hash = md5($menu->idmenu);
       $prod = [
-        'name'=> $menu->prodName,
-        'description'=> base64_encode($menu->prodDesc),
-        'price'=> $menu->price,
-        'priceDisc'=> $menu->price_discount,
-        'hash'=> Crypt::encryptString($menu->idproduct)
+        "name"=> $menu->prodName,
+        "description"=> base64_encode($menu->prodDesc),
+        "price"=> $menu->price,
+        "priceDisc"=> $menu->price_discount,
+        "hash"=> Crypt::encryptString($menu->idproduct)
       ];
       if(!isset($menus[$hash])){
         $menus[$hash] = [
-          'menu'=>[
-            'name'=>$menu->name, 
-            'description'=>$menu->description
+          "menu"=>[
+            "name"=>$menu->name, 
+            "description"=>$menu->description
           ], 
-          'products'=>[]
+          "products"=>[]
         ];
       }
-      $menus[$hash]['products'][] = $prod;
+      $menus[$hash]["products"][] = $prod;
     }
 
+    // obteniendo la galería     
+    $gallery = StablishmentGallery::select("idgallery", "path", "image")
+      ->where("deleted", 0)
+      ->where("stablishment_id", $stab)
+      ->get();
+
     if(!is_object($stablish))
-      return redirect()->route('home');
+      return redirect()->route("home");
     $stablish->range += 1;
     $stablish->save();
-    $jobs = self::myJobs_($stablish['idstablishment']);
-    $ads = self::myAds_($stablish['idstablishment']);
-    return view('site.stablishment', compact('idUser', 'stablish', 'menus', 'jobs', 'ads'));
+    $jobs = self::myJobs_($stablish["idstablishment"]);
+    $ads = self::myAds_($stablish["idstablishment"]);
+    return view("site.stablishment", compact("idUser", "stablish", "menus", "jobs", "ads", "gallery"));
   }
 
   /**
@@ -1335,6 +1343,40 @@ die('...');*/
   }
 
   /**
+   * Se cargan las imagenes de la galería
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function loadGallery(Request $req){
+    $res=array('success'=>false);
+    if($req->ajax()){
+      $idStab = Crypt::decryptString(session('idStablishment'));
+      
+
+      $imageObj = StablishmentGallery::select('idgallery', 'path', 'image')
+        ->where('deleted', 0)
+        ->where('stablishment_id', $idStab)
+        ->get();
+
+      foreach ($imageObj as $image) {
+        $image->hashGallery = Crypt::encryptString($image->idgallery);
+        unset($image->idgallery);
+      }
+
+      if(!empty($imageObj)){
+
+        $message = "Imágenes de la galería.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success', 'data'=>$imageObj), 200);
+      }else{
+        $message = "No hay imágenes de la galería.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
+      }
+    }
+    //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
+    return $res;
+  }
+
+  /**
    * Se agregan o actualizan las imágenes de la galería del negocio
    *
    * @return \Illuminate\Http\Response
@@ -1343,64 +1385,82 @@ die('...');*/
     $res=array('success'=>false);
     if($req->ajax()){
       $data = $req->input('data');
-      $idStab; $galRes; $pathImageAr; $pathImageAbs;
+      $idStab; $galRes; $imageHash; $pathImageAr; $pathImageAbs; $local; $file; $saveImg;
       $pathImageRel = $filename = '';
-      $galleryData = [];
+      $galleryData = $errors = [];
       $message = '';
 
       if($req->input('imageBase64')){
-        dd($req->input('imageBase64'));
-        $pathImageAr = makeDir();
-        $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
-        $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
-        $image_parts = explode(";base64,", $req->input('imageBase64'));
-        $image_types_aux = explode("image/", $image_parts[0]);
-        $image_type = $image_types_aux[1];
-        $image_base64 = base64_decode($image_parts[1]);
-        $filename = time().".".$image_type;
-        $file = $pathImageAbs.$filename;
-        $saveImg = file_put_contents($file, $image_base64);
-        if($saveImg){
+        foreach($req->input('imageBase64') as $imageBase64){
+          $imageBase64 = explode('|HASH|', $imageBase64);
+          $imageHash = $imageBase64[1];
+          $imageHash = strpos($imageHash, 'hash') === false ? Crypt::decryptString($imageHash) : false;
 
-        }else{
-          $message = "La imagen no se cargó correctamente.";
-        }
+          $image_parts = explode(";base64,", $imageBase64[0]);
+          $image_types_aux = explode("image/", $image_parts[0]);
+          $image_type = $image_types_aux[1];
+          $image_base64 = base64_decode($image_parts[1]);
 
-        $idStab = Crypt::decryptString(session('idStablishment'));
-        $stab = Stablishment::find($idStab);
+          // si el hash es un id de la tabla gallery se otiene dicho registro para hacer un update, si no existe se hace una inserción
+          if($imageHash){
+            $imageObj = StablishmentGallery::select('idgallery', 'path', 'image')
+              ->where('deleted', 0)
+              ->where('idgallery', $imageHash)
+              ->first();
 
-        if($pathImageRel && $filename)
-        $galleryData['path'] = $pathImageRel.$filename;
-        $galleryData['image'] = $filename;
-        $galleryData['stablishment_id'] = $idStab;
+            $local = env('APP_ENV') == "local";
+            $pathImageAbs = $local ? public_path() : base_path();
+            $pathImageAbs = $pathImageAbs."/".$imageObj->path;
+            $filename = "/".$imageObj->image;
+            $file = $pathImageAbs.$filename;
+            File::delete($file);
+            //$imageObj->update(['deleted'=>1]);
+            $saveImg = file_put_contents($file, $image_base64);
+          }else{
+            $pathImageAr = makeDir("gallery");
+            $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+            $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+            $filename = time().".".$image_type;
+            $file = $pathImageAbs.$filename;
+            $saveImg = file_put_contents($file, $image_base64);
+            if($saveImg){
+              $idStab = Crypt::decryptString(session('idStablishment'));
 
-        $galRes = $stab->update($galleryData);
-
-        // si la actualización de datos es correcta, se procede a borrar los tags que se tengas y se agregan los nuevos
-        if($galRes && is_array($tags) && count($tags)){
-          // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
-          StablishmentTag::
-            where('deleted', 0)
-            ->where('stablishment_id', $idStab)
-            ->update(['deleted'=>1]);
-
-          // agregar o actualizar las subsecciones/tags
-          foreach ($tags as $tag) {
-            StablishmentTag::updateOrCreate(
-              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
-              [ 'deleted'=>0 ]
-            );
+              $galleryData['path'] = $pathImageRel;
+              $galleryData['image'] = $filename;
+              $galleryData['stablishment_id'] = $idStab;
+              StablishmentGallery::create($galleryData);
+            }else{
+              $errors[] = "La imagen no se cargó correctamente.";
+            }
           }
+          /*$pathImageAr = makeDir();
+          $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+          $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";*/
+          /*$image_parts = explode(";base64,", $imageBase64[0]);
+          $image_types_aux = explode("image/", $image_parts[0]);
+          $image_type = $image_types_aux[1];
+          $image_base64 = base64_decode($image_parts[1]);*/
+          /*$filename = time().".".$image_type;
+          $file = $pathImageAbs.$filename;
+          $saveImg = file_put_contents($file, $image_base64);*/
+          /*if($saveImg){
+            $idStab = Crypt::decryptString(session('idStablishment'));
 
-          $message = "Datos guardados de la empresa.".($message?" {$message}":"");
-          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);          
-        }else{
-          $message = "No se pudo actualizar los datos de la empresa, intenta más tarde.";
-          $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+            $galleryData['path'] = $pathImageRel;
+            $galleryData['image'] = $filename;
+            $galleryData['stablishment_id'] = $idStab;
+            StablishmentGallery::create($galleryData);
+          }else{
+            $errors[] = "La imagen no se cargó correctamente.";
+          }*/
         }
+
+        $message = "Imágenes guardadas correctamente.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
       }else{
-        $message = "Revisa los campos en rojo.";
-        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$validateRes), 200);
+        $message = "Algunas imágenes no pudieron ser guardadas.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$errors), 200);
       }
     }
     //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);

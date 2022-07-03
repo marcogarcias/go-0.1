@@ -6,11 +6,12 @@
 @endsection
 
 @auth
-  @unless(session('isStablishment'))
-    @section('js')
+  @section('js')
+    <script src="{{ asset('js/gallery.js') }}"></script>
+    @unless(session('isStablishment'))  
       <script src="{{ asset('js/chatbox_v1.js?').microtime() }}" defer></script>
-    @endsection
-  @endunless
+    @endunless
+  @endsection
 @endauth
 
 @section('content')
@@ -79,6 +80,28 @@
         </div>
       </div>
 
+      @if(count($gallery))
+        <div class="row">
+          <div class="col-12 col-md-7 mt-3 mb-3 mx-auto">
+            <h1 class="text-white"><strong>Galería</strong></h1>
+            <div class="align-center" >
+              <ul class="gallery-list">
+                @forelse($gallery as $image)
+                  <li>
+                    <a class="gallery-list-a" href="#" data-img="{{ asset($image->path."/".$image->image).'?'.microtime() }}" data-name="{{ __("Galería") }}" data-toggle="modal" data-target="#gallery-modal">
+                      <img src="{{ asset($image->path."/".$image->image) }}" title="{{ __("Galería") }}" alt="{{ __("Galería") }}">
+                    </a>
+                  </li>
+                @empty
+
+                @endforelse
+              </ul>
+            </div>
+            <br>
+          </div>
+        </div>
+      @endif
+
       @if($ads && count($ads))
         @foreach($ads as $ad)
         <div class="row">
@@ -131,6 +154,16 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="gallery-modal" tabindex="-1" role="dialog" aria-labelledby="gallery-modal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content ads">
+      <img id="gallery-img" src="" title="" alt="">
+    </div>
+    <div class="btn btn-black close-modal">CERRAR</div>
   </div>
 </div>
 
@@ -234,6 +267,7 @@
   window.addEventListener('load', function() {
     go.redimentions(false);
     go.initStablishment();
+    gallery.initStabGallery();
     @auth
       @unless(session('isStablishment'))
         let cfg = {

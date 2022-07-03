@@ -306,6 +306,31 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 .menuProd{ display: inline-block; width: 45%; }
 .menuProdDesc{ display: inline-block; text-align: right; width: 45%; }
 
+.gallery-list{
+  margin: 0;
+  padding: 0;
+
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.gallery-list li{
+  display: inline-block;
+  margin: 15px 15px 15px 0;
+  padding: 0;
+  width: 25%;
+  float: none;
+}
+
+.gallery-list img{ width: 100%; }
+#gallery-modal .modal-dialog{ margin: 5% auto !important; text-align: center; }
+#gallery-modal .close-modal{ margin-top: 3%; }
+#gallery-img{ width: 100%; }
+
+
+
+
+
 .btns-social{ margin: 2% 0; padding: 0; }
 
 .btns-social li{

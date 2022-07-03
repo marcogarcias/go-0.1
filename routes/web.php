@@ -102,6 +102,12 @@ Route::post('/myspace/storeGallery', [
 ]
 )->name('myspace.storeGallery')->middleware('auth');
 
+Route::post('/myspace/loadGallery', [
+  App\Http\Controllers\SiteController::class, 
+  'loadGallery'
+]
+)->name('myspace.loadGallery')->middleware('auth');
+
 Route::post('/myspace/updJob', [
     App\Http\Controllers\SiteController::class, 
     'updJob'

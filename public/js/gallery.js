@@ -2,16 +2,29 @@ var $modal;
 var $image;
 var cropper;
 var canvas;
+let urlAsset;
 
 let gallery = {
   noImageNow: 0,
   noImage: 1,
   maxImage: 4,
+  initStabGallery: ()=>{
+    // inicializando los anuncios del home
+    $('.gallery-list-a').on('click', function(){
+      let img = $(this).attr('data-img');
+      let name = $(this).attr('data-name');
+      $('#gallery-img').attr('src', img);
+      $('#gallery-img').attr('title', name);
+      $('#gallery-img').attr('alt', name);
+    });
+  },
   init: (cfg)=>{
     cfg = (typeof cfg === 'object') ? cfg : {};
+    let urlLoadGallery = cfg.urlLoadGallery ? cfg.urlLoadGallery : '';
     let urlStoreGallery = cfg.urlStoreGallery ? cfg.urlStoreGallery : '';
+    urlAsset = cfg.urlAsset ? cfg.urlAsset  : "";
     $modal="", $image="", cropper="", canvas="";
-    gallery.modalCreate();
+    gallery.modalCreate(urlLoadGallery);
     gallery.modalCreateCrop();
 
     $modal = $('.imagecrop');
@@ -48,10 +61,10 @@ let gallery = {
     });
 
     $(document).on('hidden.bs.modal', '#window-modal', function(){
-      gallery.noImage = 0;
+      gallery.noImage = 1;
     });
   },
-  modalCreate: ()=>{
+  modalCreate: (url)=>{
     $('#window-modal').modal({
       backdrop: true,
       keyboard: false
@@ -66,8 +79,13 @@ let gallery = {
         </div>
       </div>`;
     $('#window-modal .modal-body').html(html);
-    for(let x=0; x<4; x++)
-      gallery.newImageInput("#galleryFrm");
+    gallery.loadImages(url, (images)=>{
+      gallery.setImages(images);
+
+      let no = gallery.noImage;
+      for(let x=0; x<4; x++)
+        gallery.newImageInput("#galleryFrm");
+    });
 
   },
   modalCreateCrop: ()=>{
@@ -99,20 +117,45 @@ let gallery = {
       </div>`;
     $('#modalCrop').html(html);
   },
-  newImageInput: (id)=>{
-    id = id ? id : "galleryFrm";
+  loadImages: (url, callback)=>{
+    let data = {};
+    utils.sendAjax(url, data, function(res){
+      if(res['success']){
+        if(callback && (typeof callback === 'function')){
+          callback(res.data);
+        }
+      }
+    });
+  },
+  setImages: (images)=>{
+    let url, image;
+    const d = new Date();
+    let ms;
+    images.forEach(function(itm, idx){
+      //console.log("2 setImages", itm, idx);
+      ms = d.getMilliseconds();
+      url = `${urlAsset}${itm.path}/${itm.image}?${ms}`;
+      //console.log('3 setImages: ', url, itm);
+      //$('#prev-logotipo').css("background-image", `url(${url})`);
+      gallery.newImageInput("#galleryFrm", itm.hashGallery, url);
+    });
+  },
+  newImageInput: (id, imageHash, image)=>{
+    id = id ? id : "#galleryFrm";
+    image = image ? image : '';
+    imageHash = imageHash ? imageHash : "hash"+utils.hash1();;
     let num = gallery.noImage++;
     if(num <= gallery.maxImage){
       let html = `
       <div class="form-group">
         <div class="col-8 col-md-3">
-          <div id="prev-imageBase64-${num}" class="prev-image" style="background-image: url(http://i.pravatar.cc/500?img=7) background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
+          <div id="prev-imageBase64-${num}" class="prev-image" style="background-repeat: no-repeat; background-position: center center; background-image: url(${image}); background-size: cover;" data-hash="${imageHash}"></div>
         </div>
       </div>
       <div class="form-group">
         <label for="imageBase64-${num}">Imagen</label>
-        <input type="file"  class="form-control-file" id="galleryImg-${num}" name="galleryImg-${num}" accept=".png, .jpg, .jpeg">
-        <input type="hidden" id="imageBase64-${num}" name="imageBase64-${num}">
+        <input type="file"  class="form-control-file" id="galleryImg-${num}" name="galleryImg-${num}" accept=".png, .jpg, .jpeg" data-hash="${imageHash}">
+        <input type="hidden" id="imageBase64-${num}" name="imageBase64-${num}" data-hash="${imageHash}">
         <div id="imageBase64-error-${num}" class="error" style="display: block;"></div>
       </div>`;
       $(`${id}`).append(html);
@@ -174,28 +217,34 @@ let gallery = {
     let formData = new FormData();
     //let files = $('#imageBase64-')[0].files[0];
     //formData.append('file',files);
-    let id;
+    let hash;
     $("input[id*='imageBase64']").each(function(x, y, z){
       if($(this).val()){
-        id = $(this).attr("id");
-        formData.append('imageBase64[]', $(this).val());
-        //console.log("storeGallery: ", id);
+        hash = $(this).attr("data-hash");
+        formData.append('imageBase64[]', $(this).val()+'|HASH|'+hash);
+        //console.log("1 storeGallery: ", hash, formData);
       }
     });
-
-    utils.sendAjaxJQ(url, formData, function(res){
-      utils.toastr({'type': res.code, 'message': res.message});
-      console.log('res: ', res);
-      if(res['success']){
-        if(callback && (typeof callback === 'function')){
-          callback(res);
+    // validando que se haya cargado aunque sea una imagen
+    if(hash){
+      utils.sendAjaxJQ(url, formData, function(res){
+        utils.toastr({'type': res.code, 'message': res.message});
+        console.log('res: ', res);
+        if(res['success']){
+          //console.log("1 storeGallery: ", res);
+          $('#window-modal').modal('toggle');
+          if(callback && (typeof callback === 'function')){
+            callback(res);
+          }
+        }else{
+          if(res['errors']){
+            //console.log('res2', res['errors']);
+            utils.validateSetErrors(res['errors']);
+          }
         }
-      }else{
-        if(res['errors']){
-          console.log('res2', res['errors']);
-          utils.validateSetErrors(res['errors']);
-        }
-      }
-    });
+      });
+    }else{
+      utils.toastr({"type": "warning", "message": "No se ha adjuntado ninguna imagen."});
+    }
   },
 }

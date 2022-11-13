@@ -176,6 +176,12 @@ let go={
       $("#adminCode").removeAttr('data-parsley-pattern');
     }
   },
+  loginInit: function(){
+    $("#viewEye").on("click", function(){
+      let type = $("#password").attr("type");
+      $("#password").attr("type", type=="password"?"text":"password")
+    });
+  },
   // inicializando los anuncios del home
   initAds: function(){
     $('.ads-list-a').on('click', function(){
@@ -196,6 +202,7 @@ let go={
     let haveMenu = parseInt(cfg.menu.haveMenus);
     let cfgMenus = cfg.menu ? cfg.menu : {};
     let cfgStab = cfg.stab ? cfg.stab : {};
+    let cfgJobs = cfg.jobs ? cfg.jobs : {};
     let cfgGallery = cfg.gallery ? cfg.gallery : {};
     let urlTags = cfg.urlTags ? cfg.urlTags : {};
     go.chat = cfg.chat === 'true';
@@ -246,16 +253,19 @@ let go={
       });
     });
 
-    $('#btn-stab, #btn-menus, #btn-gallery').on('click', function(){
-      let type = $(this).attr('id').split('-');
+    $("#btn-stab, #btn-jobs, #btn-menus, #btn-gallery").on("click", function(){
+      let type = $(this).attr("id").split("-");
       switch(type[1]){
-        case 'stab':
+        case "stab":
           stab.init(cfgStab);
           break;
-        case 'menus':
+        case "menus":
           menus.init(cfgMenus);
           break;
-        case 'gallery':
+        case "jobs":
+          jobs.init(cfgJobs);
+          break;
+        case "gallery":
           gallery.init(cfgGallery);
           break;
       }
@@ -321,6 +331,10 @@ let go={
     cfg = (typeof cfg === 'object') ? cfg : {};
     let title = cfg.title ? cfg.title : 'DESCRIPCIÓN';
 
+    let padStr = $(".menuProd").width()/5.5;
+    $(".menuDots").text("".padEnd(padStr, "- "));
+    console.log("padStr", padStr);
+
     // eventos
     $(document).on("click", ".menuProdDesc", function(){
       let desc = $(this).attr("data-desc");
@@ -335,12 +349,6 @@ let go={
   adminJobs: function(cfg) {
     cfg = (typeof cfg === 'object') ? cfg : {};
     let urlAddStab = cfg.urlAddStab ? cfg.urlAddStab : false;
-
-    let urlAddJob = cfg.urlAddJob ? cfg.urlAddJob : false;
-    let urlUpdJob = cfg.urlUpdJob ? cfg.urlUpdJob : false; 
-    let urlDelJob = cfg.urlDelJob ? cfg.urlDelJob : false;
-    //let urlMyJobs = cfg.urlMyJobs ? cfg.urlMyJobs : false;
-
     let urlAddAd = cfg.urlAddAd ? cfg.urlAddAd : false;
     let urlUpdAd = cfg.urlUpdAd ? cfg.urlUpdAd : false;
     let urlDelAd = cfg.urlDelAd ? cfg.urlDelAd : false;
@@ -355,26 +363,6 @@ let go={
     let setDataTable = function(ty, dataTable){
       $('#'+ty+'Table tbody').empty().html(dataTable);
     };
-
-    // eventos para administrar la sección de empleos (jobs)
-    $('#addJob').on('click', function(e){
-      e.preventDefault();
-      go.addData(urlAddJob, 'jobsFrm', function(res){
-        go.myDataTable(urlMyDatas, stab, 'jobs', setDataTable);
-      });
-    });
-
-    $(document).on('click', '#updJob', function(e){
-      e.preventDefault();
-      go.updJob(urlUpdJob, $(this).attr('data-job'), $(this).attr('data-name'));
-    });
-
-    $(document).on('click', '#delJob', function(e){
-      e.preventDefault();
-      go.delData(urlDelJob, $(this).attr('data-job'), $(this).attr('data-name'), function(){
-        go.myDataTable(urlMyDatas, stab, 'jobs', setDataTable);
-      });
-    });
 
     // Eventos para administrar la sección de anuncios
     $('#addAd').on('click', function(e){
@@ -440,28 +428,6 @@ let go={
       }
       go.toastr({'type': res.code, 'message':res.message});
       //console.log('ajax: ', res);
-    });
-  },
-  // edita una vacante
-  updJob: function(url, job, name){
-    let data = {job: job, name: name};
-    let cont={};
-    $("#vacante").trigger("focus");
-    go.loadAjaxPost(url, data, function(res){
-      //console.log('ajax: ', res);
-      if(res['success']){
-        cont = res['cont'];
-        $("#addJob").text("Actualizar");
-        $('#jobsFrm')[0].reset();
-        $('#job').val(job);
-        $('#vacante').val(cont['name']);
-        $('#descripcion').val(cont['description']);
-
-        if(cont['documentation']!='cv')
-          $('#solicitud').prop('checked', true);
-        else
-          $('#cv').prop('checked', true);
-      }
     });
   },
   // edita un anuncio

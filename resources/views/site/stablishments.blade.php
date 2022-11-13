@@ -50,6 +50,12 @@
       <div class="overflow-auto stablish-cont">
         <table class="stablish-table">
           @forelse($stablish as $stab)
+            @if($stab->disabledGlobal)
+              @continue;
+            @endif
+            @if($stab->disabled)
+              @continue;
+            @endif
             <tr class="">
               <td class="stablish-logo">
                 <a href="{{ route('stablishment', $stab->idstablishment) }}">

@@ -84,6 +84,7 @@ class RegisterController extends Controller{
       $validator['instagram'] = ['max:200'];
       $validator['twitter'] = ['max:200'];
       $validator['youtube'] = ['max:200'];
+      $validator['web'] = ['max:200'];
       $validator['horario'] = ['max:200'];
       $validator['section'] = ['required'];
       //$validator['tags'] = ['required'];

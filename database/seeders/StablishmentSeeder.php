@@ -29,6 +29,7 @@ class StablishmentSeeder extends Seeder
       'instagram'=>'www.instagram.com/empresa-1',
       'twitter'=>'www.twitter.com/empresa-1',
       'youtube'=>'www.youtube.com/empresa-1',
+      'web'=>'www.google.com',
       'hour'=>'9.00-18.00',
       'likes'=>0,
       'range'=>0,

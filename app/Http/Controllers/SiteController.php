@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\StablishmentGallery;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\StablishmentJobSubType;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Storage;
@@ -55,21 +56,22 @@ class SiteController extends Controller
   public function stablishments($sec=null){
     if($sec){
       $stablish = Stablishment::select(
-        'stab.idstablishment', 'stab.name', 'stab.description', 
-        'stab.direction', 'stab.image', 'stab.offer')
-        ->from('stablishments AS stab')
-        ->join('municipios AS m', 'm.idmunicipio', '=', 'stab.municipio_id')
-        ->join('estados AS e', 'e.idestado', '=', 'm.estado_id')
-        ->join('sections AS s', 's.idsection', '=', 'stab.section_id')
+        "stab.idstablishment", "stab.name", "stab.description", 
+        "stab.direction", "stab.image", "stab.offer", 
+        "stab.disabled", "stab.disabledGlobal")
+        ->from("stablishments AS stab")
+        ->join("municipios AS m", "m.idmunicipio", "=", "stab.municipio_id")
+        ->join("estados AS e", "e.idestado", "=", "m.estado_id")
+        ->join("sections AS s", "s.idsection", "=", "stab.section_id")
         //->join('stablishments_tags AS st', 'st.stablishment_id', '=', 'stablishments.idstablishment')
         //->join('tags AS t', 't.idtag', '=', 'st.tag_id')
-        ->where('s.idsection', $sec)
-        ->where('stab.disabled', 0)
-        ->where('stab.deleted', 0)
-        ->where('m.deleted', 0)
-        ->where('e.deleted', 0)
-        ->where('s.deleted', 0)
-        ->orderByRaw('RAND()')
+        ->where("s.idsection", $sec)
+        ->where("stab.disabled", 0)
+        ->where("stab.deleted", 0)
+        ->where("m.deleted", 0)
+        ->where("e.deleted", 0)
+        ->where("s.deleted", 0)
+        ->orderByRaw("RAND()")
         ->get();
 
       $zones = Zone::where('deleted', 0)->get();
@@ -117,23 +119,24 @@ class SiteController extends Controller
     $idUser = Auth::id() ? Auth::id() : 0;
     $menus_ = $menus = [];
     $stablish = Stablishment::select(
-      's.idstablishment', 's.name', 's.description', 's.direction', 
-      's.image', 's.summary', 's.whatsapp', 's.facebook', 's.range', 
-      's.enablechat', 's.instagram', 's.twitter', 's.youtube', 
-      's.lat', 's.lng', 's.user_id', 'sec.idsection', 'sec.image AS secImage')
-      ->from('stablishments AS s')
+      "s.idstablishment", "s.name", "s.description", "s.direction", 
+      "s.image", "s.summary", "s.whatsapp", "s.facebook", "s.range", 
+      "s.enablechat", "s.instagram", "s.twitter", "s.youtube", "s.web",
+      "s.lat", "s.lng", "s.user_id", "s.disabled", "s.disabledGlobal",
+      "sec.idsection", "sec.image AS secImage")
+      ->from("stablishments AS s")
       //'t.name AS tagName', 't.description AS tagDesc', 't.image AS tagImage')
-      ->join('municipios AS m', 'm.idmunicipio', '=', 's.municipio_id')
-      ->join('estados AS e', 'e.idestado', '=', 'm.estado_id')
-      ->join('sections AS sec', 'sec.idsection', '=', 's.section_id')
+      ->join("municipios AS m", "m.idmunicipio", "=", "s.municipio_id")
+      ->join("estados AS e", "e.idestado", "=", "m.estado_id")
+      ->join("sections AS sec", "sec.idsection", "=", "s.section_id")
       //->join('stablishments_tags AS st', 'st.stablishment_id', '=', 's.idstablishment')
       //->join('tags AS t', 't.idtag', '=', 'st.tag_id')
-      ->where('s.idstablishment', $stab)
-      ->where('s.disabled', 0)
-      ->where('s.deleted', 0)
-      ->where('m.deleted', 0)
-      ->where('e.deleted', 0)
-      ->where('sec.deleted', 0)
+      ->where("s.idstablishment", $stab)
+      //->where("s.disabled", 0)
+      ->where("s.deleted", 0)
+      ->where("m.deleted", 0)
+      ->where("e.deleted", 0)
+      ->where("sec.deleted", 0)
       ->first();
 
     $menus_ = StablishmentMenu::
@@ -177,11 +180,22 @@ class SiteController extends Controller
 
     if(!is_object($stablish))
       return redirect()->route("home");
+
     $stablish->range += 1;
     $stablish->save();
     $jobs = self::myJobs_($stablish["idstablishment"]);
     $ads = self::myAds_($stablish["idstablishment"]);
-    return view("site.stablishment", compact("idUser", "stablish", "menus", "jobs", "ads", "gallery"));
+    $adsBg = [
+      toKey("Horarios") => "#a02514", 
+      toKey("Dirección") => "#9e5914",
+      toKey("Teléfonos") => "#9b9e14",
+      toKey("Formas de pago") => "#209e14",
+      toKey("Cita o reservación") => "#149b6e",
+      toKey("Entrega a domicilio") => "#148b9b",
+      toKey("Oferta") => "#14339b",
+      toKey("Promoción") => "#6d149e"
+    ];
+    return view("site.stablishment", compact("idUser", "stablish", "menus", "jobs", "ads", "gallery", "adsBg"));
   }
 
   /**
@@ -305,9 +319,15 @@ class SiteController extends Controller
       $idMenu = isset($data[0]) && $data[0]['name']=='hashMenu' ? $data[0]['value'] : '';
       $idMenu = strpos($idMenu, 'hash') === false ? Crypt::decryptString($idMenu) : null;
 
-      $menuName = isset($data[1]) && $data[1]['name']=='menuName' ? $data[1]['value'] : '';
-      $menuDescripcion = isset($data[2]) && $data[2]['name']=='menuDescripcion' ? $data[2]['value'] : '';
-      $menuDisable = isset($data[3]) && $data[3]['name']=='menuDisable' ? true : false;
+      if(isset($data[1]) && $data[1]["name"]=="menuDisable"){
+        $menuDisable = false;
+        $menuName = isset($data[2]) && $data[2]['name']=='menuName' ? $data[2]['value'] : '';
+        $menuDescripcion = isset($data[3]) && $data[3]['name']=='menuDescripcion' ? $data[3]['value'] : '';
+      }else{
+        $menuDisable = true; 
+        $menuName = isset($data[1]) && $data[1]['name']=='menuName' ? $data[1]['value'] : '';
+        $menuDescripcion = isset($data[2]) && $data[2]['name']=='menuDescripcion' ? $data[2]['value'] : '';
+      }
 
       // validando campos de nombre de menú y su descripción
       $validateRes = validate([
@@ -519,9 +539,10 @@ die('...');*/
       $instagram = isset($data[9]) && $data[9]['name']=='instagram' ? $data[9]['value'] : '';
       $twitter = isset($data[10]) && $data[10]['name']=='twitter' ? $data[10]['value'] : '';
       $youtube = isset($data[11]) && $data[11]['name']=='youtube' ? $data[11]['value'] : '';
-      $horario = isset($data[12]) && $data[12]['name']=='horario' ? $data[12]['value'] : '';
-      $zona = isset($data[13]) && $data[13]['name']=='zona' ? $data[13]['value'] : '';
-      $section = isset($data[14]) && $data[14]['name']=='section' ? $data[14]['value'] : '';
+      $web = isset($data[12]) && $data[12]['name']=='web' ? $data[12]['value'] : '';
+      $horario = isset($data[13]) && $data[13]['name']=='horario' ? $data[13]['value'] : '';
+      $zona = isset($data[14]) && $data[14]['name']=='zona' ? $data[14]['value'] : '';
+      $section = isset($data[15]) && $data[15]['name']=='section' ? $data[15]['value'] : '';
       //html_entity_decode($desc, ENT_QUOTES, 'UTF-8');
 
       $job = StablishmentJob::updateOrCreate(
@@ -551,6 +572,88 @@ die('...');*/
   }
 
   /**
+   * Obtiene los tipos de empleos del catálogo
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function getJobTypes(Request $req){
+    $res=array("success"=>false, "data"=>[]);
+    if($req->ajax()){
+      $data = $req->input("data");
+
+      $jobs = StablishmentJob::select("jt.idJobType", "jt.name", "jt.description")
+        ->from("cat_jobs_type AS jt")
+        ->where("jt.deleted", 0)
+        ->orderBy("jt.order", "asc")
+        ->get();
+
+      foreach ($jobs as $j) {
+        $j->hashJobType = Crypt::encryptString($j->idJobType);
+        $j->md5 = md5($j->idJobType);
+        unset($j->idJobType);
+      }
+
+      if($jobs){
+        $res["success"]=true;
+        $res["code"]="success";
+        $res["message"]="Listado de tipos de empleo.";
+      }else{
+        $res["success"]=false;
+        $res["code"]="warning";
+        $res["message"]="No se encontró ningún tipo de empleo";
+      }
+      $res['data']=$jobs;
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
+   * Obtiene los subtipos de empleos del catálogo
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function getJobSubTypes(Request $req){
+    $res=array("success"=>false, "data"=>[]);
+    if($req->ajax()){
+      $data = $req->input("data");
+      $idJobType = isset($data["hashJobType"]) && $data["hashJobType"] ? $data["hashJobType"] : "";
+      $idJobType = $idJobType ? Crypt::decryptString($idJobType) : "";
+
+      $subTypes = StablishmentJob::select("jst.idJobSubType", "jst.jobType_id", "jst.name", "jst.description")
+        ->from("cat_jobs_subtype AS jst")
+        ->where("jst.deleted", 0)
+        ->where("jst.jobType_id", $idJobType)
+        ->orderBy("jst.order", "asc")
+        ->get();
+
+      foreach ($subTypes as $sub) {
+        $sub->hashJobSubType = Crypt::encryptString($sub->idJobSubType);
+        $sub->md5 = md5($sub->idJobSubType);
+
+        $sub->hashJobType = Crypt::encryptString($sub->jobType_id);
+        $sub->md5 = md5($sub->jobType_id);
+        unset($sub->idJobSubType, $sub->jobType_id);
+      }
+
+      if($subTypes){
+        $res["success"]=true;
+        $res["code"]="success";
+        $res["message"]="Listado de subtipos de empleo.";
+      }else{
+        $res["success"]=false;
+        $res["code"]="warning";
+        $res["message"]="No se encontró ningún subtipo de empleo";
+      }
+      $res['data']=$subTypes;
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
    * Agregar una vacante a la empresa en cuestión
    *
    * @return \Illuminate\Http\Response
@@ -559,26 +662,59 @@ die('...');*/
     $res=array('success'=>false, 'action'=>'add');
     if($req->ajax()){
       $data = $req->input('data');
-      $name = isset($data[0]) && $data[0]['name']=='vacante' ? $data[0]['value'] : '';
-      $desc = isset($data[1]) && $data[1]['name']=='descripcion' ? $data[1]['value'] : '';
-      //$desc = nl2br(htmlentities($desc, ENT_QUOTES, 'UTF-8'));
+      $name = isset($data["vacante"]) && $data["vacante"] ? $data["vacante"] : false;
+      $desc = isset($data["descripcion"]) && $data["descripcion"] ? $data["descripcion"] : false;
       $desc = htmlentities(nl2br($desc), ENT_QUOTES, 'UTF-8');
-      $doc = isset($data[2]) && $data[2]['name']=='doc' ? $data[2]['value'] : '';
-      $stab = isset($data[3]) && $data[3]['name']=='stab' ? $data[3]['value'] : '';
+      $idJobType = isset($data["jobType"]) && $data["jobType"] ? $data["jobType"] : false;
+      $idJobType = Crypt::decryptString($idJobType);
+      $doc = isset($data["doc"]) && $data["doc"] ? $data["doc"] : false;
+      $stab = isset($data["stab"]) && $data["stab"] ? $data["stab"] : false;
       $stab = Crypt::decryptString($stab);
-      $idJob = isset($data[4]) && $data[4]['name']=='job' ? $data[4]['value'] : '';
+      $idJob = isset($data["job"]) && $data["job"] ? $data["job"] : false;
       $idJob = $idJob ? Crypt::decryptString($idJob) : false;
-      //html_entity_decode($desc, ENT_QUOTES, 'UTF-8');
+      //dd($idJob, $desc, $doc, $stab, $idJobType);
 
       $job = StablishmentJob::updateOrCreate(
-        ['idjob' => $idJob],
+        ["idjob" => $idJob],
         [
-          'name' => $name,
-          'description' => $desc,
-          'documentation' => $doc,
-          'stablishment_id'=>$stab
+          "name" => $name,
+          "description" => $desc,
+          "documentation" => $doc,
+          "stablishment_id"=>$stab,
+          "jobType_id"=>$idJobType,
         ]
       );
+
+
+      if(isset($job->idjob) && $job->idjob){
+        $subTypes = isset($data['subTypes']) && is_array($data['subTypes']) ? $data['subTypes'] : [];
+
+        /*
+        // eliminar de forma lógica todas las subsecciones que tiene este registro
+        if(is_array($subTypes) && count($subTypes)){
+          StablishmentJobSubType::
+            where('deleted', 0)
+            ->where('job_id', $$job->idjob)
+            ->update(['deleted'=>1]);
+
+          // agregar o actualizar las subsecciones/tags
+          foreach ($tags as $tag) {
+            StablishmentTag::updateOrCreate(
+              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
+              [ 'deleted'=>0 ]
+            );
+          }
+        }
+        */
+        if(is_array($subTypes)){
+          foreach ($subTypes as $sub) {
+            StablishmentJobSubType::create([
+              'job_id'=>$job->idjob,
+              'jobSubType_id'=> Crypt::decryptString($sub)
+            ]);
+          }
+        }
+      }
 
       if($job){
         $res['success']=true;
@@ -607,12 +743,10 @@ die('...');*/
       $data = $req->input('data');
       $job = isset($data['job']) && $data['job'] ? Crypt::decryptString($data['job']) : false;
       $name = isset($data['name']) && $data['name'] ? $data['name'] : false;
+      $subTypes = isset($data['subTypes']) && is_array($data['subTypes']) ? $data['subTypes'] : [];
 
       $job = StablishmentJob::find($job);
-
-      //echo $job->description.'<br/>';
       $job->description = strip_tags(html_entity_decode($job->description, ENT_QUOTES, 'UTF-8'));
-      //echo $job->description.'<br/>';
       if($job){
         $res['success'] = true;
         $res['cont'] = $job;
@@ -635,6 +769,7 @@ die('...');*/
    */
   public function delJob(Request $req){
     $res=array('success'=>false, 'action'=>'del');
+    $subTypes;
     if($req->ajax()){
       $data = $req->input('data');
       $job = isset($data['id']) && $data['id'] ? Crypt::decryptString($data['id']) : false;
@@ -644,6 +779,12 @@ die('...');*/
       if($job){
         $job->deleted = 1;
         $job->save();
+
+        StablishmentJobSubType::
+          where('deleted', 0)
+          ->where('job_id', $job->idjob)
+          ->update(['deleted'=>1]);
+
         $res['success']=true;
         $res['code']='success';
         $res['message']=' Se ha eliminado la vacante ('.$name.')';
@@ -885,7 +1026,7 @@ die('...');*/
         ->join('stablishments AS stab', 'stab.idstablishment', '=', 'm.stablishment_id')
         ->where('m.disabled', 0)
         ->where('mp.disabled', 0)
-        ->where('stab.disabled', 0)
+        //->where('stab.disabled', 0)
         ->where('m.deleted', 0)
         ->where('mp.deleted', 0)
         ->where('stab.deleted', 0)
@@ -1130,7 +1271,7 @@ die('...');*/
    */
   static public function createStablishment(array $data){
     $user = self::createUser($data);
-    $facebook = $instagram = $youtube = $twitter = '';
+    $facebook = $instagram = $youtube = $twitter = $web = '';
     $imageName = "img/site/stablishments/logos/default.png";
     $idStab; $pathImageAr; $pathImageAbs;
     $pathImageRel = $filename = '';
@@ -1141,16 +1282,19 @@ die('...');*/
     }*/
 
     if($data['facebook'])
-      $facebook = str_replace(array('http://', 'https://'), '', $data['facebook']);
+      $facebook = str_replace('http://', 'https://', '', $data['facebook']);
 
     if($data['instagram'])
-      $instagram = str_replace(array('http://', 'https://'), '', $data['instagram']);
+      $instagram = str_replace('http://', 'https://', '', $data['instagram']);
 
     if($data['youtube'])
-      $youtube = str_replace(array('http://', 'https://'), '', $data['youtube']);
+      $youtube = str_replace(['http://', 'https://'], '', $data['youtube']);
 
     if($data['twitter'])
-      $twitter = str_replace(array('http://', 'https://'), '', $data['twitter']);
+      $twitter = str_replace(['http://', 'https://'], '', $data['twitter']);
+
+    if($data['web'])
+      $web = str_replace(['http://', 'https://'], '', $data['web']);
 
     // guardando la imagen de la empresa si agregó una
     if($data['logotipoBase64']){
@@ -1185,6 +1329,7 @@ die('...');*/
       'instagram'=>$instagram,
       'twitter'=>$twitter,
       'youtube'=>$youtube,
+      'web'=>$web,
       'hour'=>isset($data['horario']) ? $data['horario'] : '',
       'offer'=>isset($data['oferta']) && $data['oferta'] ? 1 : 0,
       'disabled'=>0,
@@ -1220,30 +1365,33 @@ die('...');*/
    */
   public function updateStablishment(Request $req)
   {
-    $res=array('success'=>false);
+    $res=array("success"=>false);
     if($req->ajax()){
-      $data = $req->input('data');
+      $data = $req->input("data");
       $idStab; $stabRes; $pathImageAr; $pathImageAbs;
-      $pathImageRel = $filename = '';
-      $message = '';
+      $pathImageRel = $filename = "";
+      $message = "";
 
-      $name = $req->input('nombre');
-      $description = $req->input('descripcion');
-      $description2 = $req->input('descripcion2');
-      $direction = $req->input('direccion');
-      $lat = $req->input('latitud');
-      $lng = $req->input('longitud');
-      $phone = $req->input('telefono');
-      $whatsapp = $req->input('whatsapp');
-      $facebook = $req->input('facebook');
-      $instagram = $req->input('instagram');
-      $twitter = $req->input('twitter');
-      $youtube = $req->input('youtube');
-      $hour = $req->input('horario');
-      $offer = $req->input('oferta');
-      $zone_id = $req->input('zona');
-      $section_id = $req->input('section');
-      $tags = $req->input('tags');
+      $name = $req->input("nombre");
+      $description = $req->input("descripcion");
+      $description2 = $req->input("descripcion2");
+      $direction = $req->input("direccion");
+      $lat = $req->input("latitud");
+      $lng = $req->input("longitud");
+      $phone = $req->input("telefono");
+      $whatsapp = $req->input("whatsapp");
+      $facebook = $req->input("facebook");
+      $instagram = $req->input("instagram");
+      $twitter = $req->input("twitter");
+      $youtube = $req->input("youtube");
+      $web = $req->input("web");
+      $web = str_replace(["http://", "https://"], "", $web);
+      $hour = $req->input("horario");
+      $offer = intval($req->input("oferta"));
+      $zone_id = $req->input("zona");
+      $section_id = $req->input("section");
+      $tags = $req->input("tags");
+      $enabled = intval($req->input("habilitado"));
 
       $validateRes = validate([
         'nombre' => [$name, 'required|max:155'],
@@ -1258,6 +1406,7 @@ die('...');*/
         'instagram' => [$instagram, 'max:200'],
         'twitter' => [$twitter, 'max:200'],
         'youtube' => [$youtube, 'max:200'],
+        'web' => [$web, 'max:200'],
         'horario' => [$hour, 'max:200'],
         'zona' => [$zone_id, 'required'],
         'section' => [$section_id, 'required']
@@ -1300,10 +1449,12 @@ die('...');*/
           'instagram'=>$instagram,
           'twitter'=>$twitter,
           'youtube'=>$youtube,
+          'web'=>$web,
           'hour'=>$hour,
           'offer'=>$offer?1:0,
           'zone_id'=>$zone_id,
-          'section_id'=>$section_id
+          'section_id'=>$section_id,
+          'disabled'=>$enabled?0:1
         ];
 
         if($pathImageRel && $filename)
@@ -1311,7 +1462,7 @@ die('...');*/
 
         $stabRes = $stab->update($stabData);
 
-        // si la actualización de datos es correcta, se procede a borrar los tags que se tengas y se agregan los nuevos
+        // si la actualización de datos es correcta, se procede a borrar los tags que se tengan y se agregan los nuevos
         if($stabRes && is_array($tags) && count($tags)){
           // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
           StablishmentTag::

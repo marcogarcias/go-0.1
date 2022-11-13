@@ -25,6 +25,7 @@ class Stablishment extends Model
     'instagram',
     'twitter',
     'youtube',
+    'web',
     'hour',
     'likes',
     'range',

@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class StablishmentJob extends Model
 {
   use HasFactory;
-  protected $table = 'stablishments_jobs';
-  protected $primaryKey = 'idjob';
+  protected $table = "stablishments_jobs";
+  protected $primaryKey = "idjob";
   protected $fillable = [
-    'name', 
-    'description',
-    'requirements',
-    'documentation',
-    'stablishment_id',
-    'deleted'
+    "name", 
+    "description",
+    "requirements",
+    "documentation",
+    "stablishment_id",
+    "jobType_id",
+    "deleted"
   ];
 }

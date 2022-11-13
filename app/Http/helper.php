@@ -120,4 +120,67 @@ function uniqueId(){
   return md5(uniqid(md5(microtime(true)),true));
 }
 
+/**
+ * Función para eliminar acentos de un string
+ * @param $str String Cadena a eliminar acento
+ */
+function removeAccents($str='', $bit=63){
+  if($bit&1){
+    $str = str_replace(
+      array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+      array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+      $str
+    );
+  }
+
+  if($bit&2){
+    $str = str_replace(
+      array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+      array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+        $str 
+    );
+  }
+
+  if($bit&4){
+    $str = str_replace(
+      array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+      array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+      $str
+    );
+  }
+
+  if($bit&8){
+    $str = str_replace(
+      array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+      array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+      $str
+    );
+  }
+
+  if($bit&16){
+    $str = str_replace(
+      array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+      array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+      $str
+    );
+  }
+
+  if($bit&32){
+    $str = str_replace(
+      array('ñ', 'Ñ', 'ç', 'Ç'),
+      array('n', 'N', 'c', 'C'),
+      $str
+    );
+  }
+  return $str;
+}
+
+function toKey($str=''){
+  if($str){
+    $str = removeAccents($str);
+    $str = str_replace(" ", "", Str::lower($str));
+  }
+  return $str;
+}
+
 ?>

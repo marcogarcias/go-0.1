@@ -11,6 +11,7 @@ let admin = {
         cfg = (typeof cfg === 'object') ? cfg : {};
         let url = cfg.delurl;
         let urlAddVisitsAll = cfg.urlAddVisitsAll;
+        let urlEnabledGlobalStab = cfg.urlEnabledGlobalStab;
         let regs=[];
 
         $('#checkAll').on('click', function(){
@@ -21,6 +22,16 @@ let admin = {
             $(this).val('');
             $('input[name=check]').prop("checked", '');
           }
+        });
+
+        $('.enabled-check').on('change', function(e){
+          let cfg = {
+            hashStab: $(this).attr("data-hashStab"),
+            enabled: $(this).prop("checked")
+          };
+          admin.stablishment.view.enabledGlobalStab(urlEnabledGlobalStab, cfg, res => {
+            utils.toastr({'type': res.ty, 'message':res.msg, 'positionClass': 'toast-top-right'});
+          });
         });
 
         $('#eliminarAll').on('click', function(e){
@@ -58,7 +69,14 @@ let admin = {
             callback(res);
           }
         });
-      }
+      },
+      enabledGlobalStab: (url, cfg, callback) =>{
+        utils.axios(url, cfg, function(res){
+          if(callback && (typeof callback === 'function')){
+            callback(res);
+          }
+        });
+      },
     },
     // METODOS PARA CREATE
     create: {

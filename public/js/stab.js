@@ -131,6 +131,11 @@ let stab = {
             <div id="youtube-error" class="error" style="display: block;"></div>
           </div>
           <div class="form-group">
+            <label for="web">Web oficial</label>
+            <input type="text" class="form-control" id="web" name="web" value="web" placeholder="web">
+            <div id="web-error" class="error" style="display: block;"></div>
+          </div>
+          <div class="form-group">
             <label for="horario">Hoario <span  class="text-danger font-weight-bolder">*</span></label>
             <input type="text" class="form-control" id="horario" name="horario" value="horario" placeholder="08:00 am - 08:00 pm">
             <div id="horario-error" class="error" style="display: block;"></div>
@@ -157,6 +162,13 @@ let stab = {
               <option value="">Seleccione una opción</option>
             </select>
             <div id="section-error" class="error" style="display: block;"></div>
+          </div>
+
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="habilitado" name="habilitado">
+              <label class="custom-control-label" for="habilitado">Habilitar</label>
+            </div>
           </div>
 
           <div id="tags" class="form-group"></div>
@@ -232,15 +244,15 @@ let stab = {
     $('#instagram').val(stab.instagram);
     $('#twitter').val(stab.twitter);
     $('#youtube').val(stab.youtube);
+    $('#web').val(stab.web);
     $('#horario').val(stab.hour);
 
     // 
     let url = `${urlAsset}${stab.image}`;
-    console.log('url: ', url);
     $('#prev-logotipo').css("background-image", `url(${url})`);
-    console.log(url);
 
     stab.offer && $('#oferta').prop('checked', 'checked');
+    stab.disabled || $('#habilitado').prop('checked', 'checked');
     for(let z in zones){
       sel = zones[z].idzone == stab.zone_id ? 'selected' : '';
       option = `<option value="${zones[z].idzone}" ${sel}>${zones[z].name}</option>`;
@@ -368,9 +380,11 @@ let stab = {
     formData.append('instagram', $('#instagram').val());
     formData.append('twitter', $('#twitter').val());
     formData.append('youtube', $('#youtube').val());
+    formData.append('web', $('#web').val());
     formData.append('horario', $('#horario').val());
-    formData.append('oferta', $('#oferta').val());
+    formData.append('oferta', Number($('#oferta').prop('checked')));
     formData.append('zona', $('#zona').val());
+    formData.append('habilitado', Number($('#habilitado').prop('checked')));
     formData.append('section', $('#section').val());
 
     $("#tags input:checkbox:checked").each(function() {

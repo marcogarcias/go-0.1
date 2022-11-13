@@ -42,6 +42,17 @@ let menus = {
       $('#productosDiv').empty();
     });
 
+    $(document).on("change", "#menuDisable", function(){
+      let txt;
+      if($(this).is(':checked')){
+        txt = "Habilitado";
+      }else{
+        txt = "Deshabilitado";
+      }
+      $("#menuDisableLabel").text(txt);
+      console.log("change", txt);
+    });
+
     $(document).off("click", "#addProduct");
     $(document).on('click', '#addProduct', function(e){
       e.preventDefault();
@@ -140,7 +151,8 @@ let menus = {
     let title = menu.title ? menu.title : 'Nuevo menú';
     let name = menu.name ? menu.name : '';
     let description = menu.description ? menu.description : '';
-    let disabled = menu.disabled ? 'checked' : '';
+    let disabled = menu.disabled ? '' : 'checked';
+    let disabledLabel = menu.disabled ? "Deshabilitado" : "Habilitado";
     let html = `
       <div class="accordion" id="menuAccordion">
         <div class="card">
@@ -161,7 +173,7 @@ let menus = {
                   <div class="form-group">
                       <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" id="menuDisable" name="menuDisable" ${disabled}>
-                        <label class="custom-control-label" for="menuDisable">Deshabilitado</label>
+                        <label id="menuDisableLabel" class="custom-control-label" for="menuDisable">${disabledLabel}</label>
                       </div>
                     </div>
                     <div class="form-group">

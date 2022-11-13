@@ -179,6 +179,11 @@
                     {!! $errors->first('youtube', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
+                    <label for="web">{{ __('Web oficial') }}</label>
+                    <input type="text" class="form-control" id="web" name="web" value="{{ old('web') }}" placeholder="web">
+                    {!! $errors->first('web', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+                  </div>
+                  <div class="form-group">
                     <label for="horario">{{ __('Hoario') }} <span  class="text-danger font-weight-bolder">*</span></label>
                     <input type="text" class="form-control" id="horario" name="horario" value="{{ old('horario') }}" placeholder="08:00 am - 08:00 pm">
                     {!! $errors->first('horario', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}

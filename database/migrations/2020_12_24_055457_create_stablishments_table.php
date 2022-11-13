@@ -30,6 +30,7 @@ class CreateStablishmentsTable extends Migration
       $table->string('instagram')->nullable();
       $table->string('twitter')->nullable();
       $table->string('youtube')->nullable();
+      $table->string('web')->nullable();
       $table->string('hour');
       $table->integer('likes')->nullable()->default(0);
       $table->integer('range')->nullable()->default(0);

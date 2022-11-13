@@ -303,8 +303,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   padding-left: 0px;
 }
 
-.menuProd{ display: inline-block; width: 45%; }
+/*.menuTable{ width: 100%; }*/
+/*.menuProd{ display: inline-block; width: 45%; }
 .menuProdDesc{ display: inline-block; text-align: right; width: 45%; }
+*/
+.menuProd{ padding-right: 0; }
+.menuDots, .menuPrice, .menuProdDesc{ padding: 0; }
+.menuProdDesc{ text-align: right; }
+.menuDots, .menuPrice{ text-align: center; }
 
 .gallery-list{
   margin: 0;

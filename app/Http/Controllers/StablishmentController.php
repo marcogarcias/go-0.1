@@ -32,7 +32,7 @@ class StablishmentController extends Controller
   {
     $stabs = Stablishment::select(
       's.idstablishment', 's.name', 's.description', 's.direction', 's.image', 's.phone', 's.whatsapp',
-      's.facebook', 's.instagram', 's.twitter', 's.youtube', 's.hour', 's.offer', 's.disabled', 's.created_at',
+      's.facebook', 's.instagram', 's.twitter', 's.youtube', 's.hour', 's.offer', 's.disabled', 's.disabledGlobal', 's.created_at',
       'sec.name AS section', 'z.name AS zone')
       ->from('stablishments AS s')
       ->join('zones AS z', 'z.idzone', '=', 's.zone_id')
@@ -44,7 +44,6 @@ class StablishmentController extends Controller
       ->where('s.deleted', 0)
       ->orderBy('created_at', 'desc')
       ->get();
-
     $sections = Section::where('deleted', 0)->get();
     $zones = Zone::where('deleted', 0)->get();
     $tags = Tag::where('deleted', 0)->get();
@@ -420,6 +419,34 @@ class StablishmentController extends Controller
         $stab->update(['range'=>++$stab->range]);
       }
       $res = response()->json(array('success'=>true, 'msg'=>'Se han generado nuevas visitas.', 'ty'=>'success'), 200);
+    }
+    return $res;
+  }
+
+  /**
+   * Habilita/deshabilita de forma global un establecimiento
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function enabledGlobalStab(Request $req){
+    $res=array("success"=>false, "ty"=>"error");
+    if($req->ajax()){
+      $data = $req->input("data");
+      $idStab = isset($data["hashStab"]) && $data["hashStab"] ? Crypt::decryptString($data["hashStab"]) : 0;
+      $enabled = isset($data["enabled"]) && $data["enabled"] ? $data["enabled"] : false;
+
+      $stab = Stablishment::
+        where("idstablishment", $idStab)
+        ->update(["disabledGlobal"=>$enabled?0:1]);
+
+      if($stab){
+        $msg = "Se ha ".($enabled?"habilidado":"deshabilitado")." el negocio.";
+        $res = response()->json(array("success"=>true, "msg"=>$msg, "ty"=>"success"), 200);
+      }else{
+        $msg = "No se pudo ".($enabled?"habilitar":"deshabilitar")." el negocio. Intente más tarde.";
+        $res = response()->json(array("success"=>false, "msg"=>$msg, "ty"=>"warning"), 200);
+      }
     }
     return $res;
   }

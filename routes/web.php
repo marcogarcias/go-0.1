@@ -53,6 +53,18 @@ Route::post('/myspace/addStab', [
   ]
 )->name('myspace.addStab')->middleware('auth');
 
+Route::post("/myspace/getJobTypes", [
+    App\Http\Controllers\SiteController::class, 
+    "getJobTypes"
+  ]
+)->name("myspace.getJobTypes")->middleware("auth");
+
+Route::post("/myspace/getJobSubTypes", [
+    App\Http\Controllers\SiteController::class, 
+    "getJobSubTypes"
+  ]
+)->name("myspace.getJobSubTypes")->middleware("auth");
+
 Route::post('/myspace/addJob', [
     App\Http\Controllers\SiteController::class, 
     'addJob'
@@ -97,9 +109,9 @@ Route::post('/myspace/updateStablishment', [
 )->name('myspace.updateStablishment')->middleware('auth');
 
 Route::post('/myspace/storeGallery', [
-  App\Http\Controllers\SiteController::class, 
-  'storeGallery'
-]
+    App\Http\Controllers\SiteController::class, 
+    'storeGallery'
+  ]
 )->name('myspace.storeGallery')->middleware('auth');
 
 Route::post('/myspace/loadGallery', [
@@ -257,6 +269,12 @@ Route::post(
   [App\Http\Controllers\StablishmentController::class,
   'addVisitsAll']
 )->name('admin.stablishments.addVisitsAll');
+
+Route::post(
+  '/admin/stablishments/enabledGlobalStab',
+  [App\Http\Controllers\StablishmentController::class,
+  'enabledGlobalStab']
+)->name('admin.stablishments.enabledGlobalStab');
 
 /* ADVERTISEMENTS - anuncios */
 Route::get('/admin/advertisements', 

@@ -42,19 +42,21 @@
                   <th scope="col">{{ __('Deshabilitado') }}</th>
                   <th scope="col">{{ __('Sección') }}</th>
                   <th scope="col">{{ __('Alta') }}</th>
+                  <th scope="col">{{ __('Activo') }}</th>
                   <th scope="col">{{ __('Editar') }}</th>
                   <th scope="col">{{ __('Eliminar') }}</th>
                 </tr>
               </thead>
               <tbody>
               @forelse($stabs as $stab)
+                @php($idStab = $stab->idstablishment)
                 <tr>
                   <td>
                     <div class="form-check">
-                      <input class="form-check-input position-static" type="checkbox" value="{{ $stab->idstablishment }}" name="check">
+                      <input class="form-check-input position-static" type="checkbox" value="{{ $idStab }}" name="check">
                     </div>
                   </td>
-                  <td><img src="{{ asset('img/site/stablishments/logos/'.$stab['image']) }}" title="{{ __($stab->name) }}" alt="{{ __($stab->name) }}"></td>
+                  <td><img src="{{ asset($stab->image) }}" class="img-thumbnail" title="{{ __($stab->name) }}" alt="{{ __($stab->name) }}"></td>
                   <td>{{ $stab['name'] }}</td>
                   <td>{{ $stab['direction'] }}</td>
                   <td>{{ $stab['zone'] }}</td>
@@ -64,6 +66,12 @@
                   <td>{{ $stab['disabled'] }}</td>
                   <td>{{ $stab['section'] }}</td>
                   <td>{{ date('d/m/Y', strtotime($stab['created_at'])) }}</td>
+                  <td>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input enabled-check" id="enabled-{{ md5($idStab) }}" name="enabled-{{ md5($idStab) }}" data-hashStab="{{ Crypt::encryptString($idStab) }}" {{ $stab->disabledGlobal?"":"checked" }}>
+                      <label class="custom-control-label" for="enabled-{{ md5($idStab) }}"></label>
+                    </div>
+                  </td>
                   <td><a href="{{ route('admin.stablishments.edit', $stab) }}" class="btn btn-outline-success">Editar</a></td>
                   <td>
                     <form method="POST" action="{{ route('admin.stablishments.destroy', $stab) }}">
@@ -93,7 +101,8 @@
   window.addEventListener('load', function() {
     let cfg = {
       delurl: '{{ route("admin.stablishments.elimination") }}',
-      urlAddVisitsAll: '{{ route("admin.stablishments.addVisitsAll") }}'
+      urlAddVisitsAll: '{{ route("admin.stablishments.addVisitsAll") }}',
+      urlEnabledGlobalStab: '{{ route("admin.stablishments.enabledGlobalStab") }}',
     };
     admin.stablishment.view.init(cfg);
   });

@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('js/menus.js') }}"></script>
   <script src="{{ asset('js/stab.js') }}"></script>
+  <script src="{{ asset('js/jobs.js') }}"></script>
   <script src="{{ asset('js/gallery.js') }}"></script>
 @endsection
 
@@ -136,7 +137,7 @@
             </div>
           </div>
           <div class="col-6 col-md-3 mb-4">
-            <div class="card btnTable" data-toggle="modal" data-target="#addVacant-modal">
+            <div id="btn-jobs" class="card btnTable" data-toggle="modal" data-target="#addVacant-modal">
               <div class="btnTableImgCont">
                 <img src="{{ asset('img/site/btn/btn-myspace-vacant.png') }}" class="card-img-top" alt="Vacantes">
               </div>
@@ -253,6 +254,12 @@
               <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del anuncio">{{ old('descripcion') }}</textarea>
               {!! $errors->first('descripcion', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
             </div>
+            <div class="form-group">
+              <label for="jobType">{{ __('Tipo') }} <span  class="text-danger font-weight-bolder">*</span></label>
+              <select name="jobType" id="jobType"></select>
+              {!! $errors->first('type', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
+            </div>
+            <div id="subTypes" class="form-group"></div>
             <div>Presentar:</div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="doc" id="solicitud" value="solicitud" checked>
@@ -430,10 +437,16 @@ window.addEventListener('load', function() {
 
       // configuración para las vacantes
       cfg.jobsSection = true;
-      cfg.urlAddJob = '{{ route("myspace.addJob") }}';
-      cfg.urlUpdJob = '{{ route("myspace.updJob") }}';
-      cfg.urlDelJob = '{{ route("myspace.delJob") }}';
-      cfg.urlMyJobs = '{{ route("myspace.myJobs") }}';
+      cfg.urlMyJobs = "{{ route("myspace.myJobs") }}";
+
+      // configuración para las vacantes (nuevo archivo)
+      cfg.jobs = {};
+      cfg.jobs.urlGetJobTypes = '{{ route("myspace.getJobTypes") }}';
+      cfg.jobs.urlGetJobSubTypes = "{{ route("myspace.getJobSubTypes") }}";
+      cfg.jobs.urlAddJob = "{{ route("myspace.addJob") }}";
+      cfg.jobs.urlUpdJob = "{{ route("myspace.updJob") }}";
+      cfg.jobs.urlDelJob = "{{ route("myspace.delJob") }}";
+      cfg.jobs.urlMyDatas = "{{ route("myspace.myDatas") }}";
 
       // configuración para los anuncios
       cfg.urlAddAd = '{{ route("myspace.addAd") }}';
@@ -458,7 +471,7 @@ window.addEventListener('load', function() {
       cfg.stab.urlLoadStab = '{{ route("myspace.loadStab") }}';
       cfg.stab.urlUpdateStablishment = '{{ route("myspace.updateStablishment") }}';
 
-      // configuración para el js de menus.js
+      // configuración para el js de gallery.js
       cfg.gallery = {};
       cfg.gallery.urlAsset = "{{ asset("/") }}";
       cfg.gallery.urlStoreGallery = '{{ route("myspace.storeGallery") }}';

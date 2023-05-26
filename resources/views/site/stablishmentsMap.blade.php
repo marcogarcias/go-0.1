@@ -1,5 +1,18 @@
 @extends('layouts.site')
 @section('title', 'Cerca de tí')
+
+@section('css')
+  <link href="{{ asset('libs/mapbox/mapbox-gl.css?').microtime() }}" rel="stylesheet">
+  <link href="{{ asset('libs/mapbox/mapbox-gl-directions.css?').microtime() }}" rel="stylesheet">
+@endsection
+
+@section('js')
+  <script src="{{ asset('libs/turf/turf.min.js') }}"></script>
+  <script src="{{ asset('libs/mapbox/mapbox-gl.js') }}"></script>
+  <script src="{{ asset('libs/mapbox/mapbox-gl-directions.js') }}"></script>
+  <script src="{{ asset('js/map.js') }}"></script>
+@endsection
+
 @section('returnBtn', route('home'))
 
 @section('content')
@@ -32,9 +45,9 @@
 <script type="application/javascript">
   window.addEventListener('load', function() {
     $(document).ready(function() {
-      let zoom = 16;
+      let zoom = 14;
       if($(document).width() < 576){
-        zoom = 15;
+        zoom = 13;
       }
       let cfg = {
         showBtnHelp: false,
@@ -54,7 +67,7 @@
           'description2': '{{ $stab->description2 ? $stab->description2 : '' }}'
         }
       @endif
-      go.initGeo(cfg);
+      map.init(cfg);
     });
   });
 </script>

@@ -33,26 +33,22 @@
         </div> -->
 
         <div class="row">
-          <div class="col-12 mt-3 mb-3">
-            <div class="text-center">
-              @if(floatval($stablish->lat) && floatval($stablish->lng))
-                <a class="mr-4" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">
-                  <img src="{{ asset('img/site/btn/btn-stab-ubicacion.png') }}" title="Cerca de ti">
-                </a>
-              @endif
-
-              @if(count($jobs))
-                <a class="ml-4 mr-4" href="#" data-toggle="modal" data-target="#jobs-modal">
-                  <img src="{{ asset('img/site/btn/btn-stab-vacantes.png') }}" title="Vacantes">  
-                </a>
-              @endif
-
-              @if($stablish->web)
-                <a class="ml-4" href="http://{{ $stablish->web }}">
-                  <img src="{{ asset('img/site/btn/btn-stab-ubicacion.png') }}" title="Web oficial">
-                </a>
-              @endif
-            </div>
+          <div class="col-12 mt-3 mb-3 text-center stablishButtons1">
+            @if(floatval($stablish->lat) && floatval($stablish->lng))
+              <a class="mr-4" href="{{ route('cercaDeTi', $stablish->idstablishment) }}">
+                <img src="{{ asset('img/site/btn/btn-stab-ubicacion.png') }}" title="Cerca de ti">
+              </a>
+            @endif
+            @if(count($jobs))
+              <a class="mr-4" href="#" data-toggle="modal" data-target="#jobs-modal">
+                <img src="{{ asset('img/site/btn/btn-stab-vacantes.png') }}" title="Vacantes">  
+              </a>
+            @endif
+            @if($stablish->web)
+              <a class="mr-4" href="http://{{ $stablish->web }}">
+                <img src="{{ asset('img/site/btn/btn-stab-web.png') }}" title="Web oficial">
+              </a>
+            @endif
           </div>
         </div>
 
@@ -61,7 +57,7 @@
             <h1 class="text-white"><strong>{{ $stablish->name }}</strong></h1>
             <div class="text-left border text-white py-5 px-4 shadow menuCont">
               @if(count($menus))
-                <div class="text-center mb-5">
+                <div class="menuImgHeaderCont text-center mb-5">
                   <img style="border-radius: 10%" src="{{ asset($stablish->image) }}" alt="">
                 </div>
                 @foreach($menus as $menu)
@@ -156,14 +152,6 @@
         <div class="row">
           <div class="col-md-12 text-center">
             <ul class="btns-social">
-              <!-- <a href="https://api.whatsapp.com/send?phone=0123456789">Envíanos un mensaje de WhatsApp</a> -->
-              <!-- <a href="https://api.whatsapp.com/send?phone=0123456789&text=Hola, Nececito mas informacion!">Envíanos un mensaje de WhatsApp</a> -->
-              <!-- <a href="whatsapp://send?text=Hola, Index.pe&phone=+12 346 678 910&abid=+12 346 678 910">+12 346 678 910</a> -->
-               @if($stablish->whatsapp)
-                <li><a href="https://api.whatsapp.com/send?phone=52{{ $stablish->whatsapp }}" target="_blank">
-                  <img src="{{ asset('img/site/btn/icon-whatsapp-01.png') }}" alt="Whatsapp">
-                </a></li>
-              @endif
               @if($stablish->facebook)
                 <li><a href="https://{{ $stablish->facebook }}" target="_blank">
                   <img src="{{ asset('img/site/btn/icon-facebook-01.png') }}" alt="Facebook">
@@ -304,6 +292,26 @@
   </div>
 </div>
 <!-- TERMINA VENTANA DE VACANTES -->
+
+<!-- INICIA ICONOS DE COMPARTIR Y WHATSAPP -->
+<div id="buttonsFloats" class="row">
+  <div class="col-6">
+    <!-- <a href="https://api.whatsapp.com/send?phone=0123456789">Envíanos un mensaje de WhatsApp</a> -->
+    <!-- <a href="https://api.whatsapp.com/send?phone=0123456789&text=Hola, Nececito mas informacion!">Envíanos un mensaje de WhatsApp</a> -->
+    <!-- <a href="whatsapp://send?text=Hola, Index.pe&phone=+12 346 678 910&abid=+12 346 678 910">+12 346 678 910</a> -->
+    @if($stablish->whatsapp)
+      <a href="https://api.whatsapp.com/send?phone=52{{ $stablish->whatsapp }}" target="_blank">
+        <img src="{{ asset('img/site/btn/icon-whatsapp-01.png') }}" alt="Whatsapp">
+      </a>
+    @endif    
+  </div>
+  <div class="col-6">
+    <a class="btnShare mr-4" href="#">
+      <img src="{{ asset('img/site/btn/btn-share.png') }}" title="Compartir">
+    </a>
+  </div>
+</div>
+<!-- TERMINA ICONOS DE COMPARTIR Y WHATSAPP -->
 
 @push('scripts')
 <script type="application/javascript">

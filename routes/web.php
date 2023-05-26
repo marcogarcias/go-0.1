@@ -35,6 +35,9 @@ Route::get('/stablishment/{stab?}', [App\Http\Controllers\SiteController::class,
 Route::get('/stablishmentsMap/{stab?}', [App\Http\Controllers\SiteController::class, 'stablishmentsMap']
 )->name('cercaDeTi');
 
+Route::get('/stablishmentsJobs/', [App\Http\Controllers\SiteController::class, 'stablishmentsJobs']
+)->name('stablishmentsJobs');
+
 Route::get('/myspace', [
     App\Http\Controllers\SiteController::class, 
     'mySpace'
@@ -169,6 +172,44 @@ Route::post('/myspace/enableChat', [
     'enableChat'
   ]
 )->name('myspace.enableChat')->middleware('auth');
+
+Route::post('/myspace/enableDisableStab', [
+    App\Http\Controllers\SiteController::class, 
+    'enableDisableStab'
+  ]
+)->name('myspace.enableDisableStab')->middleware('auth');
+
+
+/* ******************************************* */
+/* START - RUTAS DE MI ESPACIO PARA EL USUARIO */
+/* ******************************************* */
+
+Route::post('/myspace/loadCv', [
+    App\Http\Controllers\SiteController::class, 
+    'loadCv'
+  ]
+)->name('myspace.loadCv')->middleware('auth');
+
+Route::post('/myspace/addCv', [
+    App\Http\Controllers\SiteController::class, 
+    'addCv'
+  ]
+)->name('myspace.addCv')->middleware('auth');
+
+Route::post('/myspace/updateCv', [
+    App\Http\Controllers\SiteController::class, 
+    'updateCv'
+  ]
+)->name('myspace.updateCv')->middleware('auth');
+
+/* ******************************************* */
+/* END - RUTAS DE MI ESPACIO PARA EL USUARIO */
+/* ******************************************* */
+
+
+
+
+
 
 Route::post('/addStablishment', [
     App\Http\Controllers\SiteController::class, 

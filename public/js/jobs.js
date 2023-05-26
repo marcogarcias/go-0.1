@@ -1,5 +1,6 @@
 
 let jobs = {
+  // SECCIÓN DE GESTION DE EMPLEOS DESDE EL ADMIN
   init: (cfg)=>{
     cfg = (typeof cfg === "object") ? cfg : {};
     let urlGetJobTypes = cfg.urlGetJobTypes ? cfg.urlGetJobTypes : false;
@@ -174,5 +175,32 @@ let jobs = {
   resetFrm: function(frm){
     $(frm)[0].reset();
     $(frm+' .reset').val('');
+  },
+
+  // SECCION DE EMPLEOS DEL USUARIO COMÚN
+  initSection: function(cfg){
+    cfg = (typeof cfg === "object") ? cfg : {};
+    let jobsArr = cfg.jobsArr ? cfg.jobsArr : [];
+    jobs.setJobs(jobsArr);
+  },
+  // crea las cajas con los empleos
+  setJobs: function(jobsArr){
+    jobsArr = (typeof jobsArr === "object") ? jobsArr : [];
+    html = ``;
+    console.log("jobsArr", jobsArr);
+    if(jobsArr.length){
+      for(let j in jobsArr){
+        let job = jobsArr[j];
+        html += `
+          <div class="col-xs-12 col-sm-12 col-md-5 border-2 jobContainer">
+            <div class="border-1 imgCont">
+              <img src="${job["imgPath"]}" title="${job["jobName"]}">
+            </div>
+            <h5>Negocio: ${job["stabName"]}</h5>
+            <h5>Solicita: ${job["jobName"]}</h5>
+          </div>`;
+      }
+    }
+    $("#jobsCont").html(html);
   },
 }

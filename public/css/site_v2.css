@@ -250,6 +250,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 /* ************************************************* */
 /* INICIO - Mi espacio (listado de establecimientos) */
 /* ************************************************* */
+#habilitado img{ width: 80px; }
 .mySpace-stablish-cont{ text-align: center; margin: 0 5%; width: 20%; }
 .mySpace-stablish-body{ background: #2f2f2f; padding: 20px; }
 .mySpace-stablish-body-img{ background: #fff; border-radius: 5px; padding: 10px; }
@@ -291,11 +292,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 /* INICIO - Detalle establecimiento */
 /* ******************************** */
 
+.stablishButtons1 img{ width: 80px; }
 .stablish-summary{ width: 100%; }
 .stablish-summary img{ width: 100%; }
 .menuCont{
   background: #333;
   border-radius: 20px;
+}
+
+.menuImgHeaderCont img{
+  width: 100%;
 }
 
 .menuCont ul{
@@ -333,10 +339,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 #gallery-modal .close-modal{ margin-top: 3%; }
 #gallery-img{ width: 100%; }
 
-
-
-
-
 .btns-social{ margin: 2% 0; padding: 0; }
 
 .btns-social li{
@@ -364,6 +366,24 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 .job-content, .modal-body{
   font-weight: bold;
   font-size: 19px;
+}
+
+#buttonsFloats{
+  bottom: 20px;
+  position: fixed;
+  right: 0px;
+  z-index: 999;
+  width: 180px;
+}
+
+#buttonsFloats div{
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
+}
+#buttonsFloats img{ 
+  height: 70px;
+  width: 70px; 
 }
 /*#jobs-modal .modal-dialog, #ads-modal .modal-dialog
   { margin: 5% auto !important; text-align: center; }
@@ -394,7 +414,30 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 }
 #go-mapa{ height: 710px; margin: 10% 0; width: 100%; }
 
+/* **************** */
+/* INICIO - EMPLEOS */
+/* **************** */
 
+.jobContainer{
+  background: #333;
+  color: #fff;
+  margin: 20px;
+}
+
+.imgCont{
+  margin: auto;
+  width: 40%;
+}
+
+.jobContainer h5{
+  text-align: center;
+}
+
+
+.imgCont img{
+  border-radius: 30%;
+  width: 100%;
+}
 
 
 
@@ -416,6 +459,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   .btn-cont .btn-black{ letter-spacing: 2px; }
   /* INICIO - Login */
   .login-cont{ font-size: 18px; }
+  /* INICIO - Detalle establecimiento */
   .card-body{ padding: 3rem; }
 }
 
@@ -574,6 +618,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   .stablish-add-space, .stablish-del-space{ display: none; }
   .stablish-footer .stablish-add, .stablish-footer .stablish-del{ width: 20%; }
   /* INICIO - Detalle establecimiento */
+  .stablishButtons1 img{ width: 60px; }
   .stablish-summary{ margin: 10% 0; }
   /* INICIO - Mi espacio (listado de establecimientos) */
   .mySpace-stablish-cont{ margin-right: 1%; width: 40%; }

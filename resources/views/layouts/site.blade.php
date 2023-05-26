@@ -24,7 +24,7 @@
   <link href="{{ asset('css/site_v2.css?').microtime() }}" rel="stylesheet">
 
   @if(session('isStablishment'))
-    <link href="{{ asset('css/chatbox_v1.css?').microtime() }}" rel="stylesheet">
+    <!-- <link href="{{ asset('css/chatbox_v1.css?').microtime() }}" rel="stylesheet"> -->
   @endif
   @yield('css')
 
@@ -154,6 +154,7 @@
 <!-- CHAT -->
 @auth
 @if(session('isStablishment') && session('chatStablishment'))
+  <!--
   <div id="btn-openChat" class="newMsgGeneral" data-userStablishment="{{ Crypt::encryptString(session('userStablishment')) }}" data-userClient="">
     <div class="chat-icon">
       <i class="far fa-comment-dots"></i>    
@@ -162,6 +163,7 @@
       <i class="fa fa-envelope" aria-hidden="true" title="Nuevo mensaje"></i>
     </div>
   </div>
+  -->
 
   <!-- INICIA VENTANA DE CHAT -->
   <div id="chatbox-stablish">

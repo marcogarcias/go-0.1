@@ -3,19 +3,41 @@ var $image;
 var cropper;
 var canvas;
 
-let stab = {
+let cv = {
   init: (cfg)=>{
-    cfg = (typeof cfg === 'object') ? cfg : {};
-    let urlLoadStab = cfg.urlLoadStab ? cfg.urlLoadStab  : '';
-    let urlUpdateStablishment = cfg.urlUpdateStablishment ? cfg.urlUpdateStablishment  : '';
+    cfg = (typeof cfg === "object") ? cfg : {};
+    let urlGetJobTypes = cfg.urlGetJobTypes ? cfg.urlGetJobTypes : false;
+    let urlGetJobSubTypes = cfg.urlGetJobSubTypes ? cfg.urlGetJobSubTypes : false;
+    let urlLoadCv = cfg.urlLoadCv ? cfg.urlLoadCv  : "";
+    let urlAddCv = cfg.urlAddCv ? cfg.urlAddCv : false;
+    let urlUpdateCv = cfg.urlUpdateCv ? cfg.urlUpdateCv  : "";
     let urlAsset = cfg.urlAsset ? cfg.urlAsset  : "";
-    /*let urlLoadProducts = cfg.urlLoadProducts ? cfg.urlLoadProducts : '';
-    let urlDelProduct = cfg.urlDelProduct ? cfg.urlDelProduct : '';*/
 
-    stab.modalCreate(urlLoadStab);
-    stab.loadStab(urlLoadStab, function(res){
-      res.urlAsset = urlAsset;
-      stab.setStab(res);
+    cv.modalCreate();
+    cv.loadJobTypes(urlGetJobTypes, function(res){
+      cv.setJobTypes(res);
+      cv.loadCv(urlLoadCv, function(res){
+        res.urlAsset = urlAsset;
+        cv.setCv(res);
+      });
+    });
+
+    $(document).off("change", "#jobType");
+    $(document).on("change", "#jobType", function (event) {
+      let hashJobType = $(this).val();
+      go.loadAjaxPost(urlGetJobSubTypes, {hashJobType: hashJobType}, function(res){
+        if(res.success && res.data){
+          html="";
+          for(let sub in res.data){
+            html += ""+
+              "<div class='custom-control custom-checkbox custom-control-inline'>"+
+                "<input type='checkbox' class='custom-control-input' id='"+res.data[sub].hashJobSubType+"' name='tags[]' value='"+res.data[sub].hashJobSubType+"'>"+
+                "<label class='custom-control-label' for='"+res.data[sub].hashJobSubType+"'>"+res.data[sub].name+"</label>"+
+              "</div>";
+          }
+          $("#subTypes").html(html);
+        }
+      });
     });
 
     $modal = $('.imagecrop');
@@ -23,12 +45,10 @@ let stab = {
 
     $(document).off("change", "#logotipo");
     $(document).on('change', '#logotipo', function(e){
-      //stab.loadPrevLogotipo(this);
-      //stab.loadEditLogotipo(e);
-      stab.initLoadFile(e);
+      cv.initLoadFile(e);
     });
 
-    $(document).off("shown.bs.modal", ".imagecrop").off("hidden.bs.modal", ".imagecrop");
+    /*$(document).off("shown.bs.modal", ".imagecrop").off("hidden.bs.modal", ".imagecrop");
     $(document).on("shown.bs.modal", '.imagecrop', function(){
       console.log("llamando a initCropper: ");
       stab.initCropper();
@@ -36,173 +56,171 @@ let stab = {
       console.log("destruyendo: cropper", cropper);
       cropper && cropper.destroy();
       cropper = null;
-    });
+    });*/
 
-    $(document).off("click", '#crop');
+    /*$(document).off("click", '#crop');
     $(document).on('click', '#crop', function(){
       console.log("llamando a cropImage: ");
       stab.cropImage();
-    });
-
-    $(document).off("click", "#btn-stab-frm");
-    $(document).on('click', '#btn-stab-frm', (e)=>{
+    });*/
+    $(document).off("click", "#btn-cv-frm");
+    $(document).on('click', '#btn-cv-frm', (e)=>{
       e.preventDefault();
-      stab.storeStab(urlUpdateStablishment);
+      cv.storeCv(urlAddCv);
     });
   },
-  modalCreate: (url)=>{
+  modalCreate: ()=>{
     $('#window-modal').modal({
       backdrop: true,
       keyboard: false
     });
-    $('#window-modal .modal-title').text('DATOS DE EMPRESA');
+    $("#window-modal .modal-title").text("CURRICULUM VITAE");
     let html = `
-      <div class="col-12 col-md-8">
-        <form id="stabFrm" action="" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="nombre">Nombre <span class="text-danger font-weight-bolder">*</span></label>
-            <input type="text" class="form-control" id="nombre" name="nombre" value="" placeholder="Nombre del establecimiento">
-            <div id="nombre-error" class="error" style="display: block;"></div>
+      <div class="col-12">
+        <form id="cvFrm" action="" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-12 col-md-6 form-group">
+              <label for="name">Nombre <span class="text-danger font-weight-bolder">*</span></label>
+              <input type="text" class="form-control" id="name" name="name" value="" placeholder="Nombre de usuario">
+              <div id="name-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="col-12 col-md-6 form-group">
+              <label for="nextName">Segundo nombre</label>
+              <input type="text" class="form-control" id="nextName" name="nextName" value="" placeholder="Segundo nombre del usuario">
+              <div id="nextName-error" class="error" style="display: block;"></div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="descripcion">Descripción <span  class="text-danger font-weight-bolder">*</span></label>
-            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del establecimiento"></textarea>
-            <div id="descripcion-error" class="error" style="display: block;"></div>
+          <div class="row">
+            <div class="col-12 col-md-6 form-group">
+              <label for="ap">Apellido paterno <span class="text-danger font-weight-bolder">*</span></label>
+              <input type="text" class="form-control" id="ap" name="ap" value="" placeholder="Apellido paterno">
+              <div id="ap-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="col-12 col-md-6 form-group">
+              <label for="am">Apellido materno</label>
+              <input type="text" class="form-control" id="am" name="am" value="" placeholder="Apellido materno">
+              <div id="am-error" class="error" style="display: block;"></div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="descripcion2">Descripción 2 (mapa)</label>
-            <input type="text" class="form-control" id="descripcion2" name="descripcion2" value="" placeholder="Descripción para el mapa">
-            <div id="descripcion2-error" class="error" style="display: block;"></div>
+          <div class="row">
+            <div class="col-12 col-md-6 form-group">
+              <label for="email">Correo electrónico <span class="text-danger font-weight-bolder">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" value="" placeholder="Correo electrónico">
+              <div id="email-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="col-12 col-md-6 form-group">
+              <label for="cellphone">Celular <span class="text-danger font-weight-bolder">*</span></label>
+              <input type="text" class="form-control" id="cellphone" name="cellphone" value="" placeholder="55-0000-0000">
+              <div id="cellphone-error" class="error" style="display: block;"></div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="direccion">Dirección <span  class="text-danger font-weight-bolder">*</span></label>
-            <input type="text" class="form-control" id="direccion" name="direccion" value="" placeholder="Av. Villanueva, Col. San Juán, no. 55, C.P. 55450">
-            <div id="direccion-error" class="error" style="display: block;"></div>
+          <div class="row">
+            <div class="col-12 col-md-6 form-group">
+              <label for="age">Edad <span class="text-danger font-weight-bolder">*</span></label>
+              <input type="text" class="form-control" id="age" name="age" value="" placeholder="00">
+              <div id="age-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="col-12 col-md-6 form-group">
+              <label for="gender">Género <span class="text-danger font-weight-bolder">*</span></label>
+              <select id="gender" name="gender" class="custom-select">
+                <option selected>Selecciona una opción</option>
+                <option value="h">Hombre</option>
+                <option value="m">Mujer</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="latitud">Latitud</label>
-            <input type="text" class="form-control" id="latitud" name="latitud" value="" placeholder="Latitud del establecimiento">
-            <div id="latitud-error" class="error" style="display: block;"></div>
+          <div class="row">
+            <div class="col-12 form-group">
+              <label for="description">Descripción <span class="text-danger font-weight-bolder">*</span></label>
+              <textarea class="form-control" id="description" name="description" rows="3" placeholder="Descríbete un poco"></textarea>
+              <div id="description-error" class="error" style="display: block;"></div>
+            </div>
           </div>
+          <div class="row">
+            <div class="col-12 col-md-6 form-group">
+              <label for="cadademicH">Historial académico <span class="text-danger font-weight-bolder">*</span></label>
+              <textarea class="form-control" id="cadademicH" name="cadademicH" rows="6" placeholder="Historial académico"></textarea>
+              <div id="cadademicH-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="col-12 col-md-6 form-group">
+              <label for="jobH">Historial laboral <span class="text-danger font-weight-bolder">*</span></label>
+              <textarea class="form-control" id="jobH" name="jobH" rows="6" placeholder="Historial laboral"></textarea>
+              <div id="jobH-error" class="error" style="display: block;"></div>
+            </div>
+          </div>
+          <!-- USAR LA LIBRERÍA: https://blueimp.github.io/JavaScript-Load-Image/ -->
+          <!-- 
           <div class="form-group">
-            <label for="longitud">Longitud</label>
-            <input type="text" class="form-control" id="longitud" name="longitud" value="" placeholder="Longitud del establecimiento">
-            <div id="longitud-error" class="error" style="display: block;"></div>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="photo">
+              <input type="hidden" id="photoB64" name="photoB64">
+              <label class="custom-file-label" for="photo">Cargar foto</label>
+            </div>
           </div>
           <div class="form-group">
             <div class="col-8 col-md-3">
               <div id="prev-logotipo" style="background-image: url(http://i.pravatar.cc/500?img=7) background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="logotipo">Logotipo (dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)</label>
-            <input type="file"  class="form-control-file" id="logotipo" name="logotipo" accept=".png, .jpg, .jpeg">
-            <input type="hidden" id="logotipoBase64" name="logotipoBase64">
-            <div id="logotipo-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="telefono">Teléfono (máximo 13 carácteres)</label>
-            <input type="text" class="form-control" id="telefono" name="telefono" value="" min="0" max="9999999999999" step="1" placeholder="5555555555">
-            <div id="telefono-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="whatsapp">Whatsapp (máximo 13 carácteres)</label>
-            <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="" min="0" max="9999999999999" step="1" placeholder="5555555555">
-            <div id="whatsapp-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="facebook">Facebook</label>
-            <input type="text" class="form-control" id="facebook" name="facebook" value="facebook" placeholder="Facebook">
-            <div id="facebook-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="instagram">Instagram</label>
-            <input type="text" class="form-control" id="instagram" name="instagram" value="instagram" placeholder="Instagram">
-            <div id="instagram-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="twitter">Twitter</label>
-            <input type="text" class="form-control" id="twitter" name="twitter" value="twitter" placeholder="Twitter">
-            <div id="twitter-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="youtube">Youtube</label>
-            <input type="text" class="form-control" id="youtube" name="youtube" value="youtube" placeholder="Youtube">
-            <div id="youtube-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="web">Web oficial</label>
-            <input type="text" class="form-control" id="web" name="web" value="web" placeholder="web">
-            <div id="web-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="horario">Hoario <span  class="text-danger font-weight-bolder">*</span></label>
-            <input type="text" class="form-control" id="horario" name="horario" value="horario" placeholder="08:00 am - 08:00 pm">
-            <div id="horario-error" class="error" style="display: block;"></div>
-          </div>
-
-          <div class="form-group">
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="oferta" name="oferta">
-              <label class="custom-control-label" for="oferta">Oferta</label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="zona">Zona <span  class="text-danger font-weight-bolder">*</span></label>
-            <select class="form-control" id="zona" name="zona">
-              <option value="">Seleccione una opción</option>
-            </select>
-            <div id="zona-error" class="error" style="display: block;"></div>
-          </div>
-
-          <div class="form-group">
-            <label for="section">Sección <span  class="text-danger font-weight-bolder">*</span></label>
-            <select class="form-control" id="section" name="section">
-              <option value="">Seleccione una opción</option>
-            </select>
-            <div id="section-error" class="error" style="display: block;"></div>
-          </div>
-
-          <div id="tags" class="form-group"></div>
-          <hr>
-          <div class="form-group">
-            <button id='btn-stab-frm' type="submit" class="btn btn-primary">Aceptar</button>
-          </div>
-        </form>
-      </div>
-
-      <div class="modal imagecrop fade" id="window-modal-croop" tabindex="-1" role="dialog" aria-labelledby="window-modal-croop" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Editar imagen</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="img-container">
-                <div class="row">
-                  <div class="col-md-11">
-                    <img id="image" src="" style="display: block; max-width: 100%;">
-                  </div>
-                </div>
+          </div> -->
+          <div class="row">
+            <div class="col-12 form-group">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="disabled" name="disabled" checked>
+                <label class="custom-control-label" for="disabled">Habilitar</label>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary crop" id="crop">Recortar imagen</button>
+          </div>
+          <div class="row">
+            <div class="col-12 form-group">
+              <label for="jobType">Tipo de empleo <span class="text-danger font-weight-bolder">*</span></label>
+              <select name="jobType" id="jobType" class="custom-select"></select>
+              <div id="jobType-error" class="error" style="display: block;"></div>
             </div>
           </div>
-        </div>
+          <div class="row">
+            <div id="subTypes" class="col-12 form-group"></div>
+          </div>
+          <hr>
+          <div class="form-group">
+            <button id='btn-cv-frm' type="submit" class="btn btn-primary">Aceptar</button>
+          </div>
+        </form>
       </div>`;
     $('#window-modal .modal-body').html(html);
   },
-
-  loadStab: (url, callback)=>{
+  // carga los tipos de empleos del catalogo
+  loadJobTypes: (url, callback)=>{
+    let data = {};
+    go.loadAjaxPost(url, data, function(res){
+      if(res['success']){
+        if(callback && (typeof callback === 'function')){
+          callback(res);
+        }
+      }else{
+        if(callback && (typeof callback === 'function')){
+          callback(false);
+        }
+      }
+    });
+  },
+  // crea un elemento select con los tipos de empleos
+  setJobTypes: (jobs, callback)=>{
+    jobs = jobs.data;
+    let html = "<option value=''>Elige una opción</option>";
+    let job;
+    if(jobs.length){
+      for(let j in jobs){
+        job = jobs[j];
+        html += `
+          <option value="${job["hashJobType"]}">${job["name"]}</option>`;
+      }
+      $("#jobType").html(html);
+    }
+  },
+  loadCv: (url, callback)=>{
     let data = {};
     utils.sendAjax(url, data, function(res){
+      console.log("2");
       if(res['success']){
         if(callback && (typeof callback === 'function')){
           callback(res);
@@ -211,49 +229,43 @@ let stab = {
     });
   },
 /**
- * Inserta los valores de la empresa en el formulario de empresa
- * @param {json} Datos de la empresa y de los catálogos
+ * Inserta los valores del cv en el formulario de cv
+ * @param {json} Datos del cv
  * @return  null
  */
-  setStab: (data)=>{
-    let stab = data.stab;
+  setCv: (data)=>{
+    return true;
+    let cv = data.cv;
     let urlAsset = data.urlAsset;
-    let zones = data.zones;
-    let sections = data.sections;
-    let tags = data.tags;
-    let stabTags = data.stab_tags;
     let option;
     let sel;
     let checked;
-    $('#nombre').val(stab.name);
-    $('#descripcion').val(stab.description);
-    $('#descripcion2').val(stab.description2);
-    $('#direccion').val(stab.direction);
-    $('#latitud').val(stab.lat);
-    $('#longitud').val(stab.lng);
-    $('#telefono').val(stab.phone);
-    $('#whatsapp').val(stab.whatsapp);
-    $('#facebook').val(stab.facebook);
-    $('#instagram').val(stab.instagram);
-    $('#twitter').val(stab.twitter);
-    $('#youtube').val(stab.youtube);
-    $('#web').val(stab.web);
-    $('#horario').val(stab.hour);
+    $("#name").val(cv.name);
+    $("#nextName").val(cv.nextName);
+    $("#ap").val(cv.ap);
+    $("#am").val(cv.am);
+    $("#email").val(cv.email);
+    $("#cellphone").val(cv.cellphone);
+    $("#age").val(cv.age);
+    $("#gender").val(cv.gender);
+    $("#description").val(cv.description);
+    $("#academicH").val(cv.academicH);
+    $("#jobH").val(cv.jobH);
+    $("#photo").val(cv.photo);
 
-    // 
-    let url = `${urlAsset}${stab.image}`;
-    $('#prev-logotipo').css("background-image", `url(${url})`);
+    let url = `${urlAsset}${cv.image}`;
+    $('#prev-cv').css("background-image", `url(${url})`);
 
-    stab.offer && $('#oferta').prop('checked', 'checked');
-    //stab.disabled || $('#habilitado').prop('checked', 'checked');
+    cv.offer && $('#oferta').prop('checked', 'checked');
+    cv.disabled || $('#habilitado').prop('checked', 'checked');
     for(let z in zones){
-      sel = zones[z].idzone == stab.zone_id ? 'selected' : '';
+      sel = zones[z].idzone == cv.zone_id ? 'selected' : '';
       option = `<option value="${zones[z].idzone}" ${sel}>${zones[z].name}</option>`;
       $('#zona').append(option);
     }
 
     for(let s in sections){
-      sel = sections[s].idsection == stab.section_id ? 'selected' : '';
+      sel = sections[s].idsection == cv.section_id ? 'selected' : '';
       option = `<option value="${sections[s].idsection}" ${sel}>${sections[s].name}</option>`;
       $('#section').append(option);
     }
@@ -311,8 +323,8 @@ let stab = {
   },
   cropImage: function(){
     canvas = cropper.getCroppedCanvas({
-      width: 900,
-      heigth: 500
+      width: 150,
+      heigth: 100
     });      
     console.log("canvas, cropper: ", canvas, cropper);
     canvas.toBlob(function(blob){
@@ -356,32 +368,27 @@ let stab = {
       modal.modal('show');
     };
   },
-  storeStab: (url, callback)=>{
+  storeCv: (url, callback)=>{
     let formData = new FormData();
-    let files = $('#logotipo')[0].files[0];
-    formData.append('file',files);
-    formData.append('logotipoBase64', $('#logotipoBase64').val());
-    formData.append('nombre', $('#nombre').val());
-    formData.append('descripcion', $('#descripcion').val());
-    formData.append('descripcion2', $('#descripcion2').val());
-    formData.append('direccion', $('#direccion').val());
-    formData.append('latitud', $('#latitud').val());
-    formData.append('longitud', $('#longitud').val());
-    formData.append('telefono', $('#telefono').val());
-    formData.append('whatsapp', $('#whatsapp').val());
-    formData.append('facebook', $('#facebook').val());
-    formData.append('instagram', $('#instagram').val());
-    formData.append('twitter', $('#twitter').val());
-    formData.append('youtube', $('#youtube').val());
-    formData.append('web', $('#web').val());
-    formData.append('horario', $('#horario').val());
-    formData.append('oferta', Number($('#oferta').prop('checked')));
-    formData.append('zona', $('#zona').val());
-    //formData.append('habilitado', Number($('#habilitado').prop('checked')));
-    formData.append('section', $('#section').val());
+    //let files = $('#logotipo')[0].files[0];
+    //formData.append('file',files);
+    //formData.append('logotipoBase64', $('#logotipoBase64').val());
+    formData.append('name', $('#name').val());
+    formData.append('nextName', $('#nextName').val());
+    formData.append('ap', $('#ap').val());
+    formData.append('am', $('#am').val());
+    formData.append('email', $('#email').val());
+    formData.append('cellphone', $('#cellphone').val());
+    formData.append('age', $('#age').val());
+    formData.append('gender', $('#gender').val());
+    formData.append('description', $('#description').val());
+    formData.append('cadademicH', $('#cadademicH').val());
+    formData.append('jobH', $('#jobH').val());
+    formData.append('disabled', $('#disabled').val());
+    formData.append('jobType', $('#jobType').val());
 
-    $("#tags input:checkbox:checked").each(function() {
-      formData.append('tags[]', $(this).val());
+    $("#subTypes input:checkbox:checked").each(function() {
+      formData.append('subTypes[]', $(this).val());
     });
 
     utils.sendAjaxJQ(url, formData, function(res){
@@ -584,4 +591,4 @@ let stab = {
       }
     });
   }*/
-}
+};

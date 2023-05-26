@@ -19,7 +19,11 @@
           @php($first = true)
           @forelse($sections as $sec)
             <div class="carousel-item {{ $first?'active':'' }}">
-              <a href="{{ route('stablishments', $sec->idsection) }}"><img class="d-block w-100" src="{{ asset('img/site/btn/'.$sec->image) }}" title="{{ __($sec->name) }}" alt="{{ __($sec->name) }}"></a>
+              @if($sec->name == "Vacantes")
+                <a href="{{ route('stablishmentsJobs') }}"><img class="d-block w-100" src="{{ asset('img/site/btn/'.$sec->image) }}" title="{{ __($sec->name) }}" alt="{{ __($sec->name) }}"></a>
+              @else
+                <a href="{{ route('stablishments', $sec->idsection) }}"><img class="d-block w-100" src="{{ asset('img/site/btn/'.$sec->image) }}" title="{{ __($sec->name) }}" alt="{{ __($sec->name) }}"></a>
+              @endif
             </div>
             @php($first = false)
           @empty

@@ -4,8 +4,6 @@ let go={
   section: '',
   btnHelp: 0,
   urlAjax:'',
-  goMap: '',
-  goMapCircle: '',
   lat: 0.0,
   lng: 0.0,
   toGo: '',
@@ -53,6 +51,20 @@ let go={
   },
   registerEvents: function(cfg){
     let sec, html;
+    let lat, lng;
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(position){
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        $("#latitud").val(lat);
+        $("#longitud").val(lng);
+      }, function(msg){
+        console.error(msg);
+      });
+    }else{
+      console.log("No se puede obtener las coordenadas");
+    }
+
     $('.userType').on('change', function(){
       let userType = $(this).val();
       let span = '';
@@ -85,7 +97,6 @@ let go={
 
     // evento para desplegar los tags de acuerdo a la sección
     $(document).on('change', '#section', function(){
-      console.log('secciones...');
       sec = $(this).val();
       go.loadAjaxPost(cfg.tagsurl, {sec: sec}, function(res){
         if(res.success && res.tags){
@@ -198,17 +209,19 @@ let go={
   initStablisments: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
     cfg.menu = (typeof cfg.menu === 'object') ? cfg.menu : {};
+    let iAmStab = cfg.iAmStab ? cfg.iAmStab : false;
     let jobsSection = cfg.jobsSection ? cfg.jobsSection : false;
     let haveMenu = parseInt(cfg.menu.haveMenus);
     let cfgMenus = cfg.menu ? cfg.menu : {};
     let cfgStab = cfg.stab ? cfg.stab : {};
     let cfgJobs = cfg.jobs ? cfg.jobs : {};
+    let cfgCv = cfg.cv ? cfg.cv : {};
     let cfgGallery = cfg.gallery ? cfg.gallery : {};
     let urlTags = cfg.urlTags ? cfg.urlTags : {};
+    let urlEnableDisableStab = cfg.urlEnableDisableStab ? cfg.urlEnableDisableStab : {};
     go.chat = cfg.chat === 'true';
-
     this.redimentions(cfg.showBtnHelp);
-    if(!haveMenu){
+    if(iAmStab && !haveMenu){
       $('#window-modal').modal({
         backdrop: "static",
         keyboard: false
@@ -223,20 +236,19 @@ let go={
       $('#filters').slideToggle(1000);
     });
 
-    /*$('#buttons-seccions .btn-menu').on('click', function(){
-      let type = $(this).attr('id').split('-');;
-      switch(type[1]){
-        case 'stab':
-          stab.init(cfgStab);
-          break;
-        case 'menus':
-          menus.init(cfgMenus);
-          break;
-      }
-    });*/
+    $(document).on("click", "#habilitado", function(){
+      habilitado = parseInt($(this).attr("data-habilitado"));
+      let data = { habilitado: habilitado };
+      utils.sendAjax(urlEnableDisableStab, data, function(res){
+        utils.toastr({'type': res.code, 'message': res.message});
+        if(res['success']){
+          $("#habilitado").attr("data-habilitado", habilitado?0:1);
+          $("#habilitado img").attr("title", habilitado?"Deshabilitado":"Habilitado");
+        }
+      });
+    });
 
     $(document).on('change', '#section', function(){
-      console.log('secciones...');
       sec = $(this).val();
       go.loadAjaxPost(urlTags, {sec: sec}, function(res){
         if(res.success && res.tags){
@@ -253,7 +265,7 @@ let go={
       });
     });
 
-    $("#btn-stab, #btn-jobs, #btn-menus, #btn-gallery").on("click", function(){
+    $("#btn-stab, #btn-jobs, #btn-menus, #btn-gallery, #btn-cv").on("click", function(){
       let type = $(this).attr("id").split("-");
       switch(type[1]){
         case "stab":
@@ -267,6 +279,9 @@ let go={
           break;
         case "gallery":
           gallery.init(cfgGallery);
+          break;
+        case "cv":
+          cv.init(cfgCv);
           break;
       }
     });
@@ -303,10 +318,25 @@ let go={
       go.enableChat(url, stab, !go.chat);
     });
 
+    /*$(document).on("click", "#habilitado", function(){
+      let enable = $(this).is(":checked");
+      go.enableDisableStab(enable);
+    });*/
+
     if(jobsSection)
       go.adminJobs(cfg);
 
   },
+  // evento del check para habilitar/deshabilitar una empresa/negocio
+  /*enableDisableStab: function(enable){
+    let text;
+    if(enable){
+      text = "habilitado";
+    }else{
+      text = "deshabilitando";
+    }
+    $("#habilitadoLabel").text(text);
+  },*/
   setFilter: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
     let auth = cfg.auth ? cfg.auth : 0; 
@@ -343,6 +373,17 @@ let go={
       $(".modal-body").text(desc);
       $("#window-modal").modal('toggle');
     });
+    // compartir establecimiento
+    $(document).on("click", ".btnShare", function(){
+      let title_ = "Compartir", 
+        text_ = "Compartir el establecimiento con un amigo.", 
+        url_ = window.location;
+      if(navigator.share){
+        navigator.share({ title: title_, text: text_, url: url_ })
+      }
+      return false;
+    });
+
     $('#window-modal .modal-title').text(title);
   },
   // eventos para la sección de la administración de "jobs"
@@ -492,103 +533,6 @@ let go={
         console.log(enable ? 'habilitando' : 'deshabilitando');
       }
     });
-  },
-  // Funciones para el mapa y localización
-  initGeo: function(cfg){
-    this.redimentions(cfg.showBtnHelp);
-    cfg = (typeof cfg === 'object') ? cfg : {};
-    let url = cfg.url ? cfg.url : '';
-    go.toGo = cfg.toGo;
-    go.zoom = cfg.zoom ? cfg.zoom : 14;
-    go.asset = cfg.asset ? cfg.asset : '/';
-    go.stablish = cfg.stablish ? cfg.stablish : false;
-    //go.lat = 19.69448;
-    //go.lng = -99.00208;
-
-    if(navigator.geolocation){
-      //navigator.geolocation.getCurrentPosition(function(position){
-      navigator.geolocation.watchPosition(function(position){
-        go.lat = position.coords.latitude;
-        go.lng = position.coords.longitude;
-        //console.log(go.lat, go.lng);
-
-        let data = {'lat': go.lat, 'lng': go.lng};
-        go.loadAjaxPost(url, data, function(res){
-          go.drawMap(res['stablish']);
-          //console.log('ajax: ',go.asset,res);
-        });
-      }, function(msg){
-        $('#go-mapa').empty().append('<img style="width:100%" src="'+go.asset+'img/site/gps-off.png">');
-        console.error( msg );
-      });
-    }else{
-      $('#go-mapa').empty().append('<img style="width:100%" src="'+go.asset+'img/site/gps-off.png">');
-      alert('ERROR: No se puede obtener tu ubicación, no se mostrará el mapa. Intenta más tarde, gracias.');
-    }
-
-    $('.map-around').on('input change', function(e){
-      let mts = $(this).val();
-      go.setCircle(mts);
-    });
-  },
-  drawMap: function(stablish){
-    let marker;
-    let coor;
-    coor = go.stablish ? [go.stablish.lat, go.stablish.lng] : [go.lat, go.lng];
-    go.goMap = L.map('go-mapa').setView(coor, go.zoom);
-    //let token='pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-    let token='pk.eyJ1Ijoic29tb3NnbzkiLCJhIjoiY2tsdjducTIwMG54ZDJwbzQ5dHB4ZTFkMSJ9.TiWIu_R1l-SBxICm0ueqqQ';
-
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token='+token, {
-      maxZoom: 18,
-      attribution: 'Datos del mapa de &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>, ' + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 'Imágenes © <a href="https://www.mapbox.com/">Mapbox</a>', 
-      //id: 'mapbox/satellite-streets-v11'
-      id: 'mapbox/streets-v11'
-    }).addTo(go.goMap);
-
-    go.goMapCircle = L.circle([go.lat, go.lng], {
-      color: 'blue',
-      fillColor: '#0f0',
-      fillOpacity: 0.1,
-      radius: 2000
-    }).addTo(go.goMap);
-
-    marker = L.marker([go.lat, go.lng]).addTo(go.goMap);
-    for(let stab in stablish){
-      go.setStablishInMap(stablish[stab]);
-    }
-  },
-  setStablishInMap: (stablish)=>{
-    console.log(stablish, go.stablish);
-    let marker;
-    let toGo = go.toGo+'/';
-    //let mark = go.asset+'img/site/btn/'+stablish.secImage;
-    let mark;
-    mark = Number(go.stablish.idstablishment) == Number(stablish.idstablishment) ?
-      go.asset+'../'+stablish.image : 
-      go.asset+'img/site/btn/'+stablish.secImage;
-    var marcador = L.icon({
-      iconUrl: mark,
-      iconSize: [50, 50]
-    });
-    marker = L.marker([stablish.lat, stablish.lng], {icon: marcador}).on('click', function(e){
-      toGo = toGo.replace('#ID#', e.target.idStab);
-      window.location = toGo;
-    }).addTo(go.goMap)
-    .bindTooltip(stablish.description2, {direction: 'top', offset: [0,-20], permanent: true})
-    .openTooltip();
-    //console.log('img: ', go.asset+'img/site/btn/'+stablish[stab].image);
-    marker['idStab']=stablish.idstablishment;
-    /*L.marker([stablish[stab].lat, stablish[stab].lng], {icon: marcador}).
-      addTo(go.goMap).
-      bindTooltip("my tooltip text").openTooltip();*/
-    //marker.bindPopup('<b>'+stablish[stab].name+'</b><br><a href="'+toGo+'">Solicita más información</a>');
-  },
-  setCircle: function(mts){
-    mts = Number(mts*100);
-    if(mts>=1000 && mts<=3000){
-      go.goMapCircle.setRadius(mts);
-    }
   },
   loadAjaxPost: function(url, data, callback){
     // validar data y callback

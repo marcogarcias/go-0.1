@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Stablishment;
 use App\Models\Advertisement;
 use App\Models\MyStablishment;
+use App\Models\UserJobProfile;
 use App\Models\StablishmentAd;
 use App\Models\StablishmentJob;
 use App\Models\StablishmentTag;
@@ -199,6 +200,27 @@ class SiteController extends Controller
   }
 
   /**
+   * Sección para ver las vacantes
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function stablishmentsJobs(){
+    $jobs = Stablishment::select(
+        "stab.idstablishment", "stab.name AS stabName", "stab.description AS stabDescription", 
+        "stab.direction", "stab.image", "stab.direction", 
+        "stab.phone", "stab.whatsapp", "stab.facebook", "stab.web",
+        "sj.name AS jobName", "sj.description AS jobDescription")
+        ->from("stablishments AS stab")
+        ->join("stablishments_jobs AS sj", "sj.stablishment_id", "=", "stab.idstablishment")
+        ->where("stab.disabled", 0)
+        ->where("stab.disabledGlobal", 0)
+        ->where("stab.deleted", 0)
+        ->where("sj.deleted", 0)
+        ->get();
+    return view('site.stablishmentsJobs', compact('jobs'));
+  }
+
+  /**
    * Establecimientos que el usuario ha agregado
    *
    * @return \Illuminate\Http\Response
@@ -239,7 +261,7 @@ class SiteController extends Controller
 
       $myStab = Stablishment::select('stab.idstablishment', 
         'stab.name', 'stab.description', 'stab.image',
-        'stab.user_id', 'stab.range')
+        'stab.user_id', 'stab.range', "stab.disabled")
         ->from('stablishments AS stab')
         ->where('stab.deleted', 0)
         ->where('stab.user_id', auth()->id())
@@ -1363,8 +1385,7 @@ die('...');*/
    *
    * @return \Illuminate\Http\Response
    */
-  public function updateStablishment(Request $req)
-  {
+  public function updateStablishment(Request $req){
     $res=array("success"=>false);
     if($req->ajax()){
       $data = $req->input("data");
@@ -1463,7 +1484,7 @@ die('...');*/
         $stabRes = $stab->update($stabData);
 
         // si la actualización de datos es correcta, se procede a borrar los tags que se tengan y se agregan los nuevos
-        if($stabRes && is_array($tags) && count($tags)){
+        if(is_array($tags) && count($tags)){
           // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
           StablishmentTag::
             where('deleted', 0)
@@ -1477,9 +1498,11 @@ die('...');*/
               [ 'deleted'=>0 ]
             );
           }
+        }
 
+        if($stabRes){
           $message = "Datos guardados de la empresa.".($message?" {$message}":"");
-          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);          
+          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
         }else{
           $message = "No se pudo actualizar los datos de la empresa, intenta más tarde.";
           $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
@@ -1490,6 +1513,32 @@ die('...');*/
       }
     }
     //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
+    return $res;
+  }
+
+  /**
+   * Habilita/deshabilita un establecimiento
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function enableDisableStab(Request $req){
+    $res=array("success"=>false);
+    if($req->ajax()){
+      $data = $req->input("data");
+      $idStab; $stabRes;
+      $message = "";
+      $enabled = intval($data["habilitado"]);
+      $idStab = Crypt::decryptString(session("idStablishment"));
+      $stab = Stablishment::find($idStab);
+      $stabRes = $stab->update(["disabled"=>$enabled?1:0]);
+      if($stabRes){
+        $message = "El establecimiento ha sido ".($enabled?"deshabilitado":"habilitado");
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
+      }else{
+        $message = "No se pudo habilitar/deshabilitar el establecimiento, intenta más tarde.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+      }
+    }
     return $res;
   }
 
@@ -1687,6 +1736,268 @@ die('...');*/
 
       $res = response()->json(array('success'=>true, 'tags'=>$tags), 200);
     }
+    return $res;
+  }
+
+/* ******************************************* */
+/* ***** MÓDULO DE CURRICULUM DE USUARIO ***** */
+/* ******************************************* */
+
+  /**
+   * Carga los datos de un cv
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function loadCv(Request $req){
+    $res=array('success'=>false, 'action'=>'load');
+    if($req->ajax()){
+      $idUser = auth()->id();
+
+      // obteniendo datos del CV del usuario
+      $cv = UserJobProfile::
+        select('c.*')
+        ->from('user_jobprofile AS c')
+        ->where('c.deleted', 0)
+        ->where('c.user_id', $idUser)
+        ->first();
+      /*$stab_tags = [];
+      $stab_tags_ = StablishmentTag::where('stablishment_id', $idStab)
+      ->where('deleted', 0)
+      ->get();
+      foreach ($stab_tags_ as $tag)
+        $stab_tags[] = $tag->tag_id;*/
+
+      //$zones = Zone::where('deleted', 0)->get();
+      //$sections = Section::where('deleted', 0)->get();
+      //$tags = Tag::where('section_id', $stab->section_id)->where('deleted', 0)->get();
+
+      $res['success']=true;
+      $res['code']='success';
+      $res['cv']= $cv;
+      //$res['stab_tags']= $stab_tags;
+      //$res['zones']= $zones;
+      //$res['sections']= $sections;
+      //$res['tags']= $tags;
+
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
+   * Agregar una vacante a la empresa en cuestión
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function addCv(Request $req){
+    $res=array('success'=>false, 'action'=>'add');
+    if($req->ajax()){
+
+      /*
+      $desc = isset($data["descripcion"]) && $data["descripcion"] ? $data["descripcion"] : false;
+      $desc = htmlentities(nl2br($desc), ENT_QUOTES, 'UTF-8');
+      $idJobType = Crypt::decryptString($idJobType);
+      $doc = isset($data["doc"]) && $data["doc"] ? $data["doc"] : false;
+      $stab = isset($data["stab"]) && $data["stab"] ? $data["stab"] : false;
+      $stab = Crypt::decryptString($stab);
+      $idJob = isset($data["job"]) && $data["job"] ? $data["job"] : false;
+      $idJob = $idJob ? Crypt::decryptString($idJob) : false;*/
+      $hashCv = $req->input("hashCv");
+      $hashCv = $hashCv ? Crypt::decryptString($hashCv) : false;
+      $name = $req->input("name");
+      $nextName = $req->input("nextName");
+      $ap = $req->input("ap");
+      $am = $req->input("am");
+      $email = $req->input("email");
+      $cellphone = $req->input("cellphone");
+      $age = $req->input("age");
+      $gender = $req->input("gender");
+      $description = $req->input("description");
+      $cadademicH = $req->input("cadademicH");
+      $jobH = $req->input("jobH");
+      $disabled = $req->input("disabled");
+      $jobType = $req->input("jobType");
+      $jobType = $jobType ? Crypt::decryptString($jobType) : false;
+      $subTypes = $req->input("subTypes");
+
+      dd($name, $nextName, $disabled, $jobType, $subTypes);
+
+      $cv = StablishmentJob::updateOrCreate(
+        ["idjob" => $idJob],
+        [
+          "name" => $name,
+          "description" => $desc,
+          "documentation" => $doc,
+          "stablishment_id"=>$stab,
+          "jobType_id"=>$idJobType,
+        ]
+      );
+
+
+      if(isset($job->idjob) && $job->idjob){
+        $subTypes = isset($data['subTypes']) && is_array($data['subTypes']) ? $data['subTypes'] : [];
+
+        /*
+        // eliminar de forma lógica todas las subsecciones que tiene este registro
+        if(is_array($subTypes) && count($subTypes)){
+          StablishmentJobSubType::
+            where('deleted', 0)
+            ->where('job_id', $$job->idjob)
+            ->update(['deleted'=>1]);
+
+          // agregar o actualizar las subsecciones/tags
+          foreach ($tags as $tag) {
+            StablishmentTag::updateOrCreate(
+              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
+              [ 'deleted'=>0 ]
+            );
+          }
+        }
+        */
+        if(is_array($subTypes)){
+          foreach ($subTypes as $sub) {
+            StablishmentJobSubType::create([
+              'job_id'=>$job->idjob,
+              'jobSubType_id'=> Crypt::decryptString($sub)
+            ]);
+          }
+        }
+      }
+
+      if($job){
+        $res['success']=true;
+        $res['code']='success';
+        $res['message']=' Se ha '.($idJob?'actualizado':'agregado').' una nueva vacante ('.$name.')';
+      }else{
+        $res['success']=false;
+        $res['code']='warning';
+        $res['message']='No se pudo '.$idJob?'editar':'crear'.' la vacante.';
+      }
+      $res['action']= $idJob ? 'upd' : 'add';
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
+   * Almacena/actualizar un CV
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function updateCv(Request $req)
+  {
+    $res=array("success"=>false);
+    if($req->ajax()){
+      $data = $req->input("data");
+      $idCv; $cvRes; $pathImageAr; $pathImageAbs;
+      $pathImageRel = $filename = "";
+      $message = "";
+
+      $idCv = $req->input("idCv") ? Crypt::decryptString($req->input("idCv")) : 0;
+      $name = $req->input("name");
+      $nextName = $req->input("nextName");
+      $ap = $req->input("ap");
+      $am = $req->input("am");
+      $email = $req->input("email");
+      $cellphone = $req->input("cellphone");
+      $age = $req->input("age");
+      $gender = $req->input("gender");
+      $description = $req->input("description");
+      $cadademicH = $req->input("cadademicH");
+      $jobH = $req->input("jobH");
+      $disabled = $req->input("disabled");
+      
+      //$tags = $req->input("tags");
+
+      $validateRes = validate([
+        'name' => [$name, 'required|min:2|max:50'],
+        'nextName' => [$nextName, 'max:50'],
+        'ap' => [$ap, 'required|min:2|max:50'],
+        'am' => [$am, 'max:50'],
+        'email' => [$email, 'required|email|max:90'],
+        'cellphone' => [$cellphone, 'min:10|max:13'],
+        'age' => [$age, 'required|numeric|min:18|max:99'],
+        'gender' => [$gender, 'numeric|min:0|max:1'],
+        'description' => [$description, 'max:250'],
+        'cadademicH' => [$cadademicH, 'max:250'],
+        'jobH' => [$jobH, 'max:250'],
+      ]);
+
+      // si la validación es un éxito se procede a actualizar los datos del cv
+      if(empty($validateRes)){
+        /*if($req->input('logotipoBase64')){
+          $pathImageAr = makeDir();
+          $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+          $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+          $image_parts = explode(";base64,", $req->input('logotipoBase64'));
+          $image_types_aux = explode("image/", $image_parts[0]);
+          $image_type = $image_types_aux[1];
+          $image_base64 = base64_decode($image_parts[1]);
+          $filename = time().".".$image_type;
+          $file = $pathImageAbs.$filename;
+          $saveImg = file_put_contents($file, $image_base64);
+          if($saveImg){
+
+          }else{
+            $message = "La imagen no se cargó correctamente.";
+          }
+        }*/
+
+        //$idStab = Crypt::decryptString(session('idStablishment'));
+        $cv = UserJobProfile::find($idCv);
+
+        $cvData = [
+          'name'=>$name,
+          'nextName'=>$nextName,
+          'ap'=>$ap,
+          'am'=>$am,
+          'email'=>$email,
+          'cellphone'=>$cellphone,
+          //'summary'=>$summaryName,
+          'age'=>$age,
+          'gender'=>$gender,
+          'description'=>$description,
+          'cadademicH'=>$cadademicH,
+          'jobH'=>$jobH,
+          'disabled'=>$disabled,
+        ];
+
+        //if($pathImageRel && $filename)
+          //$cvData['image'] = $pathImageRel.$filename;
+
+        $cvRes = $cv->update($cvData);
+
+        // si la actualización de datos es correcta, se procede a borrar los tags que se tengan y se agregan los nuevos
+        //if($cvRes && is_array($tags) && count($tags)){
+        if($cvRes){
+          // eliminar de forma lógica todas las subsecciones/tags que tiene este registro
+          /*StablishmentTag::
+            where('deleted', 0)
+            ->where('stablishment_id', $idStab)
+            ->update(['deleted'=>1]);
+
+          // agregar o actualizar las subsecciones/tags
+          foreach ($tags as $tag) {
+            StablishmentTag::updateOrCreate(
+              ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
+              [ 'deleted'=>0 ]
+            );
+          }*/
+
+          $message = "Datos guardados cel CV.".($message?" {$message}":"");
+          $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);          
+        }else{
+          $message = "No se pudo actualizar los datos del cv, intenta más tarde.";
+          $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+        }
+      }else{
+        $message = "Revisa los campos en rojo.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$validateRes), 200);
+      }
+    }
+    //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
     return $res;
   }
 }

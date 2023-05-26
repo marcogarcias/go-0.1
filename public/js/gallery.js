@@ -194,10 +194,10 @@ let gallery = {
     console.log("cropper: ", cropper);
   },
   cropImage: function(num){
-    console.log("cropImage: num", num);
+    //console.log("cropImage: num", num);
     canvas = cropper.getCroppedCanvas({
-      width: 150,
-      heigth: 100
+      width: 900,
+      heigth: 500
     });      
     console.log("canvas, cropper: ", canvas, cropper);
     canvas.toBlob(function(blob){

@@ -10,6 +10,7 @@
   <script src="{{ asset('js/stab.js') }}"></script>
   <script src="{{ asset('js/jobs.js') }}"></script>
   <script src="{{ asset('js/gallery.js') }}"></script>
+  <script src="{{ asset('js/cv.js') }}"></script>
 @endsection
 
 @section('returnBtn', route('home'))
@@ -23,11 +24,21 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 sections">
     @if($iAmStab && is_object($myStab))
+    <!-- OPCIONES DE USUARIO CON EMPRESA -->
       <div id="buttons-seccions">
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mb-2">
+          <div class="col-12 mb-2">
             <div class="text-center">
               <a class="btn btn-line" href="#">{{ __('Visitas').': '.$myStab['range'] }}</a>
+            </div>
+          </div>
+          <div class="col-12 mb-1">
+            <div class="form-group">
+              <div class="text-center">
+                <a id="habilitado" class="" data-habilitado="{{ $myStab['disabled']?0:1 }}" href="#">
+                  <img src="{{ asset('img/site/btn/btn-stab-enable.png') }}" title="{{ __($myStab['disabled']?"Deshabilitado":"Habilitado") }}">
+                </a>
+              </div>
             </div>
           </div>
 
@@ -81,7 +92,7 @@
         </div>
         -->
 
-        <div class="row mt-5">
+        <div class="row mt-4">
           <div class="col-6 col-md-3 mb-4">
             <a href="{{ route('home') }}">
               <div class="card btnTable">
@@ -170,6 +181,37 @@
 
         <br>
       </div>
+    @else
+      <!-- OPCIONES DE USUARIO NORMAL -->
+      <div id="buttons-seccions">
+        <div class="row mt-5">
+          <div class="col-6 col-md-3 mb-4">
+            <a href="#">
+              <div id="btn-cv" class="card btnTable">
+                <div class="btnTableImgCont">
+                  <img src="{{ asset('img/site/btn/btn-myspace-home.png') }}" class="card-img-top" alt="CV">
+                </div>
+                <div>
+                  <h5 class="p-3 text-center">Crear CV</h5>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-md-3 mb-4">
+            <a href="#">
+              <div id="btn-vacancies" class="card btnTable">
+                <div class="btnTableImgCont">
+                  <img src="{{ asset('img/site/btn/btn-myspace-x1.png') }}" class="card-img-top" alt="Ver vacantes">
+                </div>
+                <div>
+                  <h5 class="p-3 text-center">Ver vacantes</h5>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <br>
+      </div>
     @endif
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -210,7 +252,6 @@
 </div>
 
 
-@if($iAmStab)
 <div class="modal fade" id="window-modal" tabindex="-1" role="dialog" aria-labelledby="window-modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
     <div class="modal-content">
@@ -228,7 +269,6 @@
     </div>
   </div>
 </div>
-@endif
 
 @if($iAmStab && is_object($myStab))
 <!-- Modal -->
@@ -428,6 +468,7 @@ window.addEventListener('load', function() {
   $(document).ready(function() {
     let cfg = {
       showBtnHelp: false,
+      iAmStab: {{ $iAmStab }},
       urlTags: '{{ route("loadRegisterTags") }}',
       urlAjax: '{{ route("delStablishment") }}'
     };
@@ -438,6 +479,7 @@ window.addEventListener('load', function() {
       // configuración para las vacantes
       cfg.jobsSection = true;
       cfg.urlMyJobs = "{{ route("myspace.myJobs") }}";
+      cfg.urlEnableDisableStab = "{{ route("myspace.enableDisableStab") }}";
 
       // configuración para las vacantes (nuevo archivo)
       cfg.jobs = {};
@@ -478,6 +520,15 @@ window.addEventListener('load', function() {
       //cfg.gallery.urlAddMenu = '{{ route("myspace.addMenu") }}';
       cfg.gallery.urlLoadGallery = '{{ route("myspace.loadGallery") }}';
       //cfg.gallery.urlDelProduct = '{{ route("myspace.delProduct") }}';
+    @else
+      // configuración para el js del cv
+      cfg.cv = {};
+      cfg.cv.urlGetJobTypes = '{{ route("myspace.getJobTypes") }}';
+      cfg.cv.urlGetJobSubTypes = "{{ route("myspace.getJobSubTypes") }}";
+      cfg.cv.urlAsset = "{{ asset("/") }}";
+      cfg.cv.urlLoadCv = '{{ route("myspace.loadCv") }}';
+      cfg.cv.urlAddCv = "{{ route("myspace.addCv") }}";
+      cfg.cv.urlUpdateCv = '{{ route("myspace.updateCv") }}';
     @endif
     go.initStablisments(cfg);
 

@@ -65,7 +65,7 @@
           <div class="text-left btn-help"><a href="#btn-help"><img src="{{ asset('img/site/btn/btn-help-01.png') }}" title="{{ __('Ayuda') }}" alt="{{ __('Ayuda') }}"></a></div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-7 col-xl-7">
-          <h1 class="text-center header-txt">Todo lo que buscas a un click!! </h1>
+          <h1 class="text-center header-txt"><a href="{{ route('home') }}">Todo lo que buscas a un click!! </a></h1>
         </div>
         @guest
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 btn-cont">

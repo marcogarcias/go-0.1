@@ -100,6 +100,7 @@ header{
 }
 .header-cont{ padding-top: 25px; padding-bottom: 20px; }
 .header-txt{ font-weight: bold; letter-spacing: 5px; }
+.header-txt a{ color: #fff; text-decoration: none; }
 .btn-back{ display: inline-block; margin-right: 40px; width: 35%; }
 .btn-back img{ width: 100%; }
 .btn-help{ display: inline-block; margin-left: 20px; width: 25%; }
@@ -419,24 +420,36 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 /* **************** */
 
 .jobContainer{
-  background: #333;
+  background: #353367;
+  border-radius: 10px;
   color: #fff;
-  margin: 20px;
+  position: relative;
+  margin: 90px 20px 10px 20px;
 }
 
-.imgCont{
+.jobImgCont{
+  border-radius: 100%;
+  box-shadow: 10px 10px 10px #111;
+  height: 100px;
   margin: auto;
-  width: 40%;
+  position: absolute;
+  right: 40%;
+  top: -50px;
+  width: 100px;
 }
 
-.jobContainer h5{
+.jobDesc{
+  padding: 80px 0 50px 0;
+}
+
+.jobDesc h5{
   text-align: center;
 }
 
-
-.imgCont img{
-  border-radius: 30%;
-  width: 100%;
+.jobLink{
+  bottom: -10px;
+  position: absolute;
+  right: 40%;
 }
 
 

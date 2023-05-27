@@ -191,13 +191,17 @@ let jobs = {
     if(jobsArr.length){
       for(let j in jobsArr){
         let job = jobsArr[j];
+        let style = `background: url(${job["imgPath"]}); background-position: center; background-repeat: no-repeat; background-size: cover;`;
         html += `
-          <div class="col-xs-12 col-sm-12 col-md-5 border-2 jobContainer">
-            <div class="border-1 imgCont">
-              <img src="${job["imgPath"]}" title="${job["jobName"]}">
+          <div class="col-xs-12 col-sm-12 col-md-5 jobContainer">
+            <div class="jobImgCont" style="${style}"></div>
+            <div class="jobDesc">
+              <h5>Negocio: ${job["stabName"]}</h5>
+              <h5>Solicita: ${job["jobName"]}</h5>
             </div>
-            <h5>Negocio: ${job["stabName"]}</h5>
-            <h5>Solicita: ${job["jobName"]}</h5>
+            <div class="jobLink">
+              <a href="stablishment/${job["hashStab"]}" class="btn btn-black">Ir al sitio >></a>
+            </div>
           </div>`;
       }
     }

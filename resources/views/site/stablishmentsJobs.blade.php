@@ -30,7 +30,7 @@
     $(document).ready(function() {
       let jobsArr = [];
       @forelse($jobs as $j)
-        jobsArr.push({imgPath: '{{ asset($j->image) }}', stabName: '{{ $j->stabName }}', jobName: '{{ $j->jobName }}'});
+        jobsArr.push({hashStab: {{ $j->idstablishment }}, imgPath: '{{ asset($j->image) }}', stabName: '{{ $j->stabName }}', jobName: '{{ $j->jobName }}'});
       @empty
           
       @endforelse

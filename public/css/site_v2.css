@@ -413,7 +413,24 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   position: fixed;
   z-index: 1050;
 }
+
+.mapbox-directions-origin,
+.mapbox-directions-destination,
+.directions-icon.directions-icon-reverse.directions-reverse.js-reverse-inputs{ display: none; }
+.mapbox-directions-instructions{ display: none; }
+#btnView{ float: right; }
 #go-mapa{ height: 710px; margin: 10% 0; width: 100%; }
+.mapboxgl-popup-content p{ margin: 0; }
+.mapboxgl-popup-content{ 
+  position: relative !important;
+  padding: 5px !important;
+}
+.mapboxgl-popup-close-button{
+  padding: 0;
+  position: absolute;
+  top: -5px;
+  right: 3px;
+}
 
 /* **************** */
 /* INICIO - EMPLEOS */

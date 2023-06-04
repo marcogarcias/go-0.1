@@ -187,7 +187,6 @@ let jobs = {
   setJobs: function(jobsArr){
     jobsArr = (typeof jobsArr === "object") ? jobsArr : [];
     html = ``;
-    console.log("jobsArr", jobsArr);
     if(jobsArr.length){
       for(let j in jobsArr){
         let job = jobsArr[j];

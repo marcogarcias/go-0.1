@@ -47,7 +47,7 @@
     $(document).ready(function() {
       let zoom = 14;
       if($(document).width() < 576){
-        zoom = 13;
+        zoom = 15;
       }
       let cfg = {
         showBtnHelp: false,

@@ -44,8 +44,18 @@ let map = {
 
     $('.map-around').on('input change', function(e){
       let mts = $(this).val();
-      console.log("mts", mts);
       map.updateCircle({mts: mts, lat: map.lat, lng: map.lng});
+    });
+
+    $(document).on("click", "#btnView", function(e){
+      e.preventDefault();
+      if($(".mapbox-directions-instructions").css("display") == "none"){
+        $(this).text("Ocultar");
+        $(".mapbox-directions-instructions").show(1000);
+      }else{
+        $(this).text("Ver");
+        $(".mapbox-directions-instructions").hide(1000);
+      }
     });
   },
   // inserta los punteros de varios establecimientos
@@ -217,7 +227,12 @@ let map = {
     let name = stablish.name ? stablish.name : null;
     let desc = stablish.description2 ? stablish.description2 : null;
     let imagePath = cfg.imagePath ? cfg.imagePath : null;
-    let img = imagePath ? map.asset + imagePath : null
+    let img = imagePath ? map.asset + imagePath : null;
+    let idStab = stablish.idstablishment ? stablish.idstablishment : 0;
+    console.log("cfg", idStab, cfg);
+
+    let linkMarker = document.createElement('a');
+    linkMarker.href = `/stablishment/${idStab}`;
 
     let customMarker = document.createElement('div');
     customMarker.style.backgroundImage = `url("${img}")`;
@@ -230,9 +245,11 @@ let map = {
     customMarker.style.border = '2px solid black';
     customMarker.style.boxShadow = '5px 5px 5px rgba(0, 0, 0, 0.50)';
 
+    linkMarker.appendChild(customMarker);
+
     // Agregar el marcador a la capa de marcadores
     let marker = new mapboxgl.Marker({
-      element: img ? customMarker : null,
+      element: img ? linkMarker : null,
       color: "#007bff",
       draggable: false,
     })
@@ -250,6 +267,7 @@ let map = {
     cfg = (typeof cfg === 'object') ? cfg : {};
     let startPoint = cfg.startPoint ? cfg.startPoint : null;
     let endPoint = cfg.endPoint ? cfg.endPoint : null;
+    let btnView = `<a id="btnView" href="">Ver</a>`;
     let directions;
     if(startPoint && endPoint){
       // Obtener la ruta entre dos puntos
@@ -260,11 +278,19 @@ let map = {
         interactive: false,
         controls: { instructions: true },
         language: 'es',
+        originMarker: {
+          color: '#f00'
+        },
+        destinationMarker: {
+          color: '#f00'
+        }
       });
 
       map.goMap.addControl(directions, 'top-left');
       map.goMap.on('load', function(){
-        console.log("coordenadas", [startPoint._lngLat.lng, startPoint._lngLat.lat], [endPoint._lngLat.lng, endPoint._lngLat.lat]);
+        setTimeout(function(){
+          $(".mapbox-directions-component.mapbox-directions-route-summary").append(`<a id="btnView" href="">Ver</a>`);
+        }, 500);
         directions.setOrigin([startPoint._lngLat.lng, startPoint._lngLat.lat]);
         directions.setDestination([endPoint._lngLat.lng, endPoint._lngLat.lat]);
       });

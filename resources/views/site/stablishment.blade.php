@@ -295,7 +295,7 @@
 
 <!-- INICIA ICONOS DE COMPARTIR Y WHATSAPP -->
 <div id="buttonsFloats" class="row">
-  <div class="col-6">
+  <div class="col-12 mb-4">
     <!-- <a href="https://api.whatsapp.com/send?phone=0123456789">Envíanos un mensaje de WhatsApp</a> -->
     <!-- <a href="https://api.whatsapp.com/send?phone=0123456789&text=Hola, Nececito mas informacion!">Envíanos un mensaje de WhatsApp</a> -->
     <!-- <a href="whatsapp://send?text=Hola, Index.pe&phone=+12 346 678 910&abid=+12 346 678 910">+12 346 678 910</a> -->
@@ -305,8 +305,8 @@
       </a>
     @endif    
   </div>
-  <div class="col-6">
-    <a class="btnShare mr-4" href="#">
+  <div class="col-12">
+    <a class="btnShare" href="#">
       <img src="{{ asset('img/site/btn/btn-share.png') }}" title="Compartir">
     </a>
   </div>

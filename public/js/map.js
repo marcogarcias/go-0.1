@@ -290,7 +290,7 @@ let map = {
       map.goMap.on('load', function(){
         setTimeout(function(){
           $(".mapbox-directions-component.mapbox-directions-route-summary").append(`<a id="btnView" href="">Ver</a>`);
-        }, 500);
+        }, 800);
         directions.setOrigin([startPoint._lngLat.lng, startPoint._lngLat.lat]);
         directions.setDestination([endPoint._lngLat.lng, endPoint._lngLat.lat]);
       });

@@ -183,4 +183,18 @@ function toKey($str=''){
   return $str;
 }
 
+/**
+ * Quita el https:// de una url, o bien, el string especificado
+ * @param {string} $value Valor como un string
+ * @param {int} $max Máximo del valor
+ * @return {bool} 
+ */
+function cleanUrl($url = "", $str="https://"){
+  if($url){
+    $url = str_replace(Str::lower($str), "", $url);
+    $url = str_replace(Str::upper($str), "", $url);
+  }
+  return $url;
+}
+
 ?>

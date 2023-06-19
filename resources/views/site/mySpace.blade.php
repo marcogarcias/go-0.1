@@ -36,7 +36,7 @@
             <div class="form-group">
               <div class="text-center">
                 <a id="habilitado" class="" data-habilitado="{{ $myStab['disabled']?0:1 }}" href="#">
-                  <img src="{{ asset('img/site/btn/btn-stab-enable.png') }}" title="{{ __($myStab['disabled']?"Deshabilitado":"Habilitado") }}">
+                  <img src="{{ asset($myStab['disabled'] ? 'img/site/btn/btn-stab-disable.png' : "img/site/btn/btn-stab-enable.png") }}" title="{{ __($myStab['disabled']?"Deshabilitado":"Habilitado") }}">
                 </a>
               </div>
             </div>

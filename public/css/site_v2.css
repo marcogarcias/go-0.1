@@ -62,6 +62,13 @@
   font-weight: bold !important;
 }
 
+.btn-green{
+  background-color: #0e4800 !important;
+  border-color: #aaa !important;
+  color: #fff !important;
+  font-weight: bold !important;
+}
+
 .card-header{
   background-color: #353367 !important;
   color: #fff;
@@ -198,7 +205,41 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 .stabs-filters div{ margin-bottom: 0px; }
 .around{ width: 100%; }
 
-.stablish-cont{
+.stablishContainer{
+  background: #353367;
+  border-radius: 10px;
+  color: #fff;
+  position: relative;
+  margin: 90px 20px 10px 20px;
+}
+
+.stablishImgCont{
+  border-radius: 100%;
+  box-shadow: 10px 10px 10px #111;
+  height: 100px;
+  margin: auto;
+  position: absolute;
+  right: 40%;
+  top: -50px;
+  width: 100px;
+}
+
+.stablishContainer hr{ border: 1px solid #fff; }
+.stablishDesc{ padding: 80px 0 50px 0; }
+.stablishDesc h5{ text-align: center; }
+
+.stablishLink{
+  bottom: -15px;
+  position: absolute;
+}
+
+.stablish-add{
+  bottom: -15px;
+  position: absolute;
+  right: 60%;
+}
+
+/*.stablish-cont{
   height: 650px;
   padding: 0 10px;
   overflow-y: scroll;
@@ -247,6 +288,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 .stablish-row{ height: 20px; }
 
 .stablish-footer{ display: none; padding: 10px; }
+*/
 
 /* ************************************************* */
 /* INICIO - Mi espacio (listado de establecimientos) */
@@ -374,7 +416,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   position: fixed;
   right: 0px;
   z-index: 999;
-  width: 180px;
+  width: 90px;
 }
 
 #buttonsFloats div{
@@ -468,8 +510,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   position: absolute;
   right: 40%;
 }
-
-
 
 
 /* *************************************** */

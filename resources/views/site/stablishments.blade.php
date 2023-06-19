@@ -12,8 +12,16 @@
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 sections text-center">
       <div class="">
         <div class="mt-4 mb-4 filters-btns-cont text-center">
-            <div class="mr-4"><a class="btn btn-dark" id="filtersOpen">{{ __('Filtros de búsqueda') }}</a></div>
-            <div><a class="btn btn-dark" href="{{ route('cercaDeTi') }}">{{ __('Cerca de tí') }}</a></div>
+            <div class="mr-4">
+              <a class="" id="filtersOpen">
+                <img src="{{ asset('img/site/btn/btn-buscar.png') }}" title="{{ __('Filtros de búsqueda') }}">
+              </a>
+            </div>
+            <div>
+              <a class="" href="{{ route('cercaDeTi') }}">
+                <img src="{{ asset('img/site/btn/btn-cercaDeTi.png') }}" title="{{ __('Cerca de tí') }}">
+              </a>
+            </div>
         </div>
         <form id="filters">
           <h4 class="title-sec"></h4>
@@ -47,8 +55,8 @@
           </div>
         </form>
       </div>
-      <div class="overflow-auto stablish-cont">
-        <table class="stablish-table">
+      
+        <div id="stablishCont" class="row">
           @forelse($stablish as $stab)
             @if($stab->disabledGlobal)
               @continue;
@@ -56,65 +64,31 @@
             @if($stab->disabled)
               @continue;
             @endif
-            <tr class="">
-              <td class="stablish-logo">
-                <a href="{{ route('stablishment', $stab->idstablishment) }}">
-                  <img src="{{ asset($stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
-                </a>
-              </td>
-              <td class="stablish-visit">
-                <a class="btn btn-purple" href="{{ route('stablishment', $stab->idstablishment) }}">Click</a>
-              </td>
-              <td class="stablish-desc">
-                <div class="row">
-                  <div class="text-center stablish-logo-2">
-                    <a href="{{ route('stablishment', $stab->idstablishment) }}">
-                      <img src="{{ asset($stab->image) }}" title="{{ __($stab->description) }}" alt="{{ __($stab->name) }}">
-                    </a>
-                  </div>
-                  <div class="text-center stablish-visit-2">
-                    <a class="btn btn-purple" href="{{ route('stablishment', $stab->idstablishment) }}">Click</a>
-                  </div>
-                </div>
-                <div class="row">
-                  {{ $stab->description }}
-                </div>
-              </td>
-              <td class="stablish-offer">
-                @if($stab->offer)
-                  <img src="{{ asset('img/site/btn/offer-01.png?').microtime() }}" title="{{ __('Oferta disponible') }}" alt="{{ __('Oferta disponible') }}">
-                @endif
-              </td>
-              <td class="stablish-space"></td>
+            @php($style = "background: url('/$stab->image'); background-position: center; background-repeat: no-repeat; background-size: cover;") 
+            @php($styleBtns = "right: 40%;") 
+            @auth
+              @php($styleBtns = "right: 15%;") 
+            @endauth
+            <div class="col-xs-12 col-sm-12 col-md-5 stablishContainer">
+              <div class="stablishImgCont" style="{{ $style }}"></div>
+              <div class="stablishDesc">
+                <h5>{{ $stab->name }}</h5>
+                <hr>
+                <h5>{{ $stab->description }}</h5>
+              </div>
+              <div class="stablishLink" style="{{ $styleBtns }}">
+                <a href="{{ route('stablishment', $stab->idstablishment) }}" class="btn btn-black">Ir al sitio >></a>
+              </div>
               @auth
-                <td class="stablish-add-space">
-                  <div class="stablish-add" data-stab="{{ Crypt::encryptString($stab->idstablishment) }}" data-name="{{ Crypt::encryptString($stab->name) }}">
-                    <a href="#">
-                      <img src="{{ asset('img/site/btn/btn-add-01.png') }}" title="{{ __('Agregar') }}" alt="{{ __('Agregar') }}">
-                    </a>
-                  </div>
-                </td>
+                <div class="stablish-add" data-stab="{{ Crypt::encryptString($stab->idstablishment) }}" data-name="{{ Crypt::encryptString($stab->name) }}">
+                  <a href="#" class="btn btn-green">Guardar</a>
+                </div>
               @endauth
-            </tr>
-            <tr class="text-center stablish-footer">
-              <td colspan="5">
-                @if($stab->offer)
-                  <img src="{{ asset('img/site/btn/offer-01.png?').microtime() }}" title="{{ __('Oferta disponible') }}" alt="{{ __('Oferta disponible') }}">
-                @endif
-                &nbsp;&nbsp;
-                @auth
-                  <a href="#">
-                    <img class="stablish-add" data-stab="{{ Crypt::encryptString($stab->idstablishment) }}" data-name="{{ Crypt::encryptString($stab->name) }}" src="{{ asset('img/site/btn/btn-add-01.png') }}" title="{{ __('Agregar') }}" alt="{{ __('Agregar') }}">
-                  </a>
-                @endauth
-              </td>
-            </tr>
-            <tr><td colspan="5" class="stablish-row"></td></tr>
+            </div>
           @empty
-            
+
           @endforelse
-        </table>
-      </div>
+        </div>
     </div>
   </div>
 </div>
@@ -131,73 +105,37 @@ window.addEventListener('load', function() {
     let auth = {{ Auth::check()?1:0 }};
     let html, stab, gotToStab;
     let gotToStab_='{{ route("stablishment", '#STAB#') }}';
+    let style = "";
+    let styleBtns = "";
 
     go.initStablisments(cfg, function(stablish){
       stab = stablish.stablish ? stablish.stablish : {};
       html='';
       for(let x in stab){
-        gotToStab = gotToStab_.replace('#STAB#', stab[x].idstablishment)
-        html+=''+
-          '<tr class="">'+
-              '<td class="stablish-logo">'+
-                '<a href="'+gotToStab+'">'+
-                  '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
-                '</a>'+
-              '</td>'+
-              '<td class="stablish-visit">'+
-                '<a class="btn btn-purple" href="'+gotToStab+'">Click</a>'+
-              '</td>'+
-              '<td class="stablish-desc">'+
-                '<div class="row">'+
-                  '<div class="text-center stablish-logo-2">'+
-                    '<a href="'+gotToStab+'">'+
-                      '<img src="/'+stab[x].image+'" title="'+{{ __("stab[x].description") }}+'" alt="'+{{ __("stab[x].name") }}+'">'+
-                    '</a>'+
-                  '</div>'+
-                  '<div class="text-center stablish-visit-2">'+
-                    '<a class="btn btn-purple" href="'+gotToStab+'">Click</a>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="row">'+
-                  stab[x].description+
-                '</div>'+
-              '</td>'+
-              '<td class="stablish-offer">';
-              if(stab[x].offer){
-                html+='<img src="{{ asset("img/site/btn/offer-01.png") }}" title="{{ __("Oferta disponible") }}" alt="{{ __("Oferta disponible") }}">';
-              }
-              html+='</td>'+
-              '<td class="stablish-space"></td>';
-              if(auth){
-                html+=''+
-                '<td class="stablish-add-space">'+
-                  '<div class="stablish-add" data-stab="{{ Crypt::encryptString('+stab[x].idstablishment+') }}" data-name="{{ Crypt::encryptString('+stab[x].name+') }}">'+
-                    '<a href="#">'+
-                      '<img src="{{ asset("img/site/btn/btn-add-01.png") }}" title="{{ __("Agregar") }}" alt="{{ __("Agregar") }}">'+
-                    '</a>'+
-                  '</div>'+
-                '</td>';
-              }
-            html+=''+
-            '</tr>'+
-            '<tr class="text-center stablish-footer">'+
-              '<td colspan="5">';
-                if(stab[x].offer){
-                  html+='<img src="{{ asset("img/site/btn/offer-01.png") }}" title="{{ __("Oferta disponible") }}" alt="{{ __("Oferta disponible") }}">';
-                }
-                html+='&nbsp;&nbsp;';
-                if(auth){
-                  html+=''+
-                  '<a href="#">'+
-                    '<img src="{{ asset("img/site/btn/btn-add-01.png") }}" class="stablish-add" data-stab="{{ Crypt::encryptString('+stab[x].idstablishment+') }}" data-name="{{ Crypt::encryptString('+stab[x].name+') }}" title="{{ __("Agregar") }}" alt="{{ __("Agregar") }}">'+
-                  '</a>';
-                }
-              html+=''+
-              '</td>'+
-            '</tr>'+
-            '<tr><td colspan="5" class="stablish-row"></td></tr>';
+        gotToStab = gotToStab_.replace('#STAB#', stab[x].idstablishment);
+        if(stab[x].disabledGlobal || stab[x].disabled) continue;
+        style = `background: url('/${stab[x].image}'); background-position: center; background-repeat: no-repeat; background-size: cover;`;
+        styleBtns = auth ? "right: 15%;" : "right: 40%;";
+        html += `
+          <div class="col-xs-12 col-sm-12 col-md-5 stablishContainer">
+            <div class="stablishImgCont" style="${style}}"></div>
+            <div class="stablishDesc">
+              <h5>${stab[x].name}</h5>
+              <hr>
+              <h5>${stab[x].description}</h5>
+            </div>
+            <div class="stablishLink" style="${styleBtns}">
+              <a href="${gotToStab}" class="btn btn-black">Ir al sitio >></a>
+            </div>`;
+        if(auth){
+          html += `
+            <div class="stablish-add" data-stab="{{ Crypt::encryptString('`+stab[x].idstablishment+`') }}" data-name="{{ Crypt::encryptString('`+stab[x].name+`') }}">
+              <a href="#" class="btn btn-green">Guardar</a>
+            </div>`;
+        }
+        html += `</div>`;
       }
-      $('.stablish-table').empty().append(html);
+      $('#stablishCont').empty().append(html);
     });
   });
 });

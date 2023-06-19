@@ -1401,18 +1401,17 @@ die('...');*/
       $lng = $req->input("longitud");
       $phone = $req->input("telefono");
       $whatsapp = $req->input("whatsapp");
-      $facebook = $req->input("facebook");
-      $instagram = $req->input("instagram");
-      $twitter = $req->input("twitter");
-      $youtube = $req->input("youtube");
-      $web = $req->input("web");
-      $web = str_replace(["http://", "https://"], "", $web);
+      $facebook = cleanUrl($req->input("facebook"), "https://");
+      $instagram = cleanUrl($req->input("instagram"), "https://");
+      $twitter = cleanUrl($req->input("twitter"), "https://");
+      $youtube = cleanUrl($req->input("youtube"), "https://");
+      $web = cleanUrl($req->input("web"), "https://");
       $hour = $req->input("horario");
       $offer = intval($req->input("oferta"));
       $zone_id = $req->input("zona");
       $section_id = $req->input("section");
       $tags = $req->input("tags");
-      $enabled = intval($req->input("habilitado"));
+      //$enabled = intval($req->input("habilitado"));
 
       $validateRes = validate([
         'nombre' => [$name, 'required|max:155'],
@@ -1475,7 +1474,7 @@ die('...');*/
           'offer'=>$offer?1:0,
           'zone_id'=>$zone_id,
           'section_id'=>$section_id,
-          'disabled'=>$enabled?0:1
+          //'disabled'=>$enabled?0:1
         ];
 
         if($pathImageRel && $filename)

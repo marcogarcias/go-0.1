@@ -227,6 +227,7 @@ let gallery = {
     });
     // validando que se haya cargado aunque sea una imagen
     if(hash){
+      console.log("url", url);
       utils.sendAjaxJQ(url, formData, function(res){
         utils.toastr({'type': res.code, 'message': res.message});
         console.log('res: ', res);

@@ -77,7 +77,7 @@
 <div class="modal fade" id="adHome-modal" tabindex="-1" role="dialog" aria-labelledby="adHome-modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <img src="{{ asset('img/site/adHome-iztapalapa.jpeg') }}">
+      <img src="{{ asset('img/site/anuncio01.png') }}">
     </div>
     <div class="btn btn-black close-modal">CERRAR</div>
   </div>

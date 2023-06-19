@@ -240,10 +240,12 @@ let go={
       habilitado = parseInt($(this).attr("data-habilitado"));
       let data = { habilitado: habilitado };
       utils.sendAjax(urlEnableDisableStab, data, function(res){
+        let src = `${go.asset}img/site/btn`;
         utils.toastr({'type': res.code, 'message': res.message});
         if(res['success']){
           $("#habilitado").attr("data-habilitado", habilitado?0:1);
           $("#habilitado img").attr("title", habilitado?"Deshabilitado":"Habilitado");
+          $("#habilitado img").attr("src", habilitado?`${src}/btn-stab-disable.png`:`${src}/btn-stab-enable.png`);
         }
       });
     });
@@ -286,11 +288,12 @@ let go={
       }
     });
 
-    $('.stablish-cont').on('click', '.stablish-add, .stablish-del', function(e){
+    $(document).on('click', '.stablish-add, .stablish-del', function(e){
       e.preventDefault();
       let id = $(this).attr('data-id');
       let stab = $(this).attr('data-stab');
       let stabName = $(this).attr('data-name');
+      console.log(cfg.urlAjax, {stab: stab, stabName: stabName});
       go.loadAjaxPost(cfg.urlAjax, {stab: stab, stabName: stabName}, function(res){
         if(res.action=='del'){
           /*$('#'+id+'-row1, #'+id+'-row2, #'+id+'-row3').fadeOut( "slow", function() {

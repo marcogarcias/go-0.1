@@ -194,6 +194,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 /* INICIO - Registro */
 /* ***************** */
 .register{ margin: 20% 0; }
+.register label{ margin-bottom: 0; }
+.rule{ color: #666 !important; font-size: 12px !important; }
 /* FIN - Registro */
 
 /* ************************************ */

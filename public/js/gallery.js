@@ -57,6 +57,7 @@ let gallery = {
     $(document).off("click", "#btn-gallery-frm");
     $(document).on('click', '#btn-gallery-frm', (e)=>{
       e.preventDefault();
+      console.log("url", urlStoreGallery);
       gallery.storeGallery(urlStoreGallery);
     });
 
@@ -75,7 +76,7 @@ let gallery = {
         <form id="galleryFrm" action="" enctype="multipart/form-data"></form>
         <hr>
         <div class="form-group">
-          <button id='btn-gallery-frm' type="submit" class="btn btn-primary">Aceptar</button>
+          <a href="#" id='btn-gallery-frm' class="btn btn-primary">Aceptar</a>
         </div>
       </div>`;
     $('#window-modal .modal-body').html(html);
@@ -205,7 +206,8 @@ let gallery = {
       reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = function(){
-        var base64data = reader.result;
+        //var base64data = reader.result;
+        var base64data = canvas.toDataURL("image/jpeg", 0.8);
         $(`#imageBase64-${num}`).val(base64data);
         console.log(`cropImage: prev-imageBase64-${num}`);
         document.getElementById(`prev-imageBase64-${num}`).style.backgroundImage = "url("+base64data+")";
@@ -219,18 +221,20 @@ let gallery = {
     //formData.append('file',files);
     let hash;
     $("input[id*='imageBase64']").each(function(x, y, z){
+      console.log("1 storeGallery: ", $(this).val());
       if($(this).val()){
+        console.log("2 storeGallery: ");
         hash = $(this).attr("data-hash");
         formData.append('imageBase64[]', $(this).val()+'|HASH|'+hash);
-        //console.log("1 storeGallery: ", hash, formData);
+        console.log("3 storeGallery: ", hash, formData);
       }
     });
     // validando que se haya cargado aunque sea una imagen
     if(hash){
-      console.log("url", url);
+      console.log("4 storeGallery", url, formData);
       utils.sendAjaxJQ(url, formData, function(res){
-        utils.toastr({'type': res.code, 'message': res.message});
         console.log('res: ', res);
+        utils.toastr({'type': res.code, 'message': res.message});
         if(res['success']){
           //console.log("1 storeGallery: ", res);
           $('#window-modal').modal('toggle');

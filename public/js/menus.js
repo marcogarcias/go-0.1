@@ -115,7 +115,7 @@ let menus = {
           'title': menu.name ? menu.name : '',
           'name': menu.name ? menu.name : '',
           'description': menu.description ? menu.description : '',
-          'disabled': menu.disabled ? menu.disabled : 0
+          'disabled': Number(menu.disabled) ? Number(menu.disabled) : 0
         };
         menus.createMenuAccordion(cfg);
         if(callback && (typeof callback === 'function')){
@@ -151,8 +151,9 @@ let menus = {
     let title = menu.title ? menu.title : 'Nuevo menú';
     let name = menu.name ? menu.name : '';
     let description = menu.description ? menu.description : '';
-    let disabled = menu.disabled ? '' : 'checked';
-    let disabledLabel = menu.disabled ? "Deshabilitado" : "Habilitado";
+    let disabled = Number(menu.disabled) ? '' : 'checked';
+    let disabledLabel = Number(menu.disabled) ? "Deshabilitado" : "Habilitado";
+    
     let html = `
       <div class="accordion" id="menuAccordion">
         <div class="card">

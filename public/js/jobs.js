@@ -131,18 +131,21 @@ let jobs = {
     let cont={};
     $("#vacante").trigger("focus");
     go.loadAjaxPost(url, data, function(res){
-      if(res['success']){
-        cont = res['cont'];
+      console.log("res", res);
+      if(res["success"]){
+        cont = res["cont"];
         $("#addJob").text("Actualizar");
-        $('#jobsFrm')[0].reset();
-        $('#job').val(job);
-        $('#vacante').val(cont['name']);
-        $('#descripcion').val(cont['description']);
+        $("#jobsFrm")[0].reset();
+        $("#job").val(job);
+        $("#vacante").val(cont["name"]);
+        $("#descripcion").val(cont["description"]);
+        $("#jobType").val(cont["hashJobType"]);
+        console.log("222", cont["hashJobType"]);
 
-        if(cont['documentation']!='cv')
-          $('#solicitud').prop('checked', true);
+        if(cont["documentation"]!="cv")
+          $("#solicitud").prop("checked", true);
         else
-          $('#cv').prop('checked', true);
+          $("#cv").prop("checked", true);
       }
     });
   },

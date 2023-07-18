@@ -165,7 +165,8 @@
   </div>
   -->
 
-  <!-- INICIA VENTANA DE CHAT -->
+<!-- INICIA VENTANA DE CHAT -->
+<!--
   <div id="chatbox-stablish">
     <div id="chatbox">
       <div id="friendslist">
@@ -176,9 +177,6 @@
           <div id="closeCont">
             <i class="fa fa-times-circle"></i>
           </div>
-          <!-- <span class="friends"></span>
-          <span class="chats"></span>
-          <span class="history"></span> -->
         </div>
             
         <div id="friends">
@@ -212,6 +210,7 @@
       </div>        
     </div>
   </div>
+-->
   <!-- TERMINA VENTANA DE CHAT -->
 @endif
 @endauth

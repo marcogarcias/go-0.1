@@ -61,31 +61,39 @@ let stab = {
         <form id="stabFrm" action="" enctype="multipart/form-data">
           <div class="form-group">
             <label for="nombre">Nombre <span class="text-danger font-weight-bolder">*</span></label>
+            <div class="rule">Mínimo 5 caracteres, máximo 155 carácteres.</div>
             <input type="text" class="form-control" id="nombre" name="nombre" value="" placeholder="Nombre del establecimiento">
             <div id="nombre-error" class="error" style="display: block;"></div>
           </div>
           <div class="form-group">
             <label for="descripcion">Descripción <span  class="text-danger font-weight-bolder">*</span></label>
+            <div class="rule">Máximo 200 carácteres.</div>
             <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del establecimiento"></textarea>
             <div id="descripcion-error" class="error" style="display: block;"></div>
           </div>
           <div class="form-group">
             <label for="descripcion2">Descripción 2 (mapa)</label>
+            <div class="rule">Máximo 100 carácteres.</div>
             <input type="text" class="form-control" id="descripcion2" name="descripcion2" value="" placeholder="Descripción para el mapa">
             <div id="descripcion2-error" class="error" style="display: block;"></div>
           </div>
+          <!--
           <div class="form-group">
             <label for="direccion">Dirección <span  class="text-danger font-weight-bolder">*</span></label>
+            <div class="rule">Máximo 200 carácteres.</div>
             <input type="text" class="form-control" id="direccion" name="direccion" value="" placeholder="Av. Villanueva, Col. San Juán, no. 55, C.P. 55450">
             <div id="direccion-error" class="error" style="display: block;"></div>
           </div>
+          -->
           <div class="form-group">
             <label for="latitud">Latitud</label>
+            <div class="rule">Máximo 20 carácteres.</div>
             <input type="text" class="form-control" id="latitud" name="latitud" value="" placeholder="Latitud del establecimiento">
             <div id="latitud-error" class="error" style="display: block;"></div>
           </div>
           <div class="form-group">
             <label for="longitud">Longitud</label>
+            <div class="rule">Máximo 20 carácteres.</div>
             <input type="text" class="form-control" id="longitud" name="longitud" value="" placeholder="Longitud del establecimiento">
             <div id="longitud-error" class="error" style="display: block;"></div>
           </div>
@@ -102,6 +110,7 @@ let stab = {
           </div>
           <div class="form-group">
             <label for="telefono">Teléfono (máximo 13 carácteres)</label>
+            <div class="rule">Máximo 13 carácteres.</div>
             <input type="text" class="form-control" id="telefono" name="telefono" value="" min="0" max="9999999999999" step="1" placeholder="5555555555">
             <div id="telefono-error" class="error" style="display: block;"></div>
           </div>
@@ -110,37 +119,38 @@ let stab = {
             <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="" min="0" max="9999999999999" step="1" placeholder="5555555555">
             <div id="whatsapp-error" class="error" style="display: block;"></div>
           </div>
-          <div class="form-group">
-            <label for="facebook">Facebook</label>
-            <input type="text" class="form-control" id="facebook" name="facebook" value="facebook" placeholder="Facebook">
-            <div id="facebook-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="instagram">Instagram</label>
-            <input type="text" class="form-control" id="instagram" name="instagram" value="instagram" placeholder="Instagram">
-            <div id="instagram-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="twitter">Twitter</label>
-            <input type="text" class="form-control" id="twitter" name="twitter" value="twitter" placeholder="Twitter">
-            <div id="twitter-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="youtube">Youtube</label>
-            <input type="text" class="form-control" id="youtube" name="youtube" value="youtube" placeholder="Youtube">
-            <div id="youtube-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="web">Web oficial</label>
-            <input type="text" class="form-control" id="web" name="web" value="web" placeholder="web">
-            <div id="web-error" class="error" style="display: block;"></div>
-          </div>
-          <div class="form-group">
-            <label for="horario">Hoario <span  class="text-danger font-weight-bolder">*</span></label>
-            <input type="text" class="form-control" id="horario" name="horario" value="horario" placeholder="08:00 am - 08:00 pm">
-            <div id="horario-error" class="error" style="display: block;"></div>
-          </div>
-
+          <!--
+            <div class="form-group">
+              <label for="facebook">Facebook</label>
+              <input type="text" class="form-control" id="facebook" name="facebook" value="facebook" placeholder="Facebook">
+              <div id="facebook-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="form-group">
+              <label for="instagram">Instagram</label>
+              <input type="text" class="form-control" id="instagram" name="instagram" value="instagram" placeholder="Instagram">
+              <div id="instagram-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="form-group">
+              <label for="twitter">Twitter</label>
+              <input type="text" class="form-control" id="twitter" name="twitter" value="twitter" placeholder="Twitter">
+              <div id="twitter-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="form-group">
+              <label for="youtube">Youtube</label>
+              <input type="text" class="form-control" id="youtube" name="youtube" value="youtube" placeholder="Youtube">
+              <div id="youtube-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="form-group">
+              <label for="web">Web oficial</label>
+              <input type="text" class="form-control" id="web" name="web" value="web" placeholder="web">
+              <div id="web-error" class="error" style="display: block;"></div>
+            </div>
+            <div class="form-group">
+              <label for="horario">Hoario <span  class="text-danger font-weight-bolder">*</span></label>
+              <input type="text" class="form-control" id="horario" name="horario" value="horario" placeholder="08:00 am - 08:00 pm">
+              <div id="horario-error" class="error" style="display: block;"></div>
+            </div>
+          -->
           <div class="form-group">
             <div class="custom-control custom-switch">
               <input type="checkbox" class="custom-control-input" id="oferta" name="oferta">
@@ -228,17 +238,17 @@ let stab = {
     $('#nombre').val(stab.name);
     $('#descripcion').val(stab.description);
     $('#descripcion2').val(stab.description2);
-    $('#direccion').val(stab.direction);
+    //$('#direccion').val(stab.direction);
     $('#latitud').val(stab.lat);
     $('#longitud').val(stab.lng);
     $('#telefono').val(stab.phone);
     $('#whatsapp').val(stab.whatsapp);
-    $('#facebook').val(stab.facebook);
+    /*$('#facebook').val(stab.facebook);
     $('#instagram').val(stab.instagram);
     $('#twitter').val(stab.twitter);
     $('#youtube').val(stab.youtube);
     $('#web').val(stab.web);
-    $('#horario').val(stab.hour);
+    $('#horario').val(stab.hour);*/
 
     // 
     let url = `${urlAsset}${stab.image}`;
@@ -364,17 +374,17 @@ let stab = {
     formData.append('nombre', $('#nombre').val());
     formData.append('descripcion', $('#descripcion').val());
     formData.append('descripcion2', $('#descripcion2').val());
-    formData.append('direccion', $('#direccion').val());
+    //formData.append('direccion', $('#direccion').val());
     formData.append('latitud', $('#latitud').val());
     formData.append('longitud', $('#longitud').val());
     formData.append('telefono', $('#telefono').val());
     formData.append('whatsapp', $('#whatsapp').val());
-    formData.append('facebook', $('#facebook').val());
+    /*formData.append('facebook', $('#facebook').val());
     formData.append('instagram', $('#instagram').val());
     formData.append('twitter', $('#twitter').val());
     formData.append('youtube', $('#youtube').val());
     formData.append('web', $('#web').val());
-    formData.append('horario', $('#horario').val());
+    formData.append('horario', $('#horario').val());*/
     formData.append('oferta', Number($('#oferta').prop('checked')));
     formData.append('zona', $('#zona').val());
     //formData.append('habilitado', Number($('#habilitado').prop('checked')));
@@ -388,6 +398,7 @@ let stab = {
       utils.toastr({'type': res.code, 'message': res.message});
       console.log('res: ', res);
       if(res['success']){
+        $('#window-modal').modal('hide');
         if(callback && (typeof callback === 'function')){
           callback(res);
         }

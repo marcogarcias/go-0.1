@@ -11,6 +11,7 @@
   <script src="{{ asset('js/jobs.js') }}"></script>
   <script src="{{ asset('js/gallery.js') }}"></script>
   <script src="{{ asset('js/cv.js') }}"></script>
+  <script src="{{ asset('js/socialmedia.js') }}"></script>
 @endsection
 
 @section('returnBtn', route('home'))
@@ -137,6 +138,7 @@
               </div>
             </div>
           </div>
+
           <div class="col-6 col-md-3 mb-4">
             <div class="card btnTable" data-toggle="modal" data-target="#addAd-modal">
               <div class="btnTableImgCont">
@@ -167,16 +169,16 @@
               </div>
             </div>
           </div>
-          <!-- <div class="col-6 col-md-3 mb-4">
-            <div class="card btnTable" data-stab="{{ Crypt::encryptString($myStab['idstablishment']) }}">
+          <div class="col-6 col-md-3 mb-4">
+            <div id="btn-socialmedia" class="card btnTable" data-hashstab="{{ $myStab->hashStab }}">
               <div class="btnTableImgCont">
-                <img src="{{ asset('img/site/btn/btn-myspace-chat.png') }}" class="card-img-top" alt="Activar chat">
+                <img src="{{ asset('img/site/btn/btn-myspace-socialmedia.png') }}" class="card-img-top" alt="Redes sociales">
               </div>
               <div>
-                <h5 class="p-3 text-center">Activar chat</h5>
+                <h5 class="p-3 text-center">Redes Sociales</h5>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
 
         <br>
@@ -520,6 +522,14 @@ window.addEventListener('load', function() {
       //cfg.gallery.urlAddMenu = '{{ route("myspace.addMenu") }}';
       cfg.gallery.urlLoadGallery = '{{ route("myspace.loadGallery") }}';
       //cfg.gallery.urlDelProduct = '{{ route("myspace.delProduct") }}';
+
+      // configuración para el js de socialmedia.js
+      cfg.social = {};
+      cfg.social.urlAsset = "{{ asset("/") }}";
+      cfg.social.urlLoadSocial = "{{ route("myspace.loadSocial") }}";
+      cfg.social.urlStoreSocial = "{{ route("myspace.storeSocial") }}";
+      //cfg.social.urlAddSocial = '';
+      //cfg.social.urlDelSocial = '';
     @else
       // configuración para el js del cv
       cfg.cv = {};

@@ -48,11 +48,10 @@ let utils = {
     let beforeSend = cfg.beforeSend ? cfg.beforeSend : false;
     let error = cfg.error ? cfg.error : false;
     let complete = cfg.complete ? cfg.complete : false;
-
     if(data !== null && (data instanceof Object)){
       $.ajax({
         url: url,
-        type: type,
+        type: "post",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         data: data,
         responseType: resType,

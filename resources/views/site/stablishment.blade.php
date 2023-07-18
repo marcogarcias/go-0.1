@@ -8,8 +8,9 @@
 
 @section('js')
   <script src="{{ asset('js/gallery.js') }}"></script>
+  <script src="{{ asset('js/socialmedia.js') }}"></script>
   @auth
-    @unless(session('isStablishment'))  
+    @unless(session('isStablishment'))
       <script src="{{ asset('js/chatbox_v1.js?').microtime() }}" defer></script>
     @endunless
   @endauth
@@ -44,11 +45,9 @@
                 <img src="{{ asset('img/site/btn/btn-stab-vacantes.png') }}" title="Vacantes">  
               </a>
             @endif
-            @if($stablish->web)
-              <a class="mr-4" href="http://{{ $stablish->web }}">
-                <img src="{{ asset('img/site/btn/btn-stab-web.png') }}" title="Web oficial">
-              </a>
-            @endif
+            <a id="btn-social" class="mr-4" href="#" data-toggle="modal" data-target="#window-modal">
+              <img src="{{ asset('img/site/btn/btn-stab-web.png') }}" title="Redes Sociales">
+            </a>
           </div>
         </div>
 
@@ -319,6 +318,17 @@
     go.redimentions(false);
     go.initStablishment();
     gallery.initStabGallery();
+
+    let cfgSocial ={
+      assets: "{{ asset('img') }}",
+      hashStab: "{{ $stablish->hashStab ? $stablish->hashStab : "" }}",
+      facebook: "{{ $stablish->facebook ? $stablish->facebook : "" }}",
+      instagram: "{{ $stablish->instagram ? $stablish->instagram : "" }}",
+      twitter: "{{ $stablish->twitter ? $stablish->twitter : "" }}",
+      youtube: "{{ $stablish->youtube ? $stablish->youtube : "" }}",
+      web: "{{ $stablish->web ? $stablish->web : "" }}",
+    };
+    social.initStabSocial(cfgSocial);
     @auth
       @unless(session('isStablishment'))
         let cfg = {

@@ -11,6 +11,7 @@
   <script src="{{ asset('libs/Parsley.js-2.9.2/dist/i18n/es.js') }}" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js" integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('js/stab.js') }}"></script>
+  <script src="{{ asset('js/register.js') }}"></script>
 @endsection
 
 @section('content')
@@ -53,7 +54,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="name">{{ __('Nombre') }}</label>
+                  <label for="name">{{ __('Nombre') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                  <div class="rule">Mínimo 5 caracteres, máximo 155 carácteres.</div>
                   <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" autocomplete="name" data-parsley-minlength="5" data-parsley-maxlength="155" autofocus required>
                   @error('name')
                     <span class="invalid-feedback" role="alert">
@@ -63,7 +65,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="email">{{ __('Correo electrónico') }}</label>
+                  <label for="email">{{ __('Correo electrónico') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                  <div class="rule">Máximo 155 carácteres.</div>
                   <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" data-parsley-minlength="10" data-parsley-maxlength="155" required>
                   @error('email')
                     <span class="invalid-feedback" role="alert">
@@ -88,7 +91,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="password">{{ __('Contraseña') }}</label>
+                  <label for="password">{{ __('Contraseña') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                  <div class="rule">Mínimo 8 caracteres, máximo 155 carácteres.</div>
                   <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
                   @error('password')
                     <span class="invalid-feedback" role="alert">
@@ -98,7 +102,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="password-confirm">{{ __('Confirmar contraseña') }}</label>
+                  <label for="password-confirm">{{ __('Confirmar contraseña') }} <span  class="text-danger font-weight-bolder">*</span></label>
                   <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password" data-parsley-minlength="8" data-parsley-maxlength="155" required>
                 </div>
 
@@ -109,31 +113,39 @@
 
                   <div class="form-group">
                     <label for="nameStab">{{ __('Nombre') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                    <div class="rule">Mínimo 5 caracteres, máximo 155 carácteres.</div>
                     <input type="text" class="form-control" id="nameStab" name="nameStab" value="{{ old('nameStab') }}" placeholder="Nombre del establecimiento">
                     {!! $errors->first('nameStab', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="descripcion">{{ __('Descripción') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                    <div class="rule">Máximo 200 carácteres.</div>
                     <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del establecimiento">{{ old('descripcion') }}</textarea>
                     {!! $errors->first('descripcion', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="descripcion2">{{ __('Descripción 2 (mapa)') }} <span  class="text-danger font-weight-bolder">*</span></label>
+                    <div class="rule">Máximo 100 carácteres.</div>
                     <input type="text" class="form-control" id="descripcion2" name="descripcion2" value="{{ old('descripcion2') }}" placeholder="Descripción para el mapa">
                     {!! $errors->first('descripcion2', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
+                  <!--
                   <div class="form-group">
                     <label for="direccion">{{ __('Dirección') }} <span  class="text-danger font-weight-bolder">*</span></label>
-                    <input type="text" class="form-control" id="direccion" name="direccion" value="{{ old('direccion') }}" placeholder="Av. Villanueva, Col. San Juán, no. 55, C.P. 55450">
+                    <div class="rule">Máximo 200 carácteres.</div>
+                    <input type="text" class="form-control" id="direccion" name="direccion" value="{{ old('direccion') }}" placeholder="Av. Villanueva, Col. San Juán, no. 55, C.P. 55450" data-parsley-maxlength="200" autofocus required>
                     {!! $errors->first('direccion', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
+                  -->
                   <div class="form-group">
                     <label for="latitud">{{ __('Latitud') }}</label>
+                    <div class="rule">Máximo 20 carácteres.</div>
                     <input type="text" class="form-control" id="latitud" name="latitud" value="{{ old('latitud') }}" placeholder="Latitud del establecimiento">
                     {!! $errors->first('latitud', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="longitud">{{ __('Longitud') }}</label>
+                    <div class="rule">Máximo 20 carácteres.</div>
                     <input type="text" class="form-control" id="longitud" name="longitud" value="{{ old('longitud') }}" placeholder="Longitud del establecimiento">
                     {!! $errors->first('longitud', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
@@ -150,31 +162,38 @@
                   </div>
                   <div class="form-group">
                     <label for="telefono">{{ __('Teléfono') }} ({{ __('máximo 13 carácteres ') }})</label>
+                    <div class="rule">Máximo 20 carácteres.</div>
                     <input type="text" class="form-control" id="telefono" name="telefono" value="{{ old('telefono') }}" min="0" max="9999999999999" step="1" placeholder="5555555555">
                     {!! $errors->first('telefono', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="whatsapp">{{ __('Whatsapp') }} ({{ __('máximo 13 carácteres ') }})</label>
+                    <div class="rule">Máximo 20 carácteres.</div>
                     <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="{{ old('whatsapp') }}" min="0" max="9999999999999" step="1" placeholder="5555555555">
                     {!! $errors->first('whatsapp', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
+                  <!--
                   <div class="form-group">
                     <label for="facebook">{{ __('Facebook') }}</label>
+                    <div class="rule">Máximo 200 carácteres.</div>
                     <input type="text" class="form-control" id="facebook" name="facebook" value="{{ old('facebook') }}" placeholder="Facebook">
                     {!! $errors->first('facebook', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="instagram">{{ __('Instagram') }}</label>
+                    <div class="rule">Máximo 200 carácteres.</div>
                     <input type="text" class="form-control" id="instagram" name="instagram" value="{{ old('instagram') }}" placeholder="Instagram">
                     {!! $errors->first('instagram', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="twitter">{{ __('Twitter') }}</label>
+                    <div class="rule">Máximo 200 carácteres.</div>
                     <input type="text" class="form-control" id="twitter" name="twitter" value="{{ old('twitter') }}" placeholder="Twitter">
                     {!! $errors->first('twitter', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
                   <div class="form-group">
                     <label for="youtube">{{ __('Youtube') }}</label>
+                    <div class="rule">Máximo 200 carácteres.</div>
                     <input type="text" class="form-control" id="youtube" name="youtube" value="{{ old('youtube') }}" placeholder="Youtube">
                     {!! $errors->first('youtube', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
@@ -188,6 +207,7 @@
                     <input type="text" class="form-control" id="horario" name="horario" value="{{ old('horario') }}" placeholder="08:00 am - 08:00 pm">
                     {!! $errors->first('horario', '<div class="invalid-feedback" style="display: block;">:message</div>') !!}
                   </div>
+                  -->
 
                   <div class="form-group">
                     <div class="custom-control custom-switch">
@@ -269,7 +289,7 @@
     let cfg = {
       tagsurl: '{{ route('loadRegisterTags') }}',
     };
-    go.registerInit(cfg);
+    register.init(cfg);
   });
 </script>
 @endpush

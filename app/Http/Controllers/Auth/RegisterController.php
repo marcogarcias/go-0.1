@@ -74,18 +74,18 @@ class RegisterController extends Controller{
       $validator['nameStab'] = ['required', 'max:155'];
       $validator['descripcion'] = ['required', 'string', 'max:200'];
       $validator['descripcion2'] = ['required', 'string', 'max:100'];
-      $validator['direccion'] = ['string', 'max:200'];
+      //$validator['direccion'] = ['string', 'max:200'];
       $validator['latitud'] = ['max:20'];
       $validator['longitud'] = ['max:20'];
       //$validator['logotipo'] = ['image|mimes:jpeg,png|max:200|dimensions:min_width=90,min_height=55,max_width=110,max_height=75'];
       $validator['telefono'] = ['max:20'];
       $validator['whatsapp'] = ['max:20'];
-      $validator['facebook'] = ['max:200'];
+      /*$validator['facebook'] = ['max:200'];
       $validator['instagram'] = ['max:200'];
       $validator['twitter'] = ['max:200'];
       $validator['youtube'] = ['max:200'];
       $validator['web'] = ['max:200'];
-      $validator['horario'] = ['max:200'];
+      $validator['horario'] = ['max:200'];*/
       $validator['section'] = ['required'];
       //$validator['tags'] = ['required'];
     }

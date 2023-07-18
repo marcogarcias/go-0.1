@@ -172,7 +172,6 @@ class SiteController extends Controller
       }
       $menus[$hash]["products"][] = $prod;
     }
-
     // obteniendo la galería     
     $gallery = StablishmentGallery::select("idgallery", "path", "image")
       ->where("deleted", 0)
@@ -186,6 +185,7 @@ class SiteController extends Controller
     $stablish->save();
     $jobs = self::myJobs_($stablish["idstablishment"]);
     $ads = self::myAds_($stablish["idstablishment"]);
+    $stablish->hashStab = Crypt::encryptString($stablish['idstablishment']);
     $adsBg = [
       toKey("Horarios") => "#a02514", 
       toKey("Dirección") => "#9e5914",
@@ -266,6 +266,8 @@ class SiteController extends Controller
         ->where('stab.deleted', 0)
         ->where('stab.user_id', auth()->id())
         ->first(auth()->id());
+      $myStab->hashStab = Crypt::encryptString($myStab['idstablishment']);
+
       if(is_object($myStab)){
         $menus = self::myMenus_($myStab['idstablishment']);
         $myJobs = self::myJobs_($myStab['idstablishment']);
@@ -763,12 +765,21 @@ die('...');*/
     $res=array('success'=>false, 'action'=>'upd');
     if($req->ajax()){
       $data = $req->input('data');
-      $job = isset($data['job']) && $data['job'] ? Crypt::decryptString($data['job']) : false;
+      $idJob = isset($data['job']) && $data['job'] ? Crypt::decryptString($data['job']) : false;
       $name = isset($data['name']) && $data['name'] ? $data['name'] : false;
       $subTypes = isset($data['subTypes']) && is_array($data['subTypes']) ? $data['subTypes'] : [];
 
-      $job = StablishmentJob::find($job);
+      $job = StablishmentJob::select(
+        "j.name", "j.description", "j.documentation", "j.jobType_id", "jt.name AS jobTypeName")
+        ->from("stablishments_jobs AS j")
+        ->join('cat_jobs_type AS jt', 'jt.idJobType', '=', 'j.jobType_id')
+        ->where('j.deleted', 0)
+        ->where('j.idjob', $idJob)
+        ->first();
+
       $job->description = strip_tags(html_entity_decode($job->description, ENT_QUOTES, 'UTF-8'));
+      $job->hashJobType = Crypt::encryptString($job->jobType_id);
+        
       if($job){
         $res['success'] = true;
         $res['cont'] = $job;
@@ -1303,7 +1314,7 @@ die('...');*/
       $image->move($this->pathImage, $imageName);
     }*/
 
-    if($data['facebook'])
+    /*if($data['facebook'])
       $facebook = str_replace('http://', 'https://', '', $data['facebook']);
 
     if($data['instagram'])
@@ -1316,7 +1327,7 @@ die('...');*/
       $twitter = str_replace(['http://', 'https://'], '', $data['twitter']);
 
     if($data['web'])
-      $web = str_replace(['http://', 'https://'], '', $data['web']);
+      $web = str_replace(['http://', 'https://'], '', $data['web']);*/
 
     // guardando la imagen de la empresa si agregó una
     if($data['logotipoBase64']){
@@ -1340,19 +1351,19 @@ die('...');*/
       'name'=>isset($data['nameStab']) ? $data['nameStab'] : '',
       'description'=>isset($data['descripcion']) ? $data['descripcion'] : '',
       'description2'=>isset($data['descripcion2']) ? $data['descripcion2'] : '',
-      'direction'=>isset($data['direccion']) ? $data['direccion'] : '',
+      //'direction'=>isset($data['direccion']) ? $data['direccion'] : '',
       'lat'=>isset($data['latitud']) ? $data['latitud'] : '',
       'lng'=>isset($data['longitud']) ? $data['longitud'] : '',
       'image'=> $pathImageRel.$filename,
       //'summary'=>$summaryName,
       'phone'=>isset($data['telefono']) ? $data['telefono'] : '',
       'whatsapp'=>isset($data['whatsapp']) ? $data['whatsapp'] : '',
-      'facebook'=>$facebook,
+      /*'facebook'=>$facebook,
       'instagram'=>$instagram,
       'twitter'=>$twitter,
       'youtube'=>$youtube,
       'web'=>$web,
-      'hour'=>isset($data['horario']) ? $data['horario'] : '',
+      'hour'=>isset($data['horario']) ? $data['horario'] : '',*/
       'offer'=>isset($data['oferta']) && $data['oferta'] ? 1 : 0,
       'disabled'=>0,
       //'expiration'=>'0000-00-00 00:00:00',
@@ -1396,17 +1407,17 @@ die('...');*/
       $name = $req->input("nombre");
       $description = $req->input("descripcion");
       $description2 = $req->input("descripcion2");
-      $direction = $req->input("direccion");
+      //$direction = $req->input("direccion");
       $lat = $req->input("latitud");
       $lng = $req->input("longitud");
       $phone = $req->input("telefono");
       $whatsapp = $req->input("whatsapp");
-      $facebook = cleanUrl($req->input("facebook"), "https://");
+      /*$facebook = cleanUrl($req->input("facebook"), "https://");
       $instagram = cleanUrl($req->input("instagram"), "https://");
       $twitter = cleanUrl($req->input("twitter"), "https://");
       $youtube = cleanUrl($req->input("youtube"), "https://");
       $web = cleanUrl($req->input("web"), "https://");
-      $hour = $req->input("horario");
+      $hour = $req->input("horario");*/
       $offer = intval($req->input("oferta"));
       $zone_id = $req->input("zona");
       $section_id = $req->input("section");
@@ -1417,17 +1428,17 @@ die('...');*/
         'nombre' => [$name, 'required|max:155'],
         'descripcion' => [$description, 'required|max:200'],
         'descripcion2' => [$description2, 'required|max:100'],
-        'direccion' => [$direction, 'max:200'],
+        //'direccion' => [$direction, 'max:200'],
         'latitud' => [$lat, 'max:100'],
         'longitud' => [$lng, 'max:100'],
         'telefono' => [$phone, 'max:20'],
         'whatsapp' => [$whatsapp, 'max:10'],
-        'facebook' => [$facebook, 'max:200'],
+        /*'facebook' => [$facebook, 'max:200'],
         'instagram' => [$instagram, 'max:200'],
         'twitter' => [$twitter, 'max:200'],
         'youtube' => [$youtube, 'max:200'],
         'web' => [$web, 'max:200'],
-        'horario' => [$hour, 'max:200'],
+        'horario' => [$hour, 'max:200'],*/
         'zona' => [$zone_id, 'required'],
         'section' => [$section_id, 'required']
       ]);
@@ -1459,18 +1470,18 @@ die('...');*/
           'name'=>$name,
           'description'=>$description,
           'description2'=>$description2,
-          'direction'=>$direction,
+          //'direction'=>$direction,
           'lat'=>$lat,
           'lng'=>$lng,
           //'summary'=>$summaryName,
           'phone'=>$phone,
           'whatsapp'=>$whatsapp,
-          'facebook'=>$facebook,
+          /*'facebook'=>$facebook,
           'instagram'=>$instagram,
           'twitter'=>$twitter,
           'youtube'=>$youtube,
           'web'=>$web,
-          'hour'=>$hour,
+          'hour'=>$hour,*/
           'offer'=>$offer?1:0,
           'zone_id'=>$zone_id,
           'section_id'=>$section_id,
@@ -1589,6 +1600,7 @@ die('...');*/
       $galleryData = $errors = [];
       $message = '';
 
+
       if($req->input('imageBase64')){
         foreach($req->input('imageBase64') as $imageBase64){
           $imageBase64 = explode('|HASH|', $imageBase64);
@@ -1609,11 +1621,12 @@ die('...');*/
 
             $local = env('APP_ENV') == "local";
             $pathImageAbs = $local ? public_path() : base_path();
-            $pathImageAbs = $pathImageAbs."/".$imageObj->path;
-            $filename = "/".$imageObj->image;
+            $pathImageAbs = $pathImageAbs."/public_html/".$imageObj->path;
+            $filename = $imageObj->image;
             $file = $pathImageAbs.$filename;
             File::delete($file);
             //$imageObj->update(['deleted'=>1]);
+            //dd($image_type, $pathImageAbs, $imageObj->image, $imageObj->path, $file);
             $saveImg = file_put_contents($file, $image_base64);
           }else{
             $pathImageAr = makeDir("gallery");
@@ -1621,6 +1634,7 @@ die('...');*/
             $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
             $filename = time().".".$image_type;
             $file = $pathImageAbs.$filename;
+            //dd($image_type, $pathImageAbs, $filename, $pathImageAbs, $file);
             $saveImg = file_put_contents($file, $image_base64);
             if($saveImg){
               $idStab = Crypt::decryptString(session('idStablishment'));
@@ -1660,6 +1674,80 @@ die('...');*/
       }else{
         $message = "Algunas imágenes no pudieron ser guardadas.";
         $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error', 'errors'=>$errors), 200);
+      }
+    }
+    //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
+    return $res;
+  }
+
+  /**
+   * Se agregan o actualizan las redes sociales del negocio
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function storeSocial(Request $req){
+    $res=array("success"=>false);
+    if($req->ajax()){
+      $data = $req->input("data");
+      $facebook = isset($data["facebook"]) && $data["facebook"] ? $data["facebook"] : null;
+      $instagram = isset($data["instagram"]) && $data["instagram"] ? $data["instagram"] : null;
+      $twitter = isset($data["twitter"]) && $data["twitter"] ? $data["twitter"] : null;
+      $youtube = isset($data["youtube"]) && $data["youtube"] ? $data["youtube"] : null;
+      $web = isset($data["web"]) && $data["web"] ? $data["web"] : null;
+      $idStab = isset($data["hashStab"]) && $data["hashStab"] ? $data["hashStab"] : null;
+      $idStab = $idStab ? Crypt::decryptString($idStab) : null;
+
+      $idStab; $socialData; $facebook; $instagram; $twitter; $youtube; $web;
+      $message = '';
+
+      $socialData = [ ];
+      $facebook && $socialData["facebook"] = cleanUrl($facebook, "https://");
+      $instagram && $socialData["instagram"] = cleanUrl($instagram, "https://");
+      $twitter && $socialData["twitter"] = cleanUrl($twitter, "https://");
+      $youtube && $socialData["youtube"] = cleanUrl($youtube, "https://");
+      $web && $socialData["web"] = $web;
+
+      $socialRes = Stablishment::
+        where('deleted', 0)
+        ->where('idstablishment', $idStab)
+        ->update($socialData);
+
+      if($socialRes){
+        $message = "Se actualizaron las redes sociales.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
+      }else{
+        $message = "No se pudo actualizar las redes sociales.";
+        $res = response()->json(array('success'=>false, 'message'=>$message, 'code'=>'error'), 200);
+      }
+    }
+    return $res;
+  }
+
+  /**
+   * Se cargan las redes sociales
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function loadSocial(Request $req){
+    $res=array('success'=>false);
+    if($req->ajax()){
+      $data = $req->input("data");
+      $idStab = isset($data["hashStab"]) && $data["hashStab"] ? $data["hashStab"] : null;
+      $idStab = $idStab ? Crypt::decryptString($idStab) : null;      
+
+      $stab = Stablishment::
+        select("s.facebook", "s.instagram", "s.twitter", "s.youtube", "s.web")
+        ->from('stablishments AS s')
+        ->where('s.deleted', 0)
+        ->where('s.idstablishment', $idStab)
+        ->first();
+
+      if(!empty($stab)){
+        $message = "Redes sociales.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success', 'data'=>$stab), 200);
+      }else{
+        $message = "No se encontraron las redes sociales.";
+        $res = response()->json(array('success'=>true, 'message'=>$message, 'code'=>'success'), 200);
       }
     }
     //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);

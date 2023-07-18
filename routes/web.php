@@ -179,6 +179,20 @@ Route::post('/myspace/enableDisableStab', [
   ]
 )->name('myspace.enableDisableStab')->middleware('auth');
 
+Route::post('/myspace/storeSocial', [
+    App\Http\Controllers\SiteController::class, 
+    'storeSocial'
+  ]
+)->name('myspace.storeSocial')->middleware('auth');
+
+Route::post('/myspace/loadSocial', [
+    App\Http\Controllers\SiteController::class, 
+    'loadSocial'
+  ]
+)->name('myspace.loadSocial')->middleware('auth');
+
+
+
 
 /* ******************************************* */
 /* START - RUTAS DE MI ESPACIO PARA EL USUARIO */

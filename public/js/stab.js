@@ -330,7 +330,8 @@ let stab = {
       reader = new FileReader();
       reader.readAsDataURL(blob);
       reader.onloadend = function(){
-        var base64data = reader.result;
+        //var base64data = reader.result;
+        var base64data = canvas.toDataURL("image/jpeg", 0.5);
         $('#logotipoBase64').val(base64data);
         document.getElementById('prev-logotipo').style.backgroundImage = "url("+base64data+")";
         $modal.modal('hide');

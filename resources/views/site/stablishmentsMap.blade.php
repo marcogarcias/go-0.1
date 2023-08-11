@@ -24,6 +24,9 @@
       <img class="logo-banner-img" src="{{ asset('img/site/logo-sm-slim.gif') }}" title="{{ __('Go') }}" alt="{{ __('Go') }}">
     </div>
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 sections text-center">
+      <div class="">
+        <div id="go-mapa"></div>
+      </div>
       <div>
         <div class="">
           <div class="btn btn-line">Metros a la redonda</div>
@@ -35,9 +38,6 @@
         </div>
       </div>
       <div class="btn btn-black btn-return-extra" onclick="javascript:history.back()">REGRESAR</a></div>
-      <div class="">
-        <div id="go-mapa"></div>
-      </div>
     </div>
   </div>
 </div>

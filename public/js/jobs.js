@@ -26,11 +26,11 @@ let jobs = {
         if(res.success && res.data){
           html="";
           for(let sub in res.data){
-            html += ""+
-              "<div class='custom-control custom-checkbox custom-control-inline'>"+
-                "<input type='checkbox' class='custom-control-input' id='"+res.data[sub].hashJobSubType+"' name='tags[]' value='"+res.data[sub].hashJobSubType+"'>"+
-                "<label class='custom-control-label' for='"+res.data[sub].hashJobSubType+"'>"+res.data[sub].name+"</label>"+
-              "</div>";
+            html += `
+              <div class='custom-control custom-checkbox custom-control-inline'>
+                <input type='checkbox' class='custom-control-input' id='${res.data[sub].hashJobSubType}' name='tags[]' value='${res.data[sub].hashJobSubType}' data-hash='${res.data[sub].md5}'>
+                <label class='custom-control-label' for='${res.data[sub].hashJobSubType}'>${res.data[sub].name}</label>
+              </div>`;
           }
           $("#subTypes").empty().append(html);
         }
@@ -139,8 +139,26 @@ let jobs = {
         $("#job").val(job);
         $("#vacante").val(cont["name"]);
         $("#descripcion").val(cont["description"]);
-        $("#jobType").val(cont["hashJobType"]);
-        console.log("222", cont["hashJobType"]);
+        $("#jobType option").filter(function() {
+          return $(this).text() === cont["jobTypeName"];
+        }).prop("selected", true);
+        $("#jobType option").trigger("change");
+        setTimeout(function () {
+          for(let sub in cont["subTypesSel"]){
+            subTypeHash = cont["subTypesSel"][sub]["md5"];
+            //console.log("buscando: ", subTypeHash);
+            $("#subTypes input[type='checkbox']").each(function() {
+              //console.log("este es el hash: ", $(this).attr("data-hash"));
+              if(subTypeHash == $(this).attr("data-hash")){
+                console.log("checando...", $(this).attr("data-hash"), $(this).attr("id"));
+                $(`#`+$(this).attr("id")).prop("checked", true);
+                //$(this).prop("checked", true);
+                //$(this).trigger("change");
+                return false;
+              }
+            });
+          }          
+        }, 1000);
 
         if(cont["documentation"]!="cv")
           $("#solicitud").prop("checked", true);

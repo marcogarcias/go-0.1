@@ -657,7 +657,7 @@ die('...');*/
         $sub->md5 = md5($sub->idJobSubType);
 
         $sub->hashJobType = Crypt::encryptString($sub->jobType_id);
-        $sub->md5 = md5($sub->jobType_id);
+        //$sub->md5 = md5($sub->jobType_id);
         unset($sub->idJobSubType, $sub->jobType_id);
       }
 
@@ -709,29 +709,27 @@ die('...');*/
         ]
       );
 
-
       if(isset($job->idjob) && $job->idjob){
         $subTypes = isset($data['subTypes']) && is_array($data['subTypes']) ? $data['subTypes'] : [];
 
-        /*
         // eliminar de forma lógica todas las subsecciones que tiene este registro
         if(is_array($subTypes) && count($subTypes)){
           StablishmentJobSubType::
             where('deleted', 0)
-            ->where('job_id', $$job->idjob)
+            ->where('job_id', $job->idjob)
             ->update(['deleted'=>1]);
 
           // agregar o actualizar las subsecciones/tags
-          foreach ($tags as $tag) {
+          /*foreach ($tags as $tag) {
             StablishmentTag::updateOrCreate(
               ['stablishment_id'=>$idStab, 'tag_id'=>$tag],
               [ 'deleted'=>0 ]
             );
-          }
+          }*/
         }
-        */
+
         if(is_array($subTypes)){
-          foreach ($subTypes as $sub) {
+          foreach($subTypes as $sub){
             StablishmentJobSubType::create([
               'job_id'=>$job->idjob,
               'jobSubType_id'=> Crypt::decryptString($sub)
@@ -779,6 +777,17 @@ die('...');*/
 
       $job->description = strip_tags(html_entity_decode($job->description, ENT_QUOTES, 'UTF-8'));
       $job->hashJobType = Crypt::encryptString($job->jobType_id);
+
+      $jobsSubtypes = StablishmentJobSubType::
+        select("js.job_id", "js.jobSubType_id")
+        ->from("stablishments_jobs_subtype AS js")
+        ->where('js.deleted', 0)
+        ->where('js.job_id', $idJob)
+        ->get();
+      foreach ($jobsSubtypes as $val) {
+        $val->md5 = md5($val->jobSubType_id);
+      }
+      $job->subTypesSel = $jobsSubtypes;
         
       if($job){
         $res['success'] = true;

@@ -48,7 +48,7 @@
       <div>
         @if(count($ads))
           <br>
-          <div class="align-center" >
+          <div class="align-center mt-5" >
             <ul class="ads-list">
               @forelse($ads as $ad)
                 <li>

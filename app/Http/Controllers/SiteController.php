@@ -495,6 +495,38 @@ die('...');*/
   }
 
   /**
+   * Sube un menu ya sea pdf o imagen.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function addMenuObj(Request $req){
+    $res=array('success'=>false, 'action'=>'load');
+    if($req->ajax()){
+      $menuObj = $req->file("menuObj");
+
+      dd($data, $data2, $file);
+
+      $hashProduct = isset($data['hashProduct']) && $data['hashProduct'] ? $data['hashProduct'] : false;
+      $hashProduct = (strpos($hashProduct, 'hash') === false) ? Crypt::decryptString($hashProduct) : 0;
+
+      $product = MenuProduct::where('idproduct', $hashProduct)->update(['deleted' => 1]);
+
+      if($product){
+        $res['success']=true;
+        $res['code']='success';
+        $res['message']= 'El producto ha sido eliminado.';
+      }else{
+        $res['success']=false;
+        $res['code']='error';
+        $res['message']= 'El producto no pudo ser eliminado.';
+      }
+
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
+
+  /**
    * Carga los datos de una empresa
    *
    * @return \Illuminate\Http\Response

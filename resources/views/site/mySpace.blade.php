@@ -17,6 +17,8 @@
 @section('returnBtn', route('home'))
 
 @section('content')
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+
 <div class="container-fluid go-wallpaper">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 text-left logo-lateral">
@@ -507,6 +509,7 @@ window.addEventListener('load', function() {
       cfg.menu.urlAddMenu = '{{ route("myspace.addMenu") }}';
       cfg.menu.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
       cfg.menu.urlDelProduct = '{{ route("myspace.delProduct") }}';
+      cfg.menu.urlAddMenuObj = '{{ route("myspace.addMenuObj") }}';
       //menus.init(cfgMenus);
 
       // configuración para el js del establecimiento.js

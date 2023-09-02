@@ -29,11 +29,11 @@
       </div>
       <div>
         <div class="">
-          <div class="btn btn-line">Metros a la redonda</div>
+          <div class="btn btn-line"><span id="metersAround">0</span> metros a la redonda</div>
         </div>
         <div class="map-around-cont">
-          <span>1 Km.</span>
-          <input type="range" class="custom-rang map-around" id="map-around" min="10" max="30" step="1" value="20">
+          <span>0 Km.</span>
+          <input type="range" class="custom-rang map-around" id="map-around" min="0" max="30" step="1" value="0">
           <span>3 Km.</span>
         </div>
       </div>

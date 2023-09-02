@@ -6,6 +6,7 @@ let menus = {
     let urlLoadMenus = cfg.urlLoadMenus ? cfg.urlLoadMenus  : '';
     let urlLoadProducts = cfg.urlLoadProducts ? cfg.urlLoadProducts : '';
     let urlDelProduct = cfg.urlDelProduct ? cfg.urlDelProduct : '';
+    let urlAddMenuObj = cfg.urlAddMenuObj ? cfg.urlAddMenuObj : '';
     let haveMenu = cfg.haveMenus ? parseInt(cfg.haveMenus) : 0;
 
     menus.modalCreate(urlLoadMenus);
@@ -76,6 +77,14 @@ let menus = {
           location.reload();
       });
     });
+
+    $(document).off("click", "#menuUpload");
+    $(document).on('click', '#menuUpload', (e)=>{
+      e.preventDefault();
+      menus.addMenuObj({url: urlAddMenuObj, selector: "#menuPdf"}, function(res){
+        console.log("enviando menuObj 4", res);
+      });
+    });
   },
   modalCreate: (url)=>{
     $('#window-modal').modal({
@@ -93,6 +102,15 @@ let menus = {
       <div class="row">
         <div class="col-12">
           <div id="menuAccordionCont"></div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-12 col-md-3">
+          <input type="file" id="menuPdf" class="form-control-file" name="menuPdf" accept=".png, .jpg, .jpeg, .pdf">
+        </div>
+        <div class="col-12 col-md-2">
+          <a id="menuUpload" class="btn btn-secondary" href="#">Subir menú</a>
         </div>
       </div>`;
     $('#window-modal .modal-body').html(html);
@@ -295,5 +313,24 @@ let menus = {
         }
       }
     });
+  },
+  addMenuObj: function(cfg, callback){
+    cfg = (typeof cfg === 'object') ? cfg : {};
+    let url = cfg.url ? cfg.url : false;
+    let selector = cfg.selector ? cfg.selector : false;
+    let file = $(selector).prop("files")[0];
+    let formData = new FormData();
+    formData.append("menuObj", file);
+    console.log("enviando menuObj 1", file);
+
+    utils.sendAjaxJQ(url, formData, function(res){
+      console.log("enviando menuObj 2", res);
+      if(res['success']){
+        if(callback && (typeof callback === 'function')){
+          console.log("enviando menuObj 3");
+          callback(res);
+        }
+      }
+    }, {enctype: "multipart/form-data"});
   }
 }

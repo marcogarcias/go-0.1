@@ -98,6 +98,12 @@ Route::post('/myspace/delProduct', [
   ]
 )->name('myspace.delProduct')->middleware('auth');
 
+Route::post('/myspace/addMenuObj', [
+    App\Http\Controllers\SiteController::class, 
+    'addMenuObj'
+  ]
+)->name('myspace.addMenuObj')->middleware('auth');
+
 // RUTAS DE MI ESPACIO PARA LA EMPRESA
 Route::post('/myspace/loadStab', [
     App\Http\Controllers\SiteController::class, 

@@ -49,6 +49,14 @@ let stab = {
       e.preventDefault();
       stab.storeStab(urlUpdateStablishment);
     });
+
+    $(document).off("click", "#btn-geoReload");
+    $(document).on('click', '#btn-geoReload', (e)=>{
+      e.preventDefault();
+      if(confirm("¿Estás seguro de recargar la geolocalizaión?")){
+        stab.initGeo();
+      }
+    });
   },
   modalCreate: (url)=>{
     $('#window-modal').modal({
@@ -96,6 +104,12 @@ let stab = {
             <div class="rule">Máximo 20 carácteres.</div>
             <input type="text" class="form-control" id="longitud" name="longitud" value="" placeholder="Longitud del establecimiento">
             <div id="longitud-error" class="error" style="display: block;"></div>
+          </div>
+          <div class="form-group">
+            <a id="btn-geoReload" class="btn btn-secondary" href="#">
+              <i class="fas fa-sync-alt"></i>
+              Recargar ubicación
+            </a>
           </div>
           <div class="form-group">
             <div class="col-8 col-md-3">
@@ -282,6 +296,22 @@ let stab = {
           <label for="${tags[t].idtag}" class="custom-control-label">${tags[t].name}</label>
         </div>`;
       $('#tags').append(check);
+    }
+  },
+  initGeo: function(){
+    let sec, html;
+    let lat, lng;
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(position){
+        lat = position.coords.latitude ? position.coords.latitude : 0;
+        lng = position.coords.longitude ? position.coords.longitude : 0;
+        $("#latitud").val(lat);
+        $("#longitud").val(lng);
+      }, function(msg){
+        console.error(msg);
+      });
+    }else{
+      console.log("No se puede obtener las coordenadas");
     }
   },
   initLoadFile: function(e){

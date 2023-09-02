@@ -45,6 +45,7 @@ let utils = {
     let conType = cfg.contentType ? cfg.contentType : false;
     let proData = cfg.processData ? cfg.processData : false;
     let cache = cfg.cache ? cfg.cache : false;
+    let enctype = cfg.enctype ? cfg.enctype : false;
     let beforeSend = cfg.beforeSend ? cfg.beforeSend : false;
     let error = cfg.error ? cfg.error : false;
     let complete = cfg.complete ? cfg.complete : false;
@@ -58,6 +59,7 @@ let utils = {
         contentType: conType,
         processData: proData,
         cache: cache,
+        enctype: enctype,
         beforeSend: (xhr)=>{
           if(beforeSend && (typeof beforeSend === 'function')){
             beforeSend(xhr);

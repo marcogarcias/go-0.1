@@ -39,6 +39,11 @@
           <span class="sr-only">{{ __('Siguiente') }}</span>
         </a>
       </div>
+      <div class="text-center">
+        <a class="" href="{{ route('cercaDeTi') }}">
+          <img src="{{ asset('img/site/btn/btn-cercaDeTi.png') }}" title="{{ __('Cerca de tí') }}">
+        </a>
+      </div>
 
       <div>
         @if(count($ads))

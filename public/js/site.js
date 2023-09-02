@@ -234,6 +234,7 @@ let go={
     $(document).on("click", ".menuProdDesc", function(){
       let desc = $(this).attr("data-desc");
       desc = atob(desc);
+      desc = decodeURIComponent(escape(desc));
       $(".modal-title").text(title);
       $(".modal-body").text(desc);
       $("#window-modal").modal('toggle');

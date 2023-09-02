@@ -59,6 +59,7 @@ let map = {
     });
   },
   // inserta los punteros de varios establecimientos
+  /*
   drawMap: function(stablish){
     let marker;
     let coor;
@@ -107,10 +108,6 @@ let map = {
     .openTooltip();
     //console.log('img: ', map.asset+'img/site/btn/'+stablish[stab].image);
     marker['idStab']=stablish.idstablishment;
-    /*L.marker([stablish[stab].lat, stablish[stab].lng], {icon: marcador}).
-      addTo(map.goMap).
-      bindTooltip("my tooltip text").openTooltip();*/
-    //marker.bindPopup('<b>'+stablish[stab].name+'</b><br><a href="'+toGo+'">Solicita más información</a>');
   },
   setCircle: function(mts){
     mts = Number(mts*100);
@@ -136,6 +133,7 @@ let map = {
       }).then(function(){ });
     }else console.log('err:  Datos no válidos. url: '+url+', data: '+data+')');
   },
+*/
   // **************************************
   // *** Dibuja un mapa con puro MAPBOX ***
   // **************************************
@@ -176,7 +174,7 @@ let map = {
     let lng = cfg.lng ? cfg.lng : 0;
     let coordinates = [ lng, lat ];
 
-    let circle = turf.circle(coordinates, 1500, {
+    let circle = turf.circle(coordinates, 0, {
       steps: 64,
       units: 'meters'
     });
@@ -210,11 +208,12 @@ let map = {
     let newCircle;
 
     mts = Number(mts*100);
-    if(mts>=1000 && mts<=3000){
+    if(mts>=0 && mts<=3000){
       newCircle = turf.circle(coordinates, mts, {
         units: 'meters'
       });
       map.goMap.getSource('circle').setData(newCircle);
+      $("#metersAround").text(mts);
     }
   },
   // inserta un marcador al mapa

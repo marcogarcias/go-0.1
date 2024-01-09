@@ -9,6 +9,7 @@
 @section('js')
   <script src="{{ asset('js/gallery.js') }}"></script>
   <script src="{{ asset('js/socialmedia.js') }}"></script>
+  <script src="{{ asset('js/menus.js') }}"></script>
   @auth
     @unless(session('isStablishment'))
       <script src="{{ asset('js/chatbox_v1.js?').microtime() }}" defer></script>
@@ -107,6 +108,20 @@
             </div>
           </div>
         </div>
+
+        @if($menuFile)
+          <div class="row">
+            <div class="col-12 col-md-7 mt-3 mb-3 mx-auto">
+              <h1 class="text-white"><strong><a href="#" id="btn-pdf-menu" data-toggle="modal" data-target="#window-modal">Menú PDF</a></strong></h1>
+              <div class="align-center" >
+                <object id="menuFile" data='{{ asset("/storage/".$menuFile->path."/".$menuFile->pdf) }}' type='' width='100%' height='450'>
+                  <p>Sin PDF del menú.</p>
+                </object>
+              </div>
+              <br>
+            </div>
+          </div>
+        @endif
 
         @if(count($gallery))
           <div class="row">
@@ -329,6 +344,15 @@
       web: "{{ $stablish->web ? $stablish->web : "" }}",
     };
     social.initStabSocial(cfgSocial);
+
+    @if($menuFile)
+      let cfgPdfMenu ={
+        pathPdfMenu: "{{ asset("/storage/".$menuFile->path."/".$menuFile->pdf) }}",
+      };
+      menus.initStabMenu(cfgPdfMenu);
+    @endif
+
+    // 
     @auth
       @unless(session('isStablishment'))
         let cfg = {

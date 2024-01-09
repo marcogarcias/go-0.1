@@ -504,12 +504,14 @@ window.addEventListener('load', function() {
       
       // configuración para el js de menus.js
       cfg.menu = {};
+      cfg.menu.urlAsset = "{{ asset("/storage/") }}";
       cfg.menu.haveMenus = "{{ count($menus) }}";
       cfg.menu.urlLoadMenus = '{{ route("myspace.loadMenus") }}';
       cfg.menu.urlAddMenu = '{{ route("myspace.addMenu") }}';
       cfg.menu.urlLoadProducts = '{{ route("myspace.loadProducts") }}';
       cfg.menu.urlDelProduct = '{{ route("myspace.delProduct") }}';
       cfg.menu.urlAddMenuObj = '{{ route("myspace.addMenuObj") }}';
+      cfg.menu.urlDelMenuObj = '{{ route("myspace.delMenuObj") }}';
       //menus.init(cfgMenus);
 
       // configuración para el js del establecimiento.js

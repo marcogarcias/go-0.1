@@ -19,6 +19,7 @@ use App\Models\StablishmentJob;
 use App\Models\StablishmentTag;
 use App\Models\StablishmentMenu;
 use Illuminate\Support\Facades\DB;
+use App\Models\stablishmentMenuPdf;
 use App\Models\StablishmentGallery;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
@@ -119,6 +120,7 @@ class SiteController extends Controller
     //DB::enableQueryLog();
     $idUser = Auth::id() ? Auth::id() : 0;
     $menus_ = $menus = [];
+    $menuFile;
     $stablish = Stablishment::select(
       "s.idstablishment", "s.name", "s.description", "s.direction", 
       "s.image", "s.summary", "s.whatsapp", "s.facebook", "s.range", 
@@ -140,6 +142,7 @@ class SiteController extends Controller
       ->where("sec.deleted", 0)
       ->first();
 
+    // obteniendo los menus y sus productos
     $menus_ = StablishmentMenu::
         select("sm.idmenu", "sm.name", "sm.description", "mp.idproduct", "mp.name AS prodName", 
           "mp.description AS prodDesc", "mp.price", "mp.price_discount")
@@ -172,6 +175,15 @@ class SiteController extends Controller
       }
       $menus[$hash]["products"][] = $prod;
     }
+
+    // obteniendo menu en pdf
+    $menuFile = stablishmentMenuPdf::
+      where("disabled", 0)
+      ->where("deleted", 0)
+      ->where("stablishment_id", $stab)
+      ->get();
+    $menuFile = isset($menuFile[0]) ? $menuFile[0] : $menuFile;
+
     // obteniendo la galería     
     $gallery = StablishmentGallery::select("idgallery", "path", "image")
       ->where("deleted", 0)
@@ -196,7 +208,7 @@ class SiteController extends Controller
       toKey("Oferta") => "#14339b",
       toKey("Promoción") => "#6d149e"
     ];
-    return view("site.stablishment", compact("idUser", "stablish", "menus", "jobs", "ads", "gallery", "adsBg"));
+    return view("site.stablishment", compact("idUser", "stablish", "menus", "menuFile", "jobs", "ads", "gallery", "adsBg"));
   }
 
   /**
@@ -303,6 +315,12 @@ class SiteController extends Controller
         where('stablishment_id', $idStab)
         ->where('deleted', 0);
 
+      $file = stablishmentMenuPdf::
+        where('stablishment_id', $idStab)
+        ->where('deleted', 0)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
       if($hash){
         if(strpos($hash, 'hash') === false){
           $hash = Crypt::decryptString($hash);
@@ -317,10 +335,15 @@ class SiteController extends Controller
           $menu->hash = Crypt::encryptString($menu->idmenu);
           $menu->stablishment_id = Crypt::encryptString($menu->stablishment_id);
         }
+
+        foreach ($file as $f) {
+          $f->hash = Crypt::encryptString($f->idMenuPdf);
+          unset($f->idMenuPdf);
+        }
       }
       $res['success']=true;
       $res['code']='success';
-      $res['menus']= $menus;
+      $res['menus']= ['manual'=>$menus, 'file'=>$file];
 
       $res = response()->json($res, 200);
     }
@@ -501,24 +524,91 @@ die('...');*/
    */
   public function addMenuObj(Request $req){
     $res=array('success'=>false, 'action'=>'load');
+    $idStab;
+    $stabMenuPdf = [];
+    $fileRes; $fileReg; 
+    $data = [];
     if($req->ajax()){
-      $menuObj = $req->file("menuObj");
+      $idStab = Crypt::decryptString(session('idStablishment'));
+      $idMenuPdf = $req->input('hash');
+      $idMenuPdf = $idMenuPdf ? Crypt::decryptString($req->input('hash')) : '';
 
-      dd($data, $data2, $file);
+      if($req->hasFile('files')){
+        $file = $req->file('files');
 
-      $hashProduct = isset($data['hashProduct']) && $data['hashProduct'] ? $data['hashProduct'] : false;
-      $hashProduct = (strpos($hashProduct, 'hash') === false) ? Crypt::decryptString($hashProduct) : 0;
+        if($idMenuPdf){
+          $fileReg = stablishmentMenuPdf::find($idMenuPdf);
+          $data['hahs'] = Crypt::encryptString($idMenuPdf);
+          $data['path'] = $pathImageRel = $fileReg->path;
+          $data['pdf'] = $filename = $fileReg->pdf;
+          $dir = $pathImageRel.$filename;
+          $stabMenuPdf['pdf'] = $filename;
+          $fileRes = $fileReg->update($stabMenuPdf);
+          $res['action'] = 'update';
+        }else{
+          $pathImageAr = makeDir('menus');
+          $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
+          $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
+          $filename =  time() .'.' . $file->getClientOriginalExtension();
+          $dir = $pathImageRel.$filename;
+          $stabMenuPdf['path'] = $pathImageRel;
+          $stabMenuPdf['pdf'] = $filename;
+          $stabMenuPdf['stablishment_id'] = $idStab;
+          $fileRes = stablishmentMenuPdf::create($stabMenuPdf);
+          $data['hahs'] = Crypt::encryptString($fileRes->idMenuPdf);
+          $data['path'] = $fileRes->path;
+          $data['pdf'] = $fileRes->pdf;
+          $res['action'] = 'insert';
+        }
+        if($fileRes){
+          if($file->storeAs($pathImageRel, $filename, 'public')){
+            $res['success']=true;
+            $res['code']='success';
+            $res['message']= 'El archivo se cargó correctamente.';
+            $res['data'] = ['file'=>$data];
+          }else{
+            $res['success']=false;
+            $res['code']='error';
+            $res['message']= 'El archivo no se cargó correctamente.';
+          }
+        }
+      }
 
-      $product = MenuProduct::where('idproduct', $hashProduct)->update(['deleted' => 1]);
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
 
-      if($product){
+  /**
+   * Elimina un menu ya sea pdf o imagen.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function delMenuObj(Request $req){
+    $res=array('success'=>false, 'action'=>'load', 'data'=>[]);
+    $fileRes;
+    $path; $file; $resDel; $resReg;
+    if($req->ajax()){
+      $data = $req->input('data');
+
+      $id = isset($data['hash']) && $data['hash'] ? Crypt::decryptString($data['hash']) : 0;
+      $file = stablishmentMenuPdf::find($id);
+
+      if($file){
+        $path = storage_path('app/public/'.$file->path.$file->pdf);
+        $resDel = File::delete($path);
+
+        $file->deleted = 1;
+        $resReg = $file->save();
+
         $res['success']=true;
         $res['code']='success';
-        $res['message']= 'El producto ha sido eliminado.';
+        $res['data']=[$file, $path, $resDel, $resReg];
+        $res['message']='Se ha eliminado el archivo del menú';
       }else{
         $res['success']=false;
-        $res['code']='error';
-        $res['message']= 'El producto no pudo ser eliminado.';
+        $res['code']='warning';
+        $res['message']='No se pudo eliminar el archivo del menú.';
       }
 
       $res = response()->json($res, 200);

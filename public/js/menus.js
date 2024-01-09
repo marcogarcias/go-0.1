@@ -1,5 +1,44 @@
 
 let menus = {
+  assets: '',
+
+  initStabMenu: function(cfg){
+    cfg = (typeof cfg === 'object') ? cfg : {};
+    this.assets = cfg.urlAsset ? cfg.urlAsset  : "";
+
+    $(document).on("click", "#btn-pdf-menu", (e)=>{
+      e.preventDefault();
+      menus.setPdfMenuStab(cfg);
+    });
+  },
+  /**
+   * Inserta el pdf del menú en la ventana modal de la sección del establecimiento
+   * @param object $cfg Objecto que contiene la información necesaria para el contenido de la ventana modal
+   */
+  setPdfMenuStab: function(cfg){
+    // https://programacion.net/articulo/como_embeber_un_documento_pdf_en_una_pagina_web_1931
+    cfg = (typeof cfg === 'object') ? cfg : {};
+    let pathPdfMenu = cfg.pathPdfMenu ? cfg.pathPdfMenu : "/";
+
+    console.log("assets", pathPdfMenu);
+    /*let html = `
+      <div class="align-center col-12" >
+        <object id="menuFile" data='${pathPdfMenu}' type='' width='100%' height='450'>
+          <param name="zoom" value="50">
+          <p>Sin PDF del menú.</p>
+        </object>
+      </div>`;*/
+
+    let html = `
+      <div class="align-center col-12" >
+        <embed src="${pathPdfMenu}#zoom=100&toolbar=0&view=fitH" type="application/pdf" width="100%" height="450" />
+      </div>`;
+
+    $("#window-modal .modal-title").text("MENU");
+    $("#window-modal .modal-body").html(`<div class="row">${html}</div>`);
+  },
+
+
   init: (cfg)=>{
     cfg = (typeof cfg === 'object') ? cfg : {};
     let urlAddMenu = cfg.urlAddMenu ? cfg.urlAddMenu  : '';
@@ -7,9 +46,11 @@ let menus = {
     let urlLoadProducts = cfg.urlLoadProducts ? cfg.urlLoadProducts : '';
     let urlDelProduct = cfg.urlDelProduct ? cfg.urlDelProduct : '';
     let urlAddMenuObj = cfg.urlAddMenuObj ? cfg.urlAddMenuObj : '';
+    let urlDelMenuObj = cfg.urlDelMenuObj ? cfg.urlDelMenuObj : '';
+    this.assets = cfg.urlAsset ? cfg.urlAsset  : "";
     let haveMenu = cfg.haveMenus ? parseInt(cfg.haveMenus) : 0;
 
-    menus.modalCreate(urlLoadMenus);
+    menus.modalCreate({urlLoadMenus: urlLoadMenus});
     /*$('#btnMenus').on('click', (e)=>{
       menus.modalCreate(urlLoadMenus);
     });*/
@@ -72,45 +113,81 @@ let menus = {
       e.preventDefault();
       menus.addMenu(urlAddMenu, (res)=>{
         //menus.createSelectMenu(urlLoadMenus);
-        menus.modalCreate(urlLoadMenus);
+        menus.modalCreate({urlLoadMenus: urlLoadMenus});
         if(!haveMenu)
           location.reload();
       });
     });
 
-    $(document).off("click", "#menuUpload");
-    $(document).on('click', '#menuUpload', (e)=>{
+    $(document).off("click", "#menuFileUpload");
+    $(document).on('click', '#menuFileUpload', (e)=>{
       e.preventDefault();
       menus.addMenuObj({url: urlAddMenuObj, selector: "#menuPdf"}, function(res){
+        const file = res['data']['file'] ? res['data']['file'] : [];
+        menus.setMenuFile(file)
         console.log("enviando menuObj 4", res);
       });
     });
+
+    $(document).off("click", "#menuFileDelete");
+    $(document).on('click', '#menuFileDelete', (e)=>{
+      e.preventDefault();
+      menus.delMenuObj({url: urlDelMenuObj, selector: "#menuPdf"}, function(res){
+        //const file = res['data']['file'] ? res['data']['file'] : [];
+        //menus.setMenuFile(file)
+        //console.log("enviando menuObj 4", res);
+      });
+    });
   },
-  modalCreate: (url)=>{
+  modalCreate: (cfg)=>{
+    let url = cfg.urlLoadMenus ? cfg.urlLoadMenus : false;
+    let assets = this.assets;
+
     $('#window-modal').modal({
       backdrop: true,
       keyboard: false
     });
     $('#window-modal .modal-title').text('Menú');
     let html = `
-      <div class="row mb-3">
-        <div class="col-12">
-          <div id="menuListCont"></div>
-        </div>
-      </div>
+      <ul class="nav nav-tabs" id="menuTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="manual-tab" data-toggle="tab" data-target="#manual" type="button" role="tab" aria-controls="home" aria-selected="true">Menú manual</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="file-tab" data-toggle="tab" data-target="#file" type="button" role="tab" aria-controls="profile" aria-selected="false">Adjuntar menú</button>
+        </li>
+      </ul>
 
-      <div class="row">
-        <div class="col-12">
-          <div id="menuAccordionCont"></div>
+      <div class="tab-content" id="menuContentTabs">
+        <div class="tab-pane fade show active py-4" id="manual" role="tabpanel" aria-labelledby="manual-tab">
+          <div class="row mb-3">
+            <div class="col-12">
+              <div id="menuListCont"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div id="menuAccordionCont"></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-12 col-md-3">
-          <input type="file" id="menuPdf" class="form-control-file" name="menuPdf" accept=".png, .jpg, .jpeg, .pdf">
-        </div>
-        <div class="col-12 col-md-2">
-          <a id="menuUpload" class="btn btn-secondary" href="#">Subir menú</a>
+        <div class="tab-pane fade py-4" id="file" role="tabpanel" aria-labelledby="file-tab">
+          <div class="row">
+            <div class="col-12">
+              <label for="menuPdf">Adjuntar menú en PDF</label>
+              <input type="file" id="menuPdf" class="form-control-file" name="menuPdf" label="Seleccionar archivo" accept=".png, .jpg, .jpeg, .pdf">
+            </div>
+          </div>
+          <div class="row py-4">
+            <div class="col-12">
+              <a id="menuFileUpload" class="btn btn-purple mr-5" href="#">Subir menú</a>
+              <a id="menuFileDelete" class="btn btn-danger" href="#">Eliminar menú</a>
+            </div>
+          </div>
+          <div class="row py-4">
+            <div id='menuFileCont' class="col-12"></div>
+          </div>
         </div>
       </div>`;
     $('#window-modal .modal-body').html(html);
@@ -127,7 +204,7 @@ let menus = {
     let cfg, menu;
     utils.sendAjax(url, data, function(res){
       if(res['success']){
-        menu = res['menus'];
+        menu = res['menus']['manual'];
         cfg = {
           'hash': menu.hash ? menu.hash : false,
           'title': menu.name ? menu.name : '',
@@ -152,15 +229,35 @@ let menus = {
       }
     });
   },
-  setMenus: (menus)=>{
+  setMenus: (menus_)=>{
+    let menusA = menus_['manual'] ? menus_['manual'] : [];
+    let file = menus_['file'] ? menus_['file'] : [];
+    file = file[0] ? file[0] : [];
+    menus.setMenuManual(menusA);
+    menus.setMenuFile(file);
+  },
+  setMenuManual: (menusA)=>{
+    menusA = menusA || [];
     let select = `<select id="menuList" class="custom-select">#OPTIONS#</select>`;
     let options = `<option value="${'hash_'+utils.hash1()}" selected>Lista de menus</option>`;
-    for(let menu in menus){
+    for(let menu in menusA){
       options += `
-        <option value="${menus[menu].hash}">${menus[menu].name}</option>`;
+        <option value="${menusA[menu].hash}">${menusA[menu].name}</option>`;
     }
     select = select.replace('#OPTIONS#', options);
     $('#menuListCont').html(select);
+  },
+  setMenuFile: (file)=>{
+    let html;
+    //$('#menuFile').attr('data', `${this.assets}/${file.path}${file.pdf}`);
+    $('#menuFileUpload').attr('data-hash', file.hash);
+    $('#menuFileDelete').attr('data-hash', file.hash);
+    html = `
+      <object id="menuFile" data='${this.assets}/${file.path}${file.pdf}' type='' width='100%' height='450'>
+        <p>Sin menú activo.</p>
+      </object>`;
+    $('#menuFileCont').html(html);
+
   },
   createMenuAccordion: (menu)=>{
     menu = (typeof menu === 'object') ? menu : {};
@@ -314,23 +411,49 @@ let menus = {
       }
     });
   },
+  // Agrega un menú en pdf
   addMenuObj: function(cfg, callback){
     cfg = (typeof cfg === 'object') ? cfg : {};
     let url = cfg.url ? cfg.url : false;
-    let selector = cfg.selector ? cfg.selector : false;
-    let file = $(selector).prop("files")[0];
+    
     let formData = new FormData();
-    formData.append("menuObj", file);
-    console.log("enviando menuObj 1", file);
+    //let files = $('#menuPdf')[0].files[0];
+    //formData.append('file',files);
+    //formData.append('logotipoBase64', $('#logotipoBase64').val());
+    let hash = $('#menuFileUpload').attr('data-hash');
+    formData.append('hash', hash?hash:'');
+    formData.append('files', $('#menuPdf')[0].files[0]);
 
     utils.sendAjaxJQ(url, formData, function(res){
-      console.log("enviando menuObj 2", res);
+      utils.toastr({'type': res.code || 'error', 'message': res.message || 'Error desconocido.'});
       if(res['success']){
         if(callback && (typeof callback === 'function')){
-          console.log("enviando menuObj 3");
           callback(res);
         }
+      }else{
+        if(res['errors']){
+          utils.validateSetErrors(res['errors']);
+        }
       }
-    }, {enctype: "multipart/form-data"});
+    });
+  },
+  delMenuObj: function(arg, callback){
+    arg = (typeof arg === 'object') ? arg : {};
+    let url = arg.url ? arg.url : false;
+    let data = { hash: $('#menuFileDelete').attr('data-hash') };
+
+    utils.sendAjax(url, data, function(res){
+      console.log("del", res);
+      utils.toastr({'type': res.code || 'error', 'message': res.message || 'Error desconocido.'});
+      if(res['success']){
+        if(callback && (typeof callback === 'function')){
+          callback(res);
+        }
+      }else{
+        if(res['errors']){
+          utils.validateSetErrors(res['errors']);
+        }
+      }
+    });
   }
 }

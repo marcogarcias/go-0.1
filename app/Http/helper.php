@@ -105,7 +105,7 @@ function makeDir($type=""){
   //$pathToAbs = public_path()."/".$pathToRel;
   $pathToAbs = $local ? public_path()."/".$pathToRel : base_path()."/public_html/".$pathToRel;
   //Storage::makeDirectory($pathTo);
-  mkdir($pathToAbs, 0777, true);
+  //mkdir($pathToAbs, 0777, true);
   $pathAr["relative"] = $pathToRel;
   $pathAr["absolute"] = $pathToAbs;
   return $pathAr;

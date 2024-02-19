@@ -109,7 +109,7 @@
           </div>
         </div>
 
-        @if($menuFile)
+        @if(count($menuFile))
           <div class="row">
             <div class="col-12 col-md-7 mt-3 mb-3 mx-auto">
               <h1 class="text-white"><strong><a href="#" id="btn-pdf-menu" data-toggle="modal" data-target="#window-modal">Menú PDF</a></strong></h1>
@@ -345,7 +345,7 @@
     };
     social.initStabSocial(cfgSocial);
 
-    @if($menuFile)
+    @if(count($menuFile))
       let cfgPdfMenu ={
         pathPdfMenu: "{{ asset("/storage/".$menuFile->path."/".$menuFile->pdf) }}",
       };

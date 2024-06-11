@@ -69,6 +69,14 @@
   font-weight: bold !important;
 }
 
+.btn-transparent{
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border-color: #fff !important;
+  color: #fff !important;
+}
+
+.btn-transparent:hover{ background-color: rgba(0, 0, 0, 1) !important; }
+
 .card-header{
   background-color: #353367 !important;
   color: #fff;

@@ -20,8 +20,34 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/', [App\Http\Controllers\SiteController::class, 'index']
+/* ****************************** */
+/* START - RUTAS DE PUBLICACIONES */
+/* ****************************** */
+
+Route::get('/', [App\Http\Controllers\Site\PublicationController::class, 'index']
 )->name('home');
+
+Route::get('/publication/{pub?}', [App\Http\Controllers\Site\PublicationController::class, 'publication']
+)->name('publication');
+
+Route::post('/publication/setLike', [App\Http\Controllers\Site\PublicationController::class, 'setLike']
+)->name('publication.setLike');
+
+/*Route::get('/publications', [App\Http\Controllers\Site\PublicationController::class, 'index']
+)->name('publications');*/
+
+/* **************************** */
+/* END - RUTAS DE PUBLICACIONES */
+/* **************************** */
+
+/*Route::get('/', [App\Http\Controllers\SiteController::class, 'index']
+)->name('home');*/
+
+Route::get('/games', [App\Http\Controllers\SiteController::class, 'games']
+)->name('games');
+
+Route::get('/stablishments', [App\Http\Controllers\SiteController::class, 'index']
+)->name('stablishments.home');
 
 Route::get('/termsAndConditions', [App\Http\Controllers\SiteController::class, 'termsAndConditions']
 )->name('termsAndConditions');
@@ -289,6 +315,43 @@ Route::post('/test2', [App\Http\Controllers\SiteController::class, 'test2']
 )->name('test2');
 
 /* RUTAS PARA EL ADMINISTRADOR */
+
+/* PUBLICATIONS - publicaciones */
+Route::get('/admin/publications', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'index']
+)->name('admin.publications');
+
+Route::post('/admin/publications/getPublications', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'getPublications']
+)->name('admin.publications.getPublications');
+
+Route::post('/admin/publications/getEstados', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'getEstados']
+)->name('admin.publications.getEstados');
+
+Route::post('/admin/publications/getMunicipios', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'getMunicipios']
+)->name('admin.publications.getMunicipios');
+
+Route::post('/admin/publications/getSections', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'getSections']
+)->name('admin.publications.getSections');
+
+Route::post('/admin/publications/getTags', 
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'getTags']
+)->name('admin.publications.getTags');
+
+Route::post('/admin/publications/store',
+  [App\Http\Controllers\Admin\PublicationController::class, 
+  'store']
+)->name('admin.publications.store');
+
 /* STABLISHMENTS - establecimientos */
 Route::get('/admin/stablishments', 
   [App\Http\Controllers\StablishmentController::class, 

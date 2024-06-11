@@ -16,6 +16,7 @@
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="{{ asset('libs/toastr/toastr.min.css') }}" rel="stylesheet">
   <link href="{{ asset('css/admin.css?').microtime() }}" rel="stylesheet">
+  @yield('css')
 </head>
 <body>
   <div id="app">
@@ -31,6 +32,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Left Side Of Navbar -->
           <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.publications') }}">{{ __('Publicaciones').' | ' }}</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ route('admin.stablishments') }}">{{ __('Establecimientos').' | ' }}</a>
             </li>
@@ -87,6 +91,7 @@
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('libs/jquery.ui/js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('libs/toastr/toastr.min.js') }}" defer></script>
+  @yield('js')
   <link href="{{ asset('libs/jquery.ui/css/jquery-ui.min.css') }}" rel="stylesheet">
 @if(env('APP_ENV')==='production')
   <!-- Global site tag (gtag.js) - Google Analytics -->

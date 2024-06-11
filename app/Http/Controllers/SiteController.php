@@ -2218,4 +2218,13 @@ die('...');*/
     //$res = response()->json(array('success'=>true, 'message'=>'1111', 'code'=>'22222', 'errors'=>'333'), 200);
     return $res;
   }
+
+  /**
+   * Página  principal
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function games(){
+    return view('site.games');
+  }
 }

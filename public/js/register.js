@@ -95,9 +95,17 @@ let register = {
     // validando formulario de registro
     $('#frmRegister').parsley().on('field:validated', function(){
       //var ok = $('.parsley-error').length === 0;
+      console.log("1 enviando form...");
     }).on('form:submit', function(x, y, z){
-      //console.log("enviando form...", x, y, z);
+      console.log("2 enviando form...", x, y, z);
     });
+
+    /*$("#frmRegister").parsley().on('field:validated', function() {
+      console.log("1 enviando form...", x, y, z);
+    }).on('form:success', function() {
+      console.log("2 enviando form...", x, y, z);
+    });*/
+
 
     /*$('#frmRegister').parsley().on('field:validated', function(){
       //var ok = $('.parsley-error').length === 0;

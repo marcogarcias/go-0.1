@@ -1,0 +1,212 @@
+.border1{ border: 1px solid #f00; }
+.border2{ border: 1px solid #0f0; }
+.border3{ border: 1px solid #00f; }
+
+.go-publications{ background: #eeedfc; }
+
+/* **************************  */
+/* ***** START - HEADER *****  */
+/* **************************  */
+
+#publications-layout-header{
+  background-size: cover;
+  display: flex;
+  /*flex-direction: row;*/
+  height: 450px;
+  position: relative;
+}
+
+/*.publications-layout-header-left, 
+.publications-layout-header-right{
+  height: 450px;
+}*/
+
+.publications-layout-header-left{
+  align-items: center;
+  display: flex;
+  height: 450px;
+}  
+
+.publications-layout-header-left img{
+  margin: auto;
+  width: 90%;
+}
+
+#publications-layout-header .buttons-box{
+  padding: 30px 30px 0 0;
+  position: absolute;
+  text-align: end;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+}
+
+#publications-layout-header .buttons-box .btn-transparent{
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+/* ************************  */
+/* ***** END - HEADER *****  */
+/* ************************  */
+
+.goPublications{
+  background: #fff;
+}
+
+/* *********************************************  */
+/* ***** START - LISTADO DE PUBLICACIONES ******  */
+/* *********************************************  */
+
+#publications{
+  background: #fff;
+  margin: 0 20%;
+}
+
+#publications .container{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.pub-item{
+  background: #fff;
+  border: 1px solid #d8d6ff;
+  box-shadow: 1px 1px 15px #ccc;
+  margin: 30px;
+}
+
+.imagen-fondo{
+  width: 500px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+.contenido{
+  margin-left: 10px;
+}
+
+.titulo{
+  margin-top: 5px;
+  margin-bottom: 2px;
+}
+
+.titulo a:hover{
+  text-decoration: none;
+}
+
+.autor-date{
+  color: #777;
+  font-size: 12px;
+}
+
+.synopsis{
+  font-size: 18px;
+  padding: 15px 0;
+}
+
+.interactions{
+  align-items: center;
+  border-top: 1px solid #ccc;
+  display: flex;
+  font-size: 14px;
+  justify-content: end;
+  padding-top: 15px;
+}
+
+.interactions span{
+  margin-right: 10px;
+}
+
+/* *******************************************  */
+/* ***** END - LISTADO DE PUBLICACIONES ******  */
+/* *******************************************  */
+
+/* ********************************  */
+/* ***** START - PUBLICACION ******  */
+/* ********************************  */
+
+#publication{
+  background: #fff;
+  margin: 0 20%;
+  padding: 50px 30px;
+}
+
+#publication .pub-imageCont{ text-align:center; }
+#publication .pub-imageCont img{
+  padding: 20px;
+  width: 70%;
+}
+
+#publication #synopsis{
+  background: #eeedfc;
+  border-left: 5px solid #353367;
+  color: #666;
+  font-size: 24px;
+  font-style: italic;
+  padding: 10px 20px;
+}
+
+#publication #description{
+  font-size: 20px;
+  padding: 20px 0;
+}
+
+#gallery{
+  background: #353367;
+  margin: 50px 0;
+  padding: 30px;
+}
+
+#gallery h2{ color: #fff; text-align:center; }
+
+#gallery .splide__slide img{
+  /*width: 100%;*/
+  height: 400px;
+}
+
+
+/* ********************************  */
+/* ***** END - PUBLICACION ******  */
+/* ********************************  */
+
+/* Dispositivos extra pequeños (teléfonos pequeños, 600px o menos) */
+@media only screen and (max-width: 600px) {
+  #publications-layout-header .buttons-box{ padding: 30px 0 0 0; text-align: center; }
+
+  header{ border: 1px solid #f00;  }
+  .go-publications .col-12{ padding: 5px; }
+  .publications-layout-header-left{ margin: 0px 10px; }
+  #publications{ background: unset; margin: 0px; }
+  .pub-item{ margin: 0px }
+  #publications .container{ display: block; margin-bottom: 30px; padding: 0px; }
+  .contenido{ margin: 20px 0px; }
+
+  #publication{ padding: 0px; margin: 20px 0px; }
+  #publication h2{ padding: 10px 5px; }
+  #publication .pub-imageCont img{ padding: 30px 5px; width: 100%; }
+  #publication #synopsis{ font-size: 20px; }
+  #publication #description{ padding: 20px 10px; }
+  #gallery{ margin: 30px 0px; padding: 10px; }
+}
+
+/* Dispositivos pequeños (teléfonos, 600px y más) */
+@media only screen and (min-width: 600px) {
+  header{ border: 1px solid #0f0;  }
+}
+
+/* Dispositivos medianos (tabletas verticales y horizontales, 768px y más) */
+@media only screen and (min-width: 768px) {
+  header{ border: 1px solid #00f;  }
+}
+
+/* Dispositivos grandes (escritorios y laptops, 992px y más) */
+@media only screen and (min-width: 992px) {
+  header{ border: 1px solid #ff0;  }
+}
+
+/* Dispositivos extra grandes (escritorios grandes, 1200px y más) */
+@media only screen and (min-width: 1200px) {
+  header{ border: 1px solid #0ff;  }
+}

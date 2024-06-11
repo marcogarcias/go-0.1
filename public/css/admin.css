@@ -2,3 +2,45 @@
 
 .img-cont img{ width: 100%; }
 .table-img{ width: 30%; }
+
+#frm-publication ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#frm-publication .gallery-preview-item{
+  background-position: center;;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: 1px solid #ccc;
+  display: inline-block;
+  height: 110px;
+  margin: 2px;
+  width: 150px;
+}
+
+#frm-publication .gallery-preview-item div{
+  background: #f00;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  height: 25px;
+  padding: 0 2px;
+  text-align: center;
+  width: 25px;
+}
+
+#frm-publication #map{ 
+  height: 400px;
+  margin-bottom: 50px; 
+  width: 100%; 
+}
+
+#frm-publication .img-portada-thumbnail{
+
+}

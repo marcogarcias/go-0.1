@@ -14,7 +14,7 @@
             @php($idPub = $pub->idPublication)
             @php($text = $pub->synopsis ? $pub->synopsis : $pub->description)
             <div class="pub-item container">
-              <div class="col-12 col-md-3 imagen-fondo" style="background-image: url('{{ asset("/storage/".$pub->image)  }}');" alt="{{ $pub->title }}" title="{{ $pub->title }}"></div>
+              <div class="col-12 col-md-3 imagen-fondo" style="background-image: url('{{ asset($pub->image)  }}');" alt="{{ $pub->title }}" title="{{ $pub->title }}"></div>
               <div class="col-12 col-md-9 contenido">
                 <h3 class="titulo"> <a href="{{ route('publication', $pub) }}">{{ $pub->title }}</a></h3>
                 <div class="autor-date">

@@ -11,6 +11,7 @@ use App\Models\Section;
 use App\Models\Municipio;
 use Illuminate\Http\Request;
 use App\Models\Publication;
+use Illuminate\Support\Str;
 use App\Models\PublicationTag;
 use App\Models\PublicationGallery;
 //use Illuminate\Support\Facades\DB;
@@ -146,17 +147,21 @@ class PublicationController extends Controller
       $tags = $req->input('tags');
 
       if($req->hasFile('portada')){
+        $img = $req->portada;
         $pathImageAr = makeDir("publications/frontPage");
         $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
         $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
         $pathImageRel = rtrim($pathImageRel, '/');
-        //$filename = time().".png";
+        $filename = time().'.'.$img->getClientOriginalExtension();
         //$file = $pathImageAbs.$filename;
         //$file = $pathImageRel.$filename;
-        $file = $pathImageRel;
-        $filename = $req->portada->store($file, 'public');
-        $publication->image = $filename;
+        //$file = $pathImageRel;
+        //$filename = $req->portada->store($file, 'public');
+        $img->move($pathImageRel, $filename);
+        $publication->image = $pathImageRel.'/'.$filename;
+        //var_dump($pathImageRel.$filename);
       }
+      //die('...');
 
       $pub = $publication->save();
 
@@ -179,16 +184,20 @@ class PublicationController extends Controller
         }
 
         if($req->hasFile('gallery')){
+          //$img = $req->gallery;
           $pathImageAr = makeDir("publications/gallery");
           $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
           $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
           $pathImageRel = rtrim($pathImageRel, '/');
-          $file = $pathImageRel;
           foreach($req->file('gallery') as $image) {
             $publicationGallery = new PublicationGallery();
-            $filenameGallery = $image->store($file, 'public');
+            $filename = Str::uuid().'.'.$image->getClientOriginalExtension();
+            $image->move($pathImageRel, $filename);
+            $publication->image = $pathImageRel.'/'.$filename;
+
+            //$filenameGallery = $image->store($file, 'public');
             $publicationGallery->path = $pathImageRel;
-            $publicationGallery->image = basename($filenameGallery);
+            $publicationGallery->image = basename($filename);
             $publicationGallery->order = $order++;
             $publicationGallery->publication_id = $publication->idPublication;
             $publicationGallery->save();
@@ -206,15 +215,15 @@ class PublicationController extends Controller
           foreach($galleryDel as $hash){
             foreach($gallery as $gal){
               if($hash == Crypt::decryptString($gal->hashGallery)){
-                var_dump("borrando: ", asset('storage/' . $gal->path . '/' . $gal->image));
-                var_dump("borrando: ", Storage::url($gal->path . '/' . $gal->image));
+                //var_dump("borrando: ", asset('storage/' . $gal->path . '/' . $gal->image));
+                //var_dump("borrando: ", Storage::url($gal->path . '/' . $gal->image));
                 Storage::delete(Storage::url($gal->path . '/' . $gal->image));
                 continue;
               }
             }
           }
         }
-        die('...');
+        //die('...');
 
         $res['success'] = true;
         $res['type'] = 'success';

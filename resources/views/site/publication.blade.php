@@ -31,7 +31,7 @@
             </div>
             
             <div class="pub-imageCont">
-              <img src="{{ asset('/storage/'.$pub->image) }}">
+              <img src="{{ asset($pub->image) }}">
             </div>
             
             <div id="synopsis" class="bd-callout bd-callout-danger">
@@ -50,8 +50,8 @@
                   <ul class="splide__list">
                     @foreach($pub->gallery as $gal)
                     <li class="splide__slide text-center">
-                      <a href="{{ asset('/storage/'.$gal->path.'/'.$gal->image) }}" data-lightbox="gallery">
-                        <img src="{{ asset('/storage/'.$gal->path.'/'.$gal->image) }}">
+                      <a href="{{ asset($gal->path.'/'.$gal->image) }}" data-lightbox="gallery">
+                        <img src="{{ asset($gal->path.'/'.$gal->image) }}">
                       </a>
                     </li>
                     @endforeach

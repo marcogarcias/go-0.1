@@ -66,7 +66,7 @@
                       <input class="form-check-input position-static" type="checkbox" value="{{ $idPub }}" name="check">
                     </div>
                   </td>
-                  <td><img src="{{ asset('/storage/'.$pub->image) }}" class="img-thumbnail" title="{{ __($pub->title) }}" alt="{{ __($pub->title) }}"></td>
+                  <td><img src="{{ asset($pub->image) }}" class="img-thumbnail" title="{{ __($pub->title) }}" alt="{{ __($pub->title) }}"></td>
                   <td>{{ $pub['title'] }}</td>
                   <td>{{ $pub['subtitle'] }}</td>
                   <td>{{ $pub['pseudonym'] }}</td>
@@ -89,7 +89,7 @@
                   <td>
                     {{ $pub['municipio_id'] }}
                   </td>
-                  <td><a href="" id="btn-editar" class="btn btn-outline-success" data-hashpublication="{{ $pub['hashPublication'] }}">Editar</a></td>
+                  <td><a href="" class="btn btn-outline-success btn-editar" data-hashpublication="{{ $pub['hashPublication'] }}">Editar</a></td>
                   <td>
                     <form method="POST" action="">
                       @csrf @method('DELETE')
@@ -146,7 +146,7 @@
       //delurl: '{{ route("admin.stablishments.elimination") }}',
       //urlAddVisitsAll: '{{ route("admin.stablishments.addVisitsAll") }}',
       //urlEnabledGlobalStab: '{{ route("admin.stablishments.enabledGlobalStab") }}',
-      asset: '{{ asset('/storage/') }}',
+      asset: '{{ asset('') }}',
       urlAdd: '{{ route("admin.publications.store") }}',
       urlGetPublication: '{{ route("admin.publications.getPublications") }}',
       urlGetEstados: '{{ route("admin.publications.getEstados") }}',

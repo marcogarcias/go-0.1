@@ -33,7 +33,7 @@ let admin = {
         admin.publications.openForm();
       });
 
-      $('#btn-editar').on('click', function(e){
+      $('.btn-editar').on('click', function(e){
         e.preventDefault();
         let hashPublication = $(this).attr('data-hashPublication');
         admin.publications.getPublication({ hashPublication: hashPublication }, function(res){
@@ -153,7 +153,7 @@ let admin = {
     preLoadGalleryStored: function(gallery){
       for(let gal in gallery){
         let hashGallery = gallery[gal].hashGallery;
-        let urlGallery = `${admin.publications.asset}/${gallery[gal].path}/${gallery[gal].image}`;
+        let urlGallery = `${admin.publications.asset}${gallery[gal].path}/${gallery[gal].image}`;
         const listItem = $(`<div class="gallery-preview-item"><div class="gallery-preview-delete" data-hashgallery="${hashGallery}">X</div></div>`);
           listItem.css('background-image', `url(${urlGallery})`);
           $('#gallery-preview').append(listItem);
@@ -423,14 +423,14 @@ let admin = {
 
           <div class="form-group">
             <label for="portada">Imagen de portada (header)</label>
-            <input type="file"  class="form-control-file" id="portada" name="portada">
+            <input type="file"  class="form-control-file" id="portada" name="portada" accept="image/jpeg, image/png, image/webp">
             <span>(Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)</span>
-            <div class="col-12 col-md-6 img-portada-thumbnail"><img src="${ publication.image ? (admin.publications.asset+'/'+publication.image) : '' }" class="img-thumbnail" /></div>
+            <div class="col-12 col-md-6 img-portada-thumbnail"><img src="${ publication.image ? (admin.publications.asset+publication.image) : '' }" class="img-thumbnail" /></div>
           </div>
 
           <div class="form-group">
             <label for="gallery">Galería</label>
-            <input type="file" class="form-control-file" id="gallery" name="gallery" multiple accept="image/*">
+            <input type="file" class="form-control-file" id="gallery" name="gallery" multiple accept="image/jpeg, image/png, image/webp">
             <span>(Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)</span>
             <div id="gallery-preview"></div>
           </div>

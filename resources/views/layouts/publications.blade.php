@@ -6,7 +6,10 @@
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="theme-color" content="#353367">
-  <title>{{ config('app.name', 'Go 0.1') }} - @yield('title')</title>
+  <meta name="description" content="SomosGo es tu guía definitiva para descubrir los mejores destinos turísticos, eventos y actividades culturales en México. Encuentra recomendaciones, reseñas e información detallada sobre lugares imperdibles, festivales, exposiciones y mucho más. Mantente informado y planifica tus próximas aventuras con SomosGo.">
+
+  @yield('metas')
+  <title>{{ config('app.name', 'SOMOS GO') }} - @yield('title')</title>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">

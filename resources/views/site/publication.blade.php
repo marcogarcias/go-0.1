@@ -10,8 +10,18 @@
   <script src="{{ asset('libs/lightbox2/dist/js/lightbox.min.js') }}" defer></script>
   <script src="{{ asset('js/publication.js') }}"></script>
 @endsection
-@section('returnBtn', route('home'))
 
+@section('metas')
+  <meta property="og:title" content="{{ $pub->title }}">
+  <meta property="og:description" content="{{ $pub->synopsis }}">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:image" content="{{ asset($pub->image) }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ config('app.name', 'SOMOS GO') }}">
+  <meta property="og:locale" content="es_ES">
+@endsection
+
+@section('returnBtn', route('home'))
 @section('content')
 
 <div class="container-fluid go-publications">

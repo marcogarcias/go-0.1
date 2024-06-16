@@ -106,8 +106,12 @@
             </table>
           </div>
 
-          <div id="paginate">
-            {{ $publications->links() }}
+          <div class="row">
+            <div class="col-12">
+              <div class="paginate">
+                {{ $publications->links('custom.paginate') }}
+              </div>
+            </div>
           </div>
 
         </div>

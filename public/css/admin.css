@@ -3,6 +3,9 @@
 .img-cont img{ width: 100%; }
 .table-img{ width: 30%; }
 
+.paginate{ text-align: center; }
+.paginate svg{ height: 15px; width: 15px; }
+
 #frm-publication ul {
     list-style-type: none;
     padding: 0;
@@ -41,6 +44,7 @@
   width: 100%; 
 }
 
-#frm-publication .img-portada-thumbnail{
-
+.loadingCont{
+  display: none;
+  text-align: center;
 }

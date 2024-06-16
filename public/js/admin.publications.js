@@ -14,6 +14,7 @@ let admin = {
     marker: null,
     map: null,
     galleryDel: [],
+    fileMaxSize: 1.5 * 1024 * 1024,
 
     init: function(cfg){
       cfg = (typeof cfg === 'object') ? cfg : {};
@@ -89,9 +90,13 @@ let admin = {
 
       $('#btn-savePublication').on('click', function(e){
         e.preventDefault();
+        $('#frm-publication').fadeOut('fast', function(){
+          $('.loadingCont').fadeIn('fast');
+        });
         admin.publications.savePublication(function(res){
           utils.toastr({'type': res.type, 'message': res.message});
           if(res['success']){
+            window.location.reload();
             $("#modalGral").modal("toggle");
           }
         });
@@ -128,25 +133,39 @@ let admin = {
 
     preLoadImgFront: function(this_){
       const file = this_.files[0];
+      const maxSize = admin.publications.fileMaxSize;
+      const fileSize = (file.size / (1024 * 1024)).toFixed(2);
       if(file){
-        const reader = new FileReader();
-        reader.onload = function() {
-          $('.img-portada-thumbnail img').attr('src', reader.result);
+        if(file.size > maxSize){
+          $('#portadaCont span').css('color', '#f00');
+          utils.toastr({'type': 'warning', 'message': `La imagen es demasiado pesada (${fileSize}). Máximo 1.5MB`});
+        }else{
+          $('#portadaCont span').css('color', '#000');
+          const reader = new FileReader();
+          reader.onload = function() {
+            $('.img-portada-thumbnail img').attr('src', reader.result);
+          }
+          reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
       }
     },
 
     preLoadGallery: function(){
+      const maxSize = admin.publications.fileMaxSize;
       $.each($('#gallery')[0].files, function(index, file) {
-        const reader = new FileReader();
+        const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+        if(file.size > maxSize){
+          utils.toastr({'type': 'warning', 'message': `Alguna imagen no ha sido cargada porque es demasiado pesada (${fileSize}). Máximo 1.5MB`});
+        }else{
+          const reader = new FileReader();
 
-        reader.onload = function(e) {
-          const listItem = $(`<div class="gallery-preview-item"><div class="gallery-preview-delete">X</div></div>`);
-          listItem.css('background-image', `url(${e.target.result})`);
-          $('#gallery-preview').append(listItem);
+          reader.onload = function(e) {
+            const listItem = $(`<div class="gallery-preview-item"><div class="gallery-preview-delete">X</div></div>`);
+            listItem.css('background-image', `url(${e.target.result})`);
+            $('#gallery-preview').append(listItem);
+          }
+          reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
       });
     },
 
@@ -376,6 +395,12 @@ let admin = {
       let html = ''; 
       $('#modalGral-title').text('CREAR NUEVA PUBLICACIÓN');
       html = `
+        <div class="loadingCont">
+          <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <h2>Guardando...</h2>
+        </div>
         <form id="frm-publication" enctype="multipart/form-data">
             
           <div class="form-group">
@@ -421,17 +446,17 @@ let admin = {
 
           <div id="map"></div>
 
-          <div class="form-group">
+          <div id="portadaCont" class="form-group">
             <label for="portada">Imagen de portada (header)</label>
             <input type="file"  class="form-control-file" id="portada" name="portada" accept="image/jpeg, image/png, image/webp">
-            <span>(Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)</span>
+            <span>Peso máximo de 1.5MB.)</span>
             <div class="col-12 col-md-6 img-portada-thumbnail"><img src="${ publication.image ? (admin.publications.asset+publication.image) : '' }" class="img-thumbnail" /></div>
           </div>
 
-          <div class="form-group">
+          <div id="galleryCont" class="form-group">
             <label for="gallery">Galería</label>
             <input type="file" class="form-control-file" id="gallery" name="gallery" multiple accept="image/jpeg, image/png, image/webp">
-            <span>(Dimenciones entre 90px y 110px de ancho y 55px y 75px de alto. Peso máximo de 200kb.)</span>
+            <span>Peso máximo de 1.5MB)</span>
             <div id="gallery-preview"></div>
           </div>
 

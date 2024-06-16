@@ -3,14 +3,18 @@ let goPublication = {
   hashPublication: null,
   urlSetLike: null,
   gallery: null,
+  mapboxToken: "pk.eyJ1Ijoic29tb3NnbzkiLCJhIjoiY2tsdjducTIwMG54ZDJwbzQ5dHB4ZTFkMSJ9.TiWIu_R1l-SBxICm0ueqqQ",
 
   init: function(cfg){
     cfg = (typeof cfg === 'object') ? cfg : {};
     goPublication.hashPublication = cfg.hashPublication ? cfg.hashPublication : '';
     goPublication.urlSetLike = cfg.urlSetLike ? cfg.urlSetLike : '';
+    goPublication.lng = cfg.lng ? cfg.lng : 0;
+    goPublication.lat = cfg.lat ? cfg.lat : 0;
     
     goPublication.initSlider();
     goPublication.ligthbox();
+    goPublication.setMap(goPublication.lng, goPublication.lat);
     goPublication.events();
   },
 
@@ -40,7 +44,40 @@ let goPublication = {
     });
   },
 
+  setMap: function(lng, lat){
+    lng = lng ? lng : -99.1332;
+    lat = lat ? lat : 19.4326;
+    mapboxgl.accessToken = goPublication.mapboxToken;
+    let map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [lng, lat], // Coordenadas iniciales del mapa
+      zoom: 14
+    });
+
+    let marker = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(map);
+
+    console.log(lng, lat);
+  },
+
   events: function(){
+    /*console.log('okokok');
+    $('#btn-menu-movil').on('click', function(e) {
+      e.preventDefault();
+      console.log('menu...');
+      $('#menu-movil').toggleClass('visible');
+    });
+
+    $(document).on('click', function(e) {
+      console.log('menu 2...');
+      if (!$(e.target).closest('#btn-menu-movil, #menu-movil').length) {
+        console.log('menu...');
+        $('#menu-movil').removeClass('visible');
+      }
+    });*/
+
     $(document).on("click", ".interactions .btn-share", function(e){
       let title_ = "Compartir", 
         text_ = "Compartir publicación con un amigo.", 

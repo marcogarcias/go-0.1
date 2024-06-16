@@ -41,9 +41,19 @@
             <div id="description">
               {!! $pub->description !!}
             </div>
+
+            @if($pub->lat && $pub->lng)
+            <div id="mapCont" class="col-12 section">
+              <h2>Mapa</h2>
+              <div id="map"></div>
+              <div class="">
+                {{ $pub->address }}
+              </div>
+            </div>
+            @endif
             
             @if(count($pub->gallery))
-            <div id="gallery">
+            <div id="gallery" class="section">
               <h2>Galería</h2>
               <section class="splide" aria-label="Galería">
                 <div class="splide__track">
@@ -62,6 +72,43 @@
                   <div class="splide__progress__bar"></div>
                 </div>
               </section>
+            </div>
+            @endif
+
+            @if($pub->facebook || $pub->instagram || $pub->twitter || $pub->youtube || $pub->web)
+            <div id="socialmediaCont" class="col-12 section">
+              <h2>Redes sociales</h2>
+              <div id="socialmedia">
+                @if($pub->facebook)
+                  <a href="{{ $pub->facebook }}" class="btn btn-purple" target="_blank" title="Facebook">
+                    <i class="bi bi-facebook"></i>
+                  </a>
+                @endif
+
+                @if($pub->instagram)
+                  <a href="{{ $pub->instagram }}" class="btn btn-purple" target="_blank" title="Instagram">
+                    <i class="bi bi-instagram"></i>
+                  </a>
+                @endif
+
+                @if($pub->twitter)
+                  <a href="{{ $pub->twitter }}" class="btn btn-purple" target="_blank" title="X">
+                    <i class="bi bi-twitter-x"></i>
+                  </a>
+                @endif
+
+                @if($pub->youtube)
+                  <a href="{{ $pub->youtube }}" class="btn btn-purple" target="_blank" title="Youtube">
+                    <i class="bi bi-youtube"></i>
+                  </a>
+                @endif
+
+                @if($pub->web)
+                  <a href="{{ $pub->web }}" class="btn btn-purple" title="Web">
+                    <i class="bi bi-globe2"></i>
+                  </a>
+                @endif
+              </div>
             </div>
             @endif
 
@@ -91,7 +138,8 @@
   window.addEventListener('load', function() {
     goPublication.init({
       urlSetLike: '{{ route("publication.setLike") }}',
-      hashPublication: '{{ $pub->hashPublication }}',
+      lng: '{{ $pub->lng }}',
+      lat: '{{ $pub->lat }}',
     });
   });
 </script>

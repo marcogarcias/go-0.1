@@ -124,7 +124,6 @@ header{
 .btn-help-movil img, .btn-back-movil img{ width: 100%; }
 .btn-cont{ text-align: right; }
 .btn-cont a{ margin-right: 10px; }
-.header-line-1{ background: #fff; height: 30px; }
 .header-line-2{ background: #0071c0; height: 20px;
 }
 /*  FIN - cabecera */
@@ -133,7 +132,6 @@ header{
 /*  INICIO - Pie de página */
 /* *********************** */
 footer{ background: #24254c; color: #fff; }
-.header-line-1{ background: #fff; height: 30px; }
 .footer-txt{ padding: 10px; }
 /*  FIN - Pie de página */
 

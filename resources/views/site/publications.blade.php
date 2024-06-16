@@ -28,13 +28,21 @@
                   <span>Me gusta: {{ $pub->likes ? $pub->likes : 0 }}</span>
                 </div>
               </div>
-            </div>     
+            </div>
           @empty
             <h3 class="m-auto">SIN PUBLICACIONES</h3>                 
           @endforelse
           
-
         </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="paginate">
+              {{ $publications->links('custom.paginate') }}
+            </div>
+          </div>
+        </div>
+        
       </section>
     </div>
   </div>

@@ -8,7 +8,35 @@
 /* ***** START - HEADER *****  */
 /* **************************  */
 
+.menu-desktop{
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.menu-desktop li{ display: inline-block; }
+
+.menu-movil {
+  background-color: rgba(0, 0, 0, 0.9);
+  height: 100%;
+  font-size: 24px;
+  font-weight: 600;
+  left: -250px;
+  padding: 20px 30px ;
+  position: fixed;
+  top: 0;
+  transition: left 0.3s ease-in-out;
+  width: 250px;
+  z-index: 999;
+}
+
+.menu-movil ul, .menu-desktop ul{ list-style: none; margin: 0; padding: 0; }
+.menu-movil li{ margin-bottom: 9px; }
+.menu-movil a, .menu-desktop a{ color: #fff; }
+.menu-movil.visible { left: 0; }
+
 #publications-layout-header{
+  background-image: url('../img/site/header-01.png');
+  background-position: center;
   background-size: cover;
   display: flex;
   /*flex-direction: row;*/
@@ -27,10 +55,10 @@
   height: 450px;
 }  
 
-.publications-layout-header-left img{
-  margin: auto;
-  width: 90%;
-}
+.publications-layout-header-left img{  }
+#publications-header-landscape{ display: inline; margin: auto; width: 80%; }
+#publications-header-portrait{ display: none; margin: 0 auto; width: 80%; }
+
 
 #publications-layout-header .buttons-box{
   padding: 30px 30px 0 0;
@@ -45,6 +73,20 @@
   font-size: 18px;
   margin-right: 5px;
 }
+
+#publications-layout-header #btn-menu-movil{
+  display: none;
+  font-size: 26px;
+  margin: 10px;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  z-index: 999;
+}
+
+.header-line-1{ background: #000; padding: 10px; text-align: center; }
+.header-line-1 .menu-desktop{ margin: auto; }
+.header-line-1 .menu-desktop a:hover{ text-decoration: underline; } 
 
 /* ************************  */
 /* ***** END - HEADER *****  */
@@ -119,6 +161,9 @@
   margin-right: 10px;
 }
 
+.paginate{ text-align: center; }
+.paginate svg{ height: 15px; width: 15px; }
+
 /* *******************************************  */
 /* ***** END - LISTADO DE PUBLICACIONES ******  */
 /* *******************************************  */
@@ -126,6 +171,15 @@
 /* ********************************  */
 /* ***** START - PUBLICACION ******  */
 /* ********************************  */
+
+#publication .section{
+  background: #353367;
+  border-radius: 15px;
+  margin: 50px auto;
+  padding: 20px 30px;
+}
+
+#publication .section h2{ color: #fff; text-align:center; }
 
 #publication{
   background: #fff;
@@ -148,23 +202,37 @@
   padding: 10px 20px;
 }
 
-#publication #description{
-  font-size: 20px;
-  padding: 20px 0;
-}
+#publication #description{ font-size: 20px; padding: 20px 0 }
+#publication #mapCont{ color: #fff; font-weight: 600; }
 
-#gallery{
-  background: #353367;
-  margin: 50px 0;
-  padding: 30px;
-}
-
-#gallery h2{ color: #fff; text-align:center; }
-
-#gallery .splide__slide img{
-  /*width: 100%;*/
+#publication #map{ 
   height: 400px;
+  margin-bottom: 15px;
+  width: 100%; 
 }
+
+#gallery .splide__slide img{ height: 400px; }
+
+#publication #socialmedia .btn{ font-size: unset; }
+#publication #socialmedia .btn-purple{ font-size: unset; }
+
+#publication #socialmedia{ 
+  background: #fff; 
+  font-size: 28px;
+  padding: 30px 10px;
+  text-align: center;
+}
+
+#publication #socialmedia .btn{ 
+  margin-bottom: 10px;
+  margin-right: 5px;
+}
+
+#publication #socialmedia .btn-purple:hover{
+  box-shadow: 3px 3px 8px #666;
+}
+
+
 
 
 /* ********************************  */
@@ -173,11 +241,16 @@
 
 /* Dispositivos extra pequeños (teléfonos pequeños, 600px o menos) */
 @media only screen and (max-width: 600px) {
-  #publications-layout-header .buttons-box{ padding: 30px 0 0 0; text-align: center; }
+  /*header{ border: 1px solid #f00;  }*/
 
-  header{ border: 1px solid #f00;  }
+  #publications-layout-header .buttons-box{ padding: 30px 0 0 0; text-align: center; }
   .go-publications .col-12{ padding: 5px; }
-  .publications-layout-header-left{ margin: 0px 10px; }
+  #publications-layout-header{ height: 300px; }
+  .publications-layout-header-left{ height: 300px; margin: 0px 10px; }
+  #publications-header-landscape{ display: none; }
+  #publications-header-portrait{ display: inline; }
+  #publications-layout-header .buttons-box{ display: none; }
+  #publications-layout-header #btn-menu-movil{ display: inline; }
   #publications{ background: unset; margin: 0px; }
   .pub-item{ margin: 0px }
   #publications .container{ display: block; margin-bottom: 30px; padding: 0px; }
@@ -193,20 +266,20 @@
 
 /* Dispositivos pequeños (teléfonos, 600px y más) */
 @media only screen and (min-width: 600px) {
-  header{ border: 1px solid #0f0;  }
+  /*header{ border: 1px solid #0f0;  }*/
 }
 
 /* Dispositivos medianos (tabletas verticales y horizontales, 768px y más) */
 @media only screen and (min-width: 768px) {
-  header{ border: 1px solid #00f;  }
+  /*header{ border: 1px solid #00f;  }*/
 }
 
 /* Dispositivos grandes (escritorios y laptops, 992px y más) */
 @media only screen and (min-width: 992px) {
-  header{ border: 1px solid #ff0;  }
+  /*header{ border: 1px solid #ff0;  }*/
 }
 
 /* Dispositivos extra grandes (escritorios grandes, 1200px y más) */
 @media only screen and (min-width: 1200px) {
-  header{ border: 1px solid #0ff;  }
+  /*header{ border: 1px solid #0ff;  }*/
 }

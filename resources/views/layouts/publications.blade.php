@@ -18,6 +18,7 @@
   <link href="{{ asset('libs/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ asset('libs/toastr/toastr.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('libs/mapbox/mapbox-gl.css') }}" rel="stylesheet">
   <link href="{{ asset('css/site_v2.css?').microtime() }}" rel="stylesheet">
   <link href="{{ asset('css/publications.css?').microtime() }}" rel="stylesheet">
   @yield('css')
@@ -26,6 +27,7 @@
   <script src="{{ asset('js/app.js') }}" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" integrity="sha512-RXf+QSDCUQs5uwRKaDoXt55jygZZm2V++WUZduaU/Ui/9EGp3f/2KZVahFZBKGH0s774sd3HmrhUy+SgOFQLVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('libs/toastr/toastr.min.js') }}" defer></script>
+  <script src="{{ asset('libs/mapbox/mapbox-gl.js') }}"></script>
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('js/site.js?').microtime() }}" defer></script>
   <script src="{{ asset('js/publications.js?').microtime() }}" defer></script>
@@ -46,10 +48,13 @@
 
 <body>
   <div id="app">
-    <header id="publications-layout-header" style="background-image: url('{{ asset('/img/site/header-01.png') }}');">
+
+    <header id="publications-layout-header">
       <div class="publications-layout-header-left">
-        <img src="{{ asset('/img/site/logo-md-03.png') }}">
+        <img id="publications-header-landscape" src="{{ asset('/img/site/logo-md-03.png') }}">
+        <img id="publications-header-portrait" src="{{ asset('/img/site/logo-md-02.png') }}">
       </div>
+      <!-- MENÚ DESKTOP -->
       <div class="buttons-box">
         @guest
           @if (Route::has('login'))
@@ -74,9 +79,34 @@
           </form>
         @endguest
       </div>
+
+      <!-- MENÚ MOVIL -->
+      <a id="btn-menu-movil" href="#" class="btn btn-transparent">
+        <i class="bi bi-justify"></i>
+      </a>
+      <nav id="menu-movil" class="menu-movil">
+        <ul>
+          <li><a href="{{ route('home') }}">Inicio</a></li>
+          <li><a href="{{ route('home') }}">¿Quiénes somos?</a></li>
+          <li><a href="{{ route('home') }}">Publicaciones</a></li>
+          <li><a href="{{ route('stablishments.home') }}">Negocios</a></li>
+          <li><a href="{{ route('home') }}">Juegos</a></li>
+          <li><a href="{{ route('home') }}">Contáctanos</a></li>
+        </ul>
+      </nav>
     </header>
+
     <div class="row header-line-1">
-      &nbsp;
+      <nav id="menu-desktop" class="menu-desktop">
+        <ul>
+          <li><a href="{{ route('home') }}" class="btn btn-transparent">Inicio</a></li>
+          <li><a href="{{ route('home') }}" class="btn btn-transparent">¿Quiénes somos?</a></li>
+          <li><a href="{{ route('home') }}" class="btn btn-transparent">Publicaciones</a></li>
+          <li><a href="{{ route('stablishments.home') }}" class="btn btn-transparent">Negocios</a></li>
+          <li><a href="{{ route('home') }}" class="btn btn-transparent">Juegos</a></li>
+          <li><a href="{{ route('home') }}" class="btn btn-transparent">Contáctanos</a></li>
+        </ul>
+      </nav>
     </div>
 
     <main>

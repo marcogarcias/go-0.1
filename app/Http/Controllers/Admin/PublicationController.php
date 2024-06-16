@@ -9,12 +9,13 @@ use App\Models\User;
 use App\Models\Estado;
 use App\Models\Section;
 use App\Models\Municipio;
-use Illuminate\Http\Request;
 use App\Models\Publication;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\PublicationTag;
 use App\Models\PublicationGallery;
 //use Illuminate\Support\Facades\DB;
+//use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
@@ -153,13 +154,27 @@ class PublicationController extends Controller
         $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
         $pathImageRel = rtrim($pathImageRel, '/');
         $filename = time().'.'.$img->getClientOriginalExtension();
-        //$file = $pathImageAbs.$filename;
-        //$file = $pathImageRel.$filename;
-        //$file = $pathImageRel;
-        //$filename = $req->portada->store($file, 'public');
+        
+        // redimencionar la imagen
+        /*$img = Image::make($img)->resize(1500, null, function ($constraint) {
+          $constraint->aspectRatio();
+          $constraint->upsize();
+        });*/
+
+        // guardar la imagen deforma temporal
+        /*$tempPath = $image->encode()->getEncoded();
+        $tempFile = tmpfile();
+        fwrite($tempFile, $tempPath);
+        $metaDatos = stream_get_meta_data($tempFile);*/
+
+
         $img->move($pathImageRel, $filename);
+        //$image->save(public_path($pathImageRel . '/' . $filename), 100);
+        //$req->file('portada')->move($pathImageRel, $filename);
+        //$img->save($pathImageRel . '/' . $filename);
         $publication->image = $pathImageRel.'/'.$filename;
-        //var_dump($pathImageRel.$filename);
+        //var_dump($pathImageRel.'/'.$filename);
+        //die();
       }
       //die('...');
 

@@ -2227,4 +2227,22 @@ die('...');*/
   public function games(){
     return view('site.games');
   }
+
+  /**
+   * Sección de Quienes somos
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function quienesSomos(){
+    return view('site.quienesSomos');
+  }
+
+  /**
+   * Sección de INICIO
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function home(){
+    return view('site.home');
+  }
 }

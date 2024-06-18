@@ -1,6 +1,6 @@
 @extends('layouts.site')
 @section('title', 'Lugares')
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 
 @section('content')
 

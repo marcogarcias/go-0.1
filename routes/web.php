@@ -18,14 +18,20 @@ Route::get('/', function () {
 });
 */
 Auth::routes();
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 /* ****************************** */
 /* START - RUTAS DE PUBLICACIONES */
 /* ****************************** */
 
-Route::get('/', [App\Http\Controllers\Site\PublicationController::class, 'index']
-)->name('home');
+Route::get('/', [App\Http\Controllers\SiteController::class, 'home']
+)->name('/');
+
+Route::get('/publications', [App\Http\Controllers\Site\PublicationController::class, 'index']
+)->name('publications');
+
+Route::get('/quienesSomos', [App\Http\Controllers\SiteController::class, 'quienesSomos']
+)->name('quienesSomos');
 
 Route::get('/publication/{pub?}', [App\Http\Controllers\Site\PublicationController::class, 'publication']
 )->name('publication');

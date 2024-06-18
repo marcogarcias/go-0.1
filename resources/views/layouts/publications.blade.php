@@ -89,12 +89,12 @@
       </a>
       <nav id="menu-movil" class="menu-movil">
         <ul>
-          <li><a href="{{ route('home') }}">Inicio</a></li>
-          <li><a href="{{ route('home') }}">¿Quiénes somos?</a></li>
-          <li><a href="{{ route('home') }}">Publicaciones</a></li>
+          <li><a href="{{ route('/') }}">Inicio</a></li>
+          <li><a href="{{ route('quienesSomos') }}">¿Quiénes somos?</a></li>
+          <li><a href="{{ route('publications') }}">Publicaciones</a></li>
           <li><a href="{{ route('stablishments.home') }}">Negocios</a></li>
-          <li><a href="{{ route('home') }}">Juegos</a></li>
-          <li><a href="{{ route('home') }}">Contáctanos</a></li>
+          <li><a href="{{ route('/') }}">Juegos</a></li>
+          <li><a href="{{ route('/') }}">Contáctanos</a></li>
         </ul>
       </nav>
     </header>
@@ -102,12 +102,12 @@
     <div class="row header-line-1">
       <nav id="menu-desktop" class="menu-desktop">
         <ul>
-          <li><a href="{{ route('home') }}" class="btn btn-transparent">Inicio</a></li>
-          <li><a href="{{ route('home') }}" class="btn btn-transparent">¿Quiénes somos?</a></li>
-          <li><a href="{{ route('home') }}" class="btn btn-transparent">Publicaciones</a></li>
+          <li><a href="{{ route('/') }}" class="btn btn-transparent">Inicio</a></li>
+          <li><a href="{{ route('quienesSomos') }}" class="btn btn-transparent">¿Quiénes somos?</a></li>
+          <li><a href="{{ route('publications') }}" class="btn btn-transparent">Publicaciones</a></li>
           <li><a href="{{ route('stablishments.home') }}" class="btn btn-transparent">Negocios</a></li>
-          <li><a href="{{ route('home') }}" class="btn btn-transparent">Juegos</a></li>
-          <li><a href="{{ route('home') }}" class="btn btn-transparent">Contáctanos</a></li>
+          <li><a href="{{ route('/') }}" class="btn btn-transparent">Juegos</a></li>
+          <li><a href="{{ route('/') }}" class="btn btn-transparent">Contáctanos</a></li>
         </ul>
       </nav>
     </div>

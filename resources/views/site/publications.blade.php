@@ -1,6 +1,6 @@
 @extends('layouts.publications')
 @section('title', 'Publicaciones')
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 
 @section('content')
 

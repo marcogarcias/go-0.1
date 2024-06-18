@@ -1,6 +1,6 @@
 @extends('layouts.site')
 @section('title', 'Inicio')
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 
 @section('css')
   <link href="{{ asset('html5game/amloGame.css?').microtime() }}" rel="stylesheet">

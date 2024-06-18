@@ -13,7 +13,7 @@
   <script src="{{ asset('js/map.js') }}"></script>
 @endsection
 
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 
 @section('content')
 

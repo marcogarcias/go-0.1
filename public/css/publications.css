@@ -2,6 +2,10 @@
 .border2{ border: 1px solid #0f0; }
 .border3{ border: 1px solid #00f; }
 
+:root{
+  --textTitleCol: #3490dc;
+}
+
 .go-publications{ background: #eeedfc; }
 
 /* **************************  */
@@ -18,7 +22,7 @@
 .menu-movil {
   background-color: rgba(0, 0, 0, 0.9);
   height: 100%;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   left: -250px;
   padding: 20px 30px ;
@@ -103,6 +107,7 @@
 #publications{
   background: #fff;
   margin: 0 20%;
+  padding: 30px;
 }
 
 #publications .container{
@@ -115,7 +120,7 @@
   background: #fff;
   border: 1px solid #d8d6ff;
   box-shadow: 1px 1px 15px #ccc;
-  margin: 30px;
+  /*margin: 30px;*/
 }
 
 .imagen-fondo{
@@ -232,17 +237,60 @@
   box-shadow: 3px 3px 8px #666;
 }
 
-
-
-
-/* ********************************  */
+/* ******************************  */
 /* ***** END - PUBLICACION ******  */
+/* ******************************  */
+
+/* **********************************  */
+/* ***** START - QUIENES SOMOS ******  */
+/* **********************************  */
+
+.quienesSomos{ font-size: 20px; }
+
+.quienesSomos section{
+  background: #fff;
+  border: 2px dashed #000;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px #ccc;
+  margin-bottom: 50px;
+  padding: 30px 20px;
+}
+
+.quienesSomos section h1{
+  color: var(--textTitleCol);
+}
+
 /* ********************************  */
+/* ***** END - QUIENES SOMOS ******  */
+/* ********************************  */
+
+.home{ font-size: 20px; }
+.home h1{ color: var(--textTitleCol); font-size: 80px; font-weight: 600; }
+.home h2{ font-size: 50px; font-weight: 600; }
+.home img{ width: 100%; }
+.home hr{ width: 100%; }
+.home p{
+  background: #fff;
+  font-size: 24px;
+  padding: 20px 20px;
+}
+.home #btnGo{ margin-top: 30px; text-align: center; }
+.home #btnGo a{ font-size: 20px !important; }
+.home #btnGo a:hover{ text-decoration: underline; }
+
+
 
 /* Dispositivos extra pequeños (teléfonos pequeños, 600px o menos) */
 @media only screen and (max-width: 600px) {
   /*header{ border: 1px solid #f00;  }*/
 
+  .home{ background: #fff !important; font-size: 18px; }
+  .home h1{ font-size: 50px; text-align: center; }
+  .home h2{ font-size: 30px; text-align: center; }
+  .home #imgCont{ text-align: center; }
+  .home img{ margin: auto; width: 30%; }
+  .home p{ font-size: 22px; }
+  .home #btnGo{ margin-top: 0px; }
   #publications-layout-header .buttons-box{ padding: 30px 0 0 0; text-align: center; }
   .go-publications .col-12{ padding: 5px; }
   #publications-layout-header{ height: 300px; }
@@ -251,7 +299,7 @@
   #publications-header-portrait{ display: inline; }
   #publications-layout-header .buttons-box{ display: none; }
   #publications-layout-header #btn-menu-movil{ display: inline; }
-  #publications{ background: unset; margin: 0px; }
+  #publications{ background: unset; margin: 0px; padding: 0px; }
   .pub-item{ margin: 0px }
   #publications .container{ display: block; margin-bottom: 30px; padding: 0px; }
   .contenido{ margin: 20px 0px; }

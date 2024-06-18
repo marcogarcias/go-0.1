@@ -14,7 +14,7 @@
   <script src="{{ asset('js/socialmedia.js') }}"></script>
 @endsection
 
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 
 @section('content')
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>

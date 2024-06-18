@@ -21,7 +21,7 @@
   <meta property="og:locale" content="es_ES">
 @endsection
 
-@section('returnBtn', route('home'))
+@section('returnBtn', route('/'))
 @section('content')
 
 <div class="container-fluid go-publications">

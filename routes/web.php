@@ -30,14 +30,21 @@ Route::get('/', [App\Http\Controllers\SiteController::class, 'home']
 Route::get('/publications', [App\Http\Controllers\Site\PublicationController::class, 'index']
 )->name('publications');
 
-Route::get('/quienesSomos', [App\Http\Controllers\SiteController::class, 'quienesSomos']
-)->name('quienesSomos');
 
 Route::get('/publication/{pub?}', [App\Http\Controllers\Site\PublicationController::class, 'publication']
 )->name('publication');
 
+Route::get('/quienesSomos', [App\Http\Controllers\SiteController::class, 'quienesSomos']
+)->name('quienesSomos');
+
+Route::get('/contactanos', [App\Http\Controllers\SiteController::class, 'contact']
+)->name('contactanos');
+
 Route::post('/publication/setLike', [App\Http\Controllers\Site\PublicationController::class, 'setLike']
 )->name('publication.setLike');
+
+Route::post('/sendContact', [App\Http\Controllers\Site\PublicationController::class, 'sendContact']
+)->name('sendContact');
 
 /*Route::get('/publications', [App\Http\Controllers\Site\PublicationController::class, 'index']
 )->name('publications');*/

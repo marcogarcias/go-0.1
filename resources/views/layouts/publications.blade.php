@@ -9,7 +9,7 @@
   <meta name="description" content="SomosGo es tu guía definitiva para descubrir los mejores destinos turísticos, eventos y actividades culturales en México. Encuentra recomendaciones, reseñas e información detallada sobre lugares imperdibles, festivales, exposiciones y mucho más. Mantente informado y planifica tus próximas aventuras con SomosGo.">
   <meta property="fb:app_id" content="374200549010318" />
   @yield('metas')
-  <title>{{ config('app.name', 'SOMOS GO') }} - @yield('title')</title>
+  <title>@yield('title')</title>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -107,7 +107,7 @@
           <li><a href="{{ route('publications') }}" class="btn btn-transparent">Publicaciones</a></li>
           <li><a href="{{ route('stablishments.home') }}" class="btn btn-transparent">Negocios</a></li>
           <li><a href="{{ route('/') }}" class="btn btn-transparent">Juegos</a></li>
-          <li><a href="{{ route('/') }}" class="btn btn-transparent">Contáctanos</a></li>
+          <li><a href="{{ route('contactanos') }}" class="btn btn-transparent">Contáctanos</a></li>
         </ul>
       </nav>
     </div>
@@ -157,7 +157,8 @@ window.addEventListener('load', function() {
   $(document).ready(function() {
     let cfg = { 
       auth: {{ Auth::check()?1:0 }},
-      asset: '{{ asset('/') }}'
+      asset: '{{ asset('/') }}',
+      urlSendContact: '{{ route("sendContact") }}'
     };
     goPublications.init(cfg);
   });

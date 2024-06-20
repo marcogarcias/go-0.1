@@ -264,6 +264,10 @@
 /* ***** END - QUIENES SOMOS ******  */
 /* ********************************  */
 
+/* ***************************  */
+/* ***** START - INICIO ******  */
+/* ***************************  */
+
 .home{ font-size: 20px; }
 .home h1{ color: var(--textTitleCol); font-size: 80px; font-weight: 600; }
 .home h2{ font-size: 50px; font-weight: 600; }
@@ -278,6 +282,30 @@
 .home #btnGo a{ font-size: 20px !important; }
 .home #btnGo a:hover{ text-decoration: underline; }
 
+/* *************************  */
+/* ***** END - INICIO ******  */
+/* *************************  */
+
+/* ********************************  */
+/* ***** START - CONTACTANOS ******  */
+/* ********************************  */
+
+.contact section{ 
+  border: 1px solid #CCC;
+  border-radius: 20px;
+  box-shadow: 5px 5px 20px #ddd;
+  padding: 30px 30px;
+}
+.contact h1{ color: var(--textTitleCol); }
+.contact #formImgCont{ display: flex; justify-content: space-between; }
+.contact #formCont, .contact #imgCont{ flex-basis: 100%; }
+.contact #imgCont{ display: none; text-align: center; }
+.contact #imgCont img{ width: 220px; }
+
+
+/* ******************************  */
+/* ***** END - CONTACTANOS ******  */
+/* ******************************  */
 
 
 /* Dispositivos extra pequeños (teléfonos pequeños, 600px o menos) */
@@ -330,4 +358,10 @@
 /* Dispositivos extra grandes (escritorios grandes, 1200px y más) */
 @media only screen and (min-width: 1200px) {
   /*header{ border: 1px solid #0ff;  }*/
+}
+
+@media only screen and (min-width: 1350px) {
+  /*header{ border: 1px solid #0ff;  }*/
+  .contact #formCont, .contact #imgCont{ flex-basis: 48%; }
+  .contact #imgCont{ display: block; min-width: 200px; }
 }

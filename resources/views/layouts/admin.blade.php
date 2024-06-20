@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>{{ config('app.name', 'Go 0.1') }} - @yield('title')</title>
+  <title>{{ config('app.name', 'SOMOS GO') }} - @yield('title')</title>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -51,7 +51,7 @@
               <a class="nav-link" href="{{ route('admin.advertisements') }}">{{ __('Anuncios').' | ' }}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('home') }}">{{ __('somosgo.com.mx').' | ' }}</a>
+              <a class="nav-link" href="{{ route('/') }}">{{ __('somosgo.com.mx').' | ' }}</a>
             </li>
           </ul>
 

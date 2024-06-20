@@ -75,4 +75,35 @@ class PublicationController extends Controller
     }
     return $res;
   }
+
+  /**
+   * Envia el formulario de contacto por correo y lo guarda en la base de datos
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function sendContact(Request $req){
+    $res=array('success'=>false);
+    if($req->ajax()){
+
+      $data = $req->input('data');
+      /*$idPublication = isset($data['hashPublication']) && $data['hashPublication'] ? $data['hashPublication'] : 0;
+      $idPublication = $idPublication ? Crypt::decryptString($idPublication) : 0;
+
+      if($idPublication){
+        $pub = Publication::find($idPublication);
+        $pub->likes += 1;
+        $pub->save();
+
+        $res['success'] = true;
+        $res['type'] = 'success';
+        $res['message'] = 'Set like';
+        $res['data'] = ['likes'=>$pub->likes];
+      }else{
+        $res['type'] = 'warning';
+        $res['message'] = 'No se recibió ningún hash';
+      }*/
+      $res = response()->json($res, 200);
+    }
+    return $res;
+  }
 }

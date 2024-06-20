@@ -2245,4 +2245,13 @@ die('...');*/
   public function home(){
     return view('site.home');
   }
+
+  /**
+   * Sección de CONTÁCTANOS
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function contact(){
+    return view('site.contact');
+  }
 }

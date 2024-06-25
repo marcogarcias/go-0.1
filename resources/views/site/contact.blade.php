@@ -5,6 +5,7 @@
 @section('js')
 <script src="{{ asset('libs/Parsley.js-2.9.2/dist/parsley.min.js') }}" defer></script>
 <script src="{{ asset('libs/Parsley.js-2.9.2/dist/i18n/es.js') }}" defer></script>
+<script src="{{ asset('js/contact.js') }}" defer></script>
 @endsection
 
 @section('content')
@@ -53,11 +54,15 @@
 
 @push('scripts')
 <script type="application/javascript">
-  window.addEventListener('load', function() {
-    /*
-    go.publications.init();
-    */
+window.addEventListener('load', function() {
+  $(document).ready(function() {
+    let cfg = {
+      asset: '{{ asset('/') }}',
+      urlSendContact: '{{ route("sendContact") }}'
+    };
+    goContact.init(cfg);
   });
+});
 </script>
 @endpush
 

@@ -108,7 +108,7 @@
 /* ***************** */
 /* INICIO - cabecera */
 /* ***************** */
-header{
+/*header{
   background: #353367;
   color: #fff;
   font-weight: bold;
@@ -126,6 +126,7 @@ header{
 .btn-cont a{ margin-right: 10px; }
 .header-line-2{ background: #0071c0; height: 20px;
 }
+*/
 /*  FIN - cabecera */
 
 /* *********************** */
@@ -138,7 +139,7 @@ footer{ background: #24254c; color: #fff; }
 /* ******************************** */
 /* INICIO - contenedor de contenido */
 /* ******************************** */
-.go-wallpaper{
+/*.go-wallpaper{
   padding-right: 0 !important;
   padding-left: 0 !important;
 
@@ -147,9 +148,9 @@ background: -moz-linear-gradient(top,  #00ace5 0%, #522d96 100%);
 background: -webkit-linear-gradient(top,  #00ace5 0%,#522d96 100%);
 background: linear-gradient(to bottom,  #00ace5 0%,#522d96 100%);
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', endColorstr='#522d96',GradientType=0 );
-}
+}*/
 
-.logo-lateral{
+/*.logo-lateral{
   align-items: center;
   display: flex;
   justify-content: center;
@@ -158,11 +159,23 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
 }
 
 .logo-lateral-img{ width: 100%; }
-.logo-banner-img{ display: none; }
-.sections{ padding-top: 2%; }
+.logo-banner-img{ display: none; }*/
 /* FIN - contenedor de contenido */
 
-#carousel-sections{ margin: auto; width: 60%; }
+/*#carousel-sections{ margin: auto; width: 60%; }*/
+.section-item{
+  background: #353367;
+  border-radius: 15px 15px 0 0;
+  display: inline-block;
+  margin: 10px 5px;
+  max-width: 300px;
+  min-width: 150px;
+  padding: 5px 10px;
+  width: 20%;
+}
+
+.section-item img{ width: 100%; }
+
 .ads-list{
   margin: 0;
   padding: 0;
@@ -640,9 +653,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   /* INICIO - Login */
   .login-cont{ margin: 20% 0%; }
   /* INICIO - Secciones */
-  #carousel-sections{ width: 80%; }
+  /*#carousel-sections{ width: 80%; }*/
   .btn-line{ font-size: 15px !important; font-weight: normal !important; margin-top: 10px; padding: 2px 10px !important; }
-  #carousel-sections{ margin-top: -5px; }
+  /*#carousel-sections{ margin-top: -5px; }*/
   /* INICIO - listado de establecimientos */
   .stablish-cont{ height: 600px; }
   .stabs-filters div{ margin-bottom: 20px; }
@@ -681,9 +694,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ace5', end
   /* INICIO - Login */
   .login-cont{ margin: 20% 0%; }
   /* INICIO - Secciones */
-  #carousel-sections{ width: 80%; }
+  /*#carousel-sections{ width: 80%; }*/
   .btn-line{ font-size: 13px !important; font-weight: normal !important; margin-top: 10px; padding: 2px 10px !important; }
-  #carousel-sections{ margin-top: -5px; }
+  /*#carousel-sections{ margin-top: -5px; }*/
   /* INICIO - listado de establecimientos */
   .stablish-cont{ height: 450px; }
   .stabs-filters div{ margin-bottom: 10px; }

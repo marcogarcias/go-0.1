@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 
-use App\Mail\Emails;
+use App\Mail\ContactOur;
+use App\Mail\ContactUser;
 use App\Models\Publication;
 use Illuminate\Http\Request;
 use App\Models\PublicationTag;
@@ -93,19 +94,20 @@ class PublicationController extends Controller
         'name' => isset($data['name']) && $data['name'] ? $data['name'] : null,
         'email' => isset($data['email']) && $data['email'] ? $data['email'] : null,
         'message' => isset($data['message']) && $data['message'] ? $data['message'] : null,
-        'url' => 'https://ejemplo.com'
+        'url' => url('/')
       ];
 
       try{
-        $resEmail = Mail::to($dataEmail['email'])->send(new Emails($dataEmail));
+        $resEmail1 = Mail::to($dataEmail['email'])->send(new ContactUser($dataEmail));
+        $resEmail2 = Mail::to(config('mail.from.address'))->send(new ContactOur($dataEmail));
         $res['success'] = true;
         $res['type'] = 'success';
-        $res['message'] = 'El formulario ha sido enviado correctamente.';
-        $res['data'] = ['resEmail'=>$resEmail];
+        $res['message'] = 'Tu mensaje ha sido enviado correctamente.';
+        $res['data'] = ['resEmail1'=>$resEmail1, 'resEmail2'=>$resEmail2];
         return response()->json($res, 200);
       }catch(Exception $e){
         $res['type'] = 'warning';
-        $res['message'] = 'No se envió correctamente el formulario. Error: '.$e->getMessage() ;
+        $res['message'] = 'No se envió correctamente el mensaje. Intenta mas tarde. Error: '.$e->getMessage() ;
         return response()->json($res, 200);
       }
     }

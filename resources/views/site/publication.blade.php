@@ -54,9 +54,15 @@
 
             @if($pub->lat && $pub->lng)
             <div id="mapCont" class="col-12 section">
-              <h2>Mapa</h2>
+              <h2 class="mb-3">Mapa</h2>
+              <div class="mapButtons text-center mb-3">
+                <a href="#" id="btnMapSimple" class="btn btn-black" data-type="simple">Ninguno</a>
+                <a href="#" id="btnMapWalking" class="btn btn-black" data-type="walking">Caminando</a>
+                <a href="#" id="btnMapDriving" class="btn btn-black" data-type="driving">Automovil</a>
+                <a href="#" id="btnMapCycling" class="btn btn-black" data-type="cycling">Bicicleta</a>
+              </div>
               <div id="map"></div>
-              <div class="">
+              <div class="mapAdress">
                 {{ $pub->address }}
               </div>
             </div>

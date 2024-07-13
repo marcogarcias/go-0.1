@@ -16,7 +16,7 @@
       <section id="publications" class="contact">
         <div class="row">
           <div class="col-12 col-md-10 m-auto">
-            <section>
+            <section id="contactFormCont">
               <h1>CONTÁCTANOS</h1>
               <h2>En SOMOS GO  ¡Queremos escucharte!</h2>
               <hr>
@@ -43,6 +43,23 @@
                   <img src="{{ asset('img/site/logo-only-03.png') }}" alt="Somos Go" title="Somos Go">
                 </div>
               </div>
+            </section>
+
+            <section id="contactLoadingCont">
+              <h3>Enviando comentarios...</h3>
+              <h2></h2>
+            </section>
+
+            <section id="contactSendCont">
+              <h2>Muchas gracias, tu mensaje ha sido enviando.</h2>
+              <hr>
+              <h4>
+                Tu opinión es súper importante para nosotros. ¡Seguiremos trabajando para ser aún más increíbles, gracias a ti!
+              </h4>
+              <p id="atteCont">
+                <span id="atteCont">ATENTAMENTE</span>
+                <span id="atteTeamCont">El equipo de {{ config('app.name') }}</span>
+              </p>
             </section>
           </div>
         </div>        

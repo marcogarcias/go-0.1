@@ -6,34 +6,43 @@
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="theme-color" content="#353367">
-  <meta name="description" content="SomosGo es tu guía definitiva para descubrir los mejores destinos turísticos, eventos y actividades culturales en México. Encuentra recomendaciones, reseñas e información detallada sobre lugares imperdibles, festivales, exposiciones y mucho más. Mantente informado y planifica tus próximas aventuras con SomosGo.">
-  <meta property="fb:app_id" content="374200549010318" />
-  @yield('metas')
-  <title>@yield('title')</title>
+  <title>{{ config('app.name', 'SOMOS GO') }} - @yield('title')</title>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
   <link rel="icon" type="image/png" href="{{ asset('img/varios/favicon-1.png') }}">
+  <!-- Estilos de LeafLet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
 
   <!-- Styles -->
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <link href="{{ asset('libs/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ asset('libs/toastr/toastr.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('libs/mapbox/mapbox-gl.css') }}" rel="stylesheet">
   <link href="{{ asset('css/site_v2.css?').microtime() }}" rel="stylesheet">
-  <link href="{{ asset('css/publications.css?').microtime() }}" rel="stylesheet">
+  <link href="{{ asset('css/stablishments.css?').microtime() }}" rel="stylesheet">
+
+  @if(session('isStablishment'))
+    <!-- <link href="{{ asset('css/chatbox_v1.css?').microtime() }}" rel="stylesheet"> -->
+  @endif
   @yield('css')
 
   <!-- Scripts -->
+  <!-- script para LeafLet -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+
   <script src="{{ asset('js/app.js') }}" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" integrity="sha512-RXf+QSDCUQs5uwRKaDoXt55jygZZm2V++WUZduaU/Ui/9EGp3f/2KZVahFZBKGH0s774sd3HmrhUy+SgOFQLVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{{ asset('libs/toastr/toastr.min.js') }}" defer></script>
-  <script src="{{ asset('libs/mapbox/mapbox-gl.js') }}"></script>
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('js/site.js?').microtime() }}" defer></script>
-  <script src="{{ asset('js/publications.js?').microtime() }}" defer></script>
+    @if(session('isStablishment'))
+    <script src="{{ asset('js/chatbox_v1.js?').microtime() }}" defer></script>
+  @endif
   @yield('js')
 
 @if(env('APP_ENV')==='production')
@@ -52,10 +61,10 @@
 <body>
   <div id="app">
 
-    <header id="publications-layout-header">
-      <div class="publications-layout-header-left">
-        <img id="publications-header-landscape" src="{{ asset('/img/site/logo-md-03.png') }}">
-        <img id="publications-header-portrait" src="{{ asset('/img/site/logo-md-02.png') }}">
+    <header id="stablishments-layout-header">
+      <div class="stablishments-layout-header-left">
+        <img id="stablishments-header-landscape" src="{{ asset('/img/site/logo-md-03.png') }}">
+        <img id="stablishments-header-portrait" src="{{ asset('/img/site/logo-md-02.png') }}">
       </div>
       <!-- MENÚ DESKTOP -->
       <div class="buttons-box">
@@ -94,7 +103,7 @@
           <li><a href="{{ route('publications') }}">Publicaciones</a></li>
           <li><a href="{{ route('stablishments.home') }}">Negocios</a></li>
           <li><a href="{{ route('/') }}">Juegos</a></li>
-          <li><a href="{{ route('contactanos') }}">Contáctanos</a></li>
+          <li><a href="{{ route('/') }}">Contáctanos</a></li>
         </ul>
       </nav>
     </header>
@@ -134,22 +143,21 @@
           <p>Tel: 56-24-14-09-29</p>
         </div>
       </div>
-    </footer>  
+    </footer>
     <div id="newElement" class="" style="display: none;"></div>
   </div>
 
 
 
-  <!-- Modal -->
-  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <img src="{{ asset('img/site/help/help-tags-1.png') }}">
-      </div>
-      <div class="btn btn-black close-modal">CERRAR</div>
+<!-- Modal -->
+<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <img src="{{ asset('img/site/help/help-tags-1.png') }}">
     </div>
+    <div class="btn btn-black close-modal">CERRAR</div>
   </div>
-
+</div>
 
 @stack('scripts')
 <script type="application/javascript">
@@ -157,10 +165,23 @@ window.addEventListener('load', function() {
   $(document).ready(function() {
     let cfg = { 
       auth: {{ Auth::check()?1:0 }},
-      asset: '{{ asset('/') }}',
-      urlSendContact: '{{ route("sendContact") }}'
+      asset: '{{ asset('/') }}'
     };
-    goPublications.init(cfg);
+    go.init(cfg);
+
+    @if(session('isStablishment'))
+      chatClient.init({
+        type: 'stablishmentToClient',
+        urlLoadAllMessages: '{{ route('chat.loadAllMessages') }}',
+        urlLoadMessages: '{{ route('chat.loadMessages') }}',
+        urlSaveMessage: '{{ route('chat.messageSave') }}',
+        urlLoadAllUsers: '{{ route('chat.loadAllUsers') }}',
+        urlLoadNewMsgGeneral: '{{ route('chat.loadNewMsgGeneral') }}',
+        userStablishment: '{{ Crypt::encryptString(session('userStablishment')) }}',
+        img: '{{ asset('img') }}',
+        logo: '{{ session('logoStablishment') }}',
+      });
+    @endif
   });
 });
 </script>

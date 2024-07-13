@@ -3,6 +3,11 @@ let goPublication = {
   hashPublication: null,
   urlSetLike: null,
   gallery: null,
+  lngUser: null,
+  latUser: null,
+  map: null,
+  userMarker: null,
+  destinationMarker: null,
   mapboxToken: "pk.eyJ1Ijoic29tb3NnbzkiLCJhIjoiY2tsdjducTIwMG54ZDJwbzQ5dHB4ZTFkMSJ9.TiWIu_R1l-SBxICm0ueqqQ",
 
   init: function(cfg){
@@ -14,6 +19,7 @@ let goPublication = {
     
     goPublication.initSlider();
     goPublication.ligthbox();
+    goPublication.getUserLocation();
     goPublication.setMap(goPublication.lng, goPublication.lat);
     goPublication.events();
   },
@@ -44,39 +50,153 @@ let goPublication = {
     });
   },
 
-  setMap: function(lng, lat){
-    lng = lng ? lng : -99.1332;
-    lat = lat ? lat : 19.4326;
+  // Obtener la ubicación del usuario y trazar la ruta
+  getUserLocation: function(callback){
+    navigator.geolocation.getCurrentPosition(function(position) {
+      $('#btnMapSimple, #btnMapWalking, #btnMapDriving, #btnMapCycling').show();
+      goPublication.lngUser = position.coords.longitude;
+      goPublication.latUser = position.coords.latitude;
+      if(callback && (typeof callback === 'function'))
+        callback([goPublication.lngUser, goPublication.latUser]);
+    }, function(error) {
+      $('#btnMapWalking, #btnMapDriving, #btnMapCycling').hide();
+      console.error('Error obteniendo la ubicación:', error);
+    });
+  },
+
+  setMap: function(lng2, lat2){
+    lng2 = lng2 ?? -99.1332;
+    lat2 = lat2 ?? 19.4326;
     mapboxgl.accessToken = goPublication.mapboxToken;
     let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [lng, lat], // Coordenadas iniciales del mapa
+      center: [lng2, lat2], // Coordenadas iniciales del mapa
       zoom: 14
     });
 
-    let marker = new mapboxgl.Marker()
-      .setLngLat([lng, lat])
-      .addTo(map);
+    goPublication.map = map;
 
-    console.log(lng, lat);
+    /*let marker = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(map);*/
+
+    let userMarker = null;
+    let destinationMarker = null;
+
+    // Agregar marcador de destino
+    goPublication.destinationMarker = new mapboxgl.Marker({ color: '#FF0000' })
+      .setLngLat([lng2, lat2])
+      .addTo(map);
+  },
+
+  getAndShowRoute: function(type){
+    let lng1 = goPublication.lngUser;
+    let lat1 = goPublication.latUser;
+    let lng2 = goPublication.lng;
+    let lat2 = goPublication.lat;
+    let map = goPublication.map;
+    if(type == 'walking' || type == 'driving' || type == 'cycling'){
+      let url = `https://api.mapbox.com/directions/v5/mapbox/${type}/${lng1},${lat1};${lng2},${lat2}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+      $.ajax({
+        method: 'GET',
+        url: url
+      }).done(function(data) {
+        let route = data.routes[0].geometry.coordinates;
+        let geojson = {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: route
+          }
+        };
+
+        map.addLayer({
+          id: 'route',
+          type: 'line',
+          source: {
+            type: 'geojson',
+            data: geojson
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#3887be',
+            'line-width': 5,
+            'line-opacity': 0.75
+          }
+        });
+      });
+    }else{
+
+    }
+  },
+
+  // Función para mostrar la ubicación del usuario y la ruta
+  showUserLocationAndRoute: function(type) {
+    let destinationLng = goPublication.lng;
+    let destinationLat = goPublication.lat;
+    goPublication.clearUserMarker();
+    goPublication.clearRoute();
+    let map = goPublication.map;
+    if(type == 'walking' || type == 'driving' || type == 'cycling'){
+      goPublication.getUserLocation(function(coords){
+        let userLng = coords[0];
+        let userLat = coords[1];
+        goPublication.userMarker = new mapboxgl.Marker({ color: '#00FF00' })
+          .setLngLat([userLng, userLat])
+          .addTo(map);
+
+        // Ajustar la vista del mapa para mostrar ambos puntos
+        let bounds = new mapboxgl.LngLatBounds()
+          .extend([destinationLng, destinationLat])
+          .extend([userLng, userLat]);
+        map.fitBounds(bounds, { padding: 50 });
+
+        // Obtener y mostrar la ruta
+        goPublication.getAndShowRoute(type);
+      });
+    }else{
+      map.flyTo({
+        center: [destinationLng, destinationLat],
+        zoom: 14, 
+        essential: true
+    });
+    }
+  },
+
+  // Función para limpiar la ruta
+  clearRoute: function(){
+    let map = goPublication.map;
+
+    if(map.getLayer('route')) {
+      map.removeLayer('route');
+    }
+    if (map.getSource('route')) {
+      map.removeSource('route');
+    }
+  },
+
+  // Función para limpiar el marcador del usuario
+  clearUserMarker: function() {
+    if(goPublication.userMarker) {
+      goPublication.userMarker.remove();
+      goPublication.userMarker = null;
+    }
   },
 
   events: function(){
-    /*console.log('okokok');
-    $('#btn-menu-movil').on('click', function(e) {
-      e.preventDefault();
-      console.log('menu...');
-      $('#menu-movil').toggleClass('visible');
-    });
 
-    $(document).on('click', function(e) {
-      console.log('menu 2...');
-      if (!$(e.target).closest('#btn-menu-movil, #menu-movil').length) {
-        console.log('menu...');
-        $('#menu-movil').removeClass('visible');
-      }
-    });*/
+    $('#btnMapSimple, #btnMapWalking, #btnMapDriving, #btnMapCycling').on("click", function(e){
+      e.preventDefault();
+      let type = $(this).attr('data-type');
+      goPublication.showUserLocationAndRoute(type);
+      console.log('type', type);
+    });
 
     $(document).on("click", ".interactions .btn-share", function(e){
       let title_ = "Compartir", 

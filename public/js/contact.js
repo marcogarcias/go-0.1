@@ -16,11 +16,19 @@ let goContact = {
     $("#formCont").parsley().on('field:validated', function() {
       console.log('form invalit...');
     }).on('form:success', function(){
-      goContact.sendContactForm();
+      $('#contactFormCont').fadeOut('fast', function(){
+        $('#contactLoadingCont').fadeIn();
+      });
+      goContact.sendContactForm(function(res){
+        utils.toastr({'type': res.type, 'message': res.message});
+        $('#contactLoadingCont').fadeOut('fast', function(){
+          $(res['success']?'#contactSendCont':'#contactFormCont').fadeIn();
+        });
+      });
     });
   },
 
-  sendContactForm: async function(_this){
+  sendContactForm: async function(callback){
     let url = goContact.urlSendContact ? goContact.urlSendContact : null;
     let res;
 
@@ -41,12 +49,15 @@ let goContact = {
         body: JSON.stringify({'data': data}) 
       });
       res = await resp.json();
-      console.log('load config', res);
+      console.log('mensaje enviado', res);
     } catch (error) {
       res = { success: false };
       console.log('Error en la llamada AJAX:', error);
     }
     console.log('res', res);
+    if(callback && (typeof callback === 'function')){
+      return callback(res);
+    }
     return res;
   }
 };

@@ -26,19 +26,21 @@ let goPublication = {
 
   // https://splidejs.com/
   initSlider: function(){
-    goPublication.gallery = new Splide('.splide', {
-      arrows: true,
-      autoplay: true,
-      //cover: true,
-      //fixedHeight: 400,
-      //heightRatio: 0.5,
-      height: 400,
-      interval: 2000,
-      pagination: true,
-      type: 'loop',
-      //rewind: true,
-    });
-    goPublication.gallery.mount();
+    if($('#gallery').length){
+      goPublication.gallery = new Splide('.splide', {
+        arrows: true,
+        autoplay: true,
+        //cover: true,
+        //fixedHeight: 400,
+        //heightRatio: 0.5,
+        height: 400,
+        interval: 2000,
+        pagination: true,
+        type: 'loop',
+        //rewind: true,
+      });
+      goPublication.gallery.mount();
+    }
   },
   
   // https://lokeshdhakar.com/projects/lightbox2/

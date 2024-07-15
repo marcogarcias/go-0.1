@@ -18,7 +18,7 @@ let admin = {
 
     init: function(cfg){
       cfg = (typeof cfg === 'object') ? cfg : {};
-      admin.publications.asset = cfg.asset ? cfg.asset : null;
+      admin.publications.asset = cfg.asset ? `${cfg.asset}storage/` : null;
       admin.publications.urlAdd = cfg.urlAdd ? cfg.urlAdd : null;
       admin.publications.urlGetPublication = cfg.urlGetPublication ? cfg.urlGetPublication : null;
       admin.publications.urlGetEstados = cfg.urlGetEstados ? cfg.urlGetEstados : null;

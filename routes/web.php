@@ -24,6 +24,9 @@ Auth::routes();
 /* START - RUTAS DE PUBLICACIONES */
 /* ****************************** */
 
+
+//Route::get('/create-symlink', [App\Http\Controllers\StorageLinkController::class, 'createSymlink']);
+
 Route::get('/', [App\Http\Controllers\SiteController::class, 'home']
 )->name('/');
 

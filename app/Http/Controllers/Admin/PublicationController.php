@@ -38,8 +38,8 @@ class PublicationController extends Controller
       ->paginate(10);
 
     foreach($publications as $pub){
-      $pub->hashPublication = Crypt::encryptString($pub->idPublication);
-      $pub->md5Municipio = md5($pub->idPublication);
+      //$pub->hashPublication = Crypt::encryptString($pub->idPublication);
+      //$pub->md5Publication = md5($pub->idPublication);
     }
 
     $sections = Section::where('deleted', 0)->get();
@@ -148,35 +148,48 @@ class PublicationController extends Controller
       $tags = $req->input('tags');
 
       if($req->hasFile('portada')){
-        $img = $req->portada;
+        $img = $req->file('portada');
+        
+        // Genera un nombre único para el archivo
+        $filename = time() . '.' . $img->getClientOriginalExtension();
+        
+        // Define la ruta dentro del disco 'public'
         $pathImageAr = makeDir("publications/frontPage");
         $pathImageAbs = isset($pathImageAr["absolute"]) ? $pathImageAr["absolute"] : "";
         $pathImageRel = isset($pathImageAr["relative"]) ? $pathImageAr["relative"] : "";
         $pathImageRel = rtrim($pathImageRel, '/');
         $filename = time().'.'.$img->getClientOriginalExtension();
         
+        // Guarda el archivo en el disco 'public'
+        Storage::disk('public')->put($pathImageRel.'/'.$filename, file_get_contents($img));
+        $publication->image = $pathImageRel.'/'.$filename;
+        // Obtén la URL pública del archivo
+        //$url = Storage::disk('public')->url($path);
+
+        /*
         // redimencionar la imagen
-        /*$img = Image::make($img)->resize(1500, null, function ($constraint) {
-          $constraint->aspectRatio();
-          $constraint->upsize();
-        });*/
+        //$img = Image::make($img)->resize(1500, null, function ($constraint) {
+          //$constraint->aspectRatio();
+          //$constraint->upsize();
+        //});
 
         // guardar la imagen deforma temporal
-        /*$tempPath = $image->encode()->getEncoded();
-        $tempFile = tmpfile();
-        fwrite($tempFile, $tempPath);
-        $metaDatos = stream_get_meta_data($tempFile);*/
+        //$tempPath = $image->encode()->getEncoded();
+        //$tempFile = tmpfile();
+        //fwrite($tempFile, $tempPath);
+        //$metaDatos = stream_get_meta_data($tempFile);
 
 
         $img->move($pathImageRel, $filename);
         //$image->save(public_path($pathImageRel . '/' . $filename), 100);
         //$req->file('portada')->move($pathImageRel, $filename);
         //$img->save($pathImageRel . '/' . $filename);
+        
         $publication->image = $pathImageRel.'/'.$filename;
+        */
         //var_dump($pathImageRel.'/'.$filename);
         //die();
       }
-      //die('...');
 
       $pub = $publication->save();
 
@@ -207,8 +220,10 @@ class PublicationController extends Controller
           foreach($req->file('gallery') as $image) {
             $publicationGallery = new PublicationGallery();
             $filename = Str::uuid().'.'.$image->getClientOriginalExtension();
-            $image->move($pathImageRel, $filename);
-            $publication->image = $pathImageRel.'/'.$filename;
+            Storage::disk('public')->put($pathImageRel.'/'.$filename, file_get_contents($image));
+
+            //$image->move($pathImageRel, $filename);
+            //$publication->image = $pathImageRel.'/'.$filename;
 
             //$filenameGallery = $image->store($file, 'public');
             $publicationGallery->path = $pathImageRel;

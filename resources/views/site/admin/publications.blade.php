@@ -66,7 +66,7 @@
                       <input class="form-check-input position-static" type="checkbox" value="{{ $idPub }}" name="check">
                     </div>
                   </td>
-                  <td><img src="{{ asset($pub->image) }}" class="img-thumbnail" title="{{ __($pub->title) }}" alt="{{ __($pub->title) }}"></td>
+                  <td><img src="{{ Storage::url($pub->image) }}" class="img-thumbnail" title="{{ __($pub->title) }}" alt="{{ __($pub->title) }}"></td>
                   <td>{{ $pub['title'] }}</td>
                   <td>{{ $pub['subtitle'] }}</td>
                   <td>{{ $pub['pseudonym'] }}</td>

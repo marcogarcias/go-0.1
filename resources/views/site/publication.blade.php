@@ -41,7 +41,7 @@
             </div>
             
             <div class="pub-imageCont">
-              <img src="{{ asset($pub->image) }}">
+              <img src="{{ Storage::url($pub->image) }}">
             </div>
             
             <div id="synopsis" class="bd-callout bd-callout-danger">
@@ -77,7 +77,7 @@
                     @foreach($pub->gallery as $gal)
                     <li class="splide__slide text-center">
                       <a href="{{ asset($gal->path.'/'.$gal->image) }}" data-lightbox="gallery">
-                        <img src="{{ asset($gal->path.'/'.$gal->image) }}">
+                        <img src="{{ Storage::url($gal->path.'/'.$gal->image) }}">
                       </a>
                     </li>
                     @endforeach

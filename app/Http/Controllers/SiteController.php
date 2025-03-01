@@ -2229,6 +2229,23 @@ die('...');*/
   }
 
   /**
+   * Página  principal
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function videoChat(){
+    return view('site.videoChat');
+  }
+
+  public function videoChat02(){
+    return view('site.videoChat02');
+  }
+
+  public function videoChat03(){
+    return view('site.videoChat03');
+  }
+
+  /**
    * Sección de Quienes somos
    *
    * @return \Illuminate\Http\Response

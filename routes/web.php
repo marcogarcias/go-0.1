@@ -62,6 +62,15 @@ Route::post('/sendContact', [App\Http\Controllers\Site\PublicationController::cl
 Route::get('/games', [App\Http\Controllers\SiteController::class, 'games']
 )->name('games');
 
+Route::get('/videoChat', [App\Http\Controllers\SiteController::class, 'videoChat']
+)->name('videoChat');
+
+Route::get('/videoChat02', [App\Http\Controllers\SiteController::class, 'videoChat02']
+)->name('videoChat02');
+
+Route::get('/videoChat03', [App\Http\Controllers\SiteController::class, 'videoChat03']
+)->name('videoChat03');
+
 Route::get('/stablishments', [App\Http\Controllers\SiteController::class, 'index']
 )->name('stablishments.home');
 

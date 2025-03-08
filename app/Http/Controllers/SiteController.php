@@ -2241,8 +2241,8 @@ die('...');*/
     return view('site.videoChat02');
   }
 
-  public function videoChat03(){
-    return view('site.videoChat03');
+  public function videoChat03($type='viewer'){
+    return view('site.videoChat03', compact('type'));
   }
 
   /**

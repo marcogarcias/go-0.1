@@ -68,7 +68,7 @@ Route::get('/videoChat', [App\Http\Controllers\SiteController::class, 'videoChat
 Route::get('/videoChat02', [App\Http\Controllers\SiteController::class, 'videoChat02']
 )->name('videoChat02');
 
-Route::get('/videoChat03', [App\Http\Controllers\SiteController::class, 'videoChat03']
+Route::get('/videoChat03/{type?}', [App\Http\Controllers\SiteController::class, 'videoChat03']
 )->name('videoChat03');
 
 Route::get('/stablishments', [App\Http\Controllers\SiteController::class, 'index']

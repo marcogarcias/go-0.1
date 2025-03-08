@@ -121,7 +121,7 @@
       <div class="row header-line-1">
         &nbsp;
       </div>
-      <div class="row footer-txt">
+      <div class="row footer-txt d-none">
         <div class="col-12 col-md-4">
           <p class="footer-warning">
             Todos los servicios son responsabilidad de los anunciantes.

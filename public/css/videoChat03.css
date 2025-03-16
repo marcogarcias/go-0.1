@@ -18,7 +18,23 @@ body{
 .line01{
   background: #b90c5d;
   border: 5px solid #EA1C6A;
-  height: 40px;
+  padding: 10px;
+}
+
+#buttonsRedesCont{
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#buttonsRedesCont li{
+  display: inline-block;
+  margin: 0 10px;
+  padding: 0;
+}
+
+#buttonsRedesCont img{
+  width: 30px;
 }
 
 #usersNoCont{
@@ -34,12 +50,11 @@ body{
 #logoCont{ text-align: end; }
 
 #logoCont img{
-  max-width: 100px;
+  max-width: 70px;
   width: 80%;
 }
 
 #buttonsCont{ text-align: center; }
-
 #roomId.viewer{ display: none; }
 
 #roomId{
@@ -71,14 +86,47 @@ body{
   font-size: 18px;
 }
 
+#buttonsCont .loading{
+  color: #fff;
+  display: none;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+#kukurygirl, #broadcaster{ position: relative; }
+
+#kukurygirl .buttonsVideoCont, #broadcaster .buttonsVideoCont{ 
+  bottom: 0px;
+  font-size: 16px;
+  position: absolute; 
+  text-align: center;
+  width: 100%;
+}
+
+#kukurygirl .btn-video, #broadcaster .btn-video{ 
+  background: #EA1C6A;
+  border: 2px solid #B90C5D;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  height: 35px;
+  padding: 2px 5px;
+  margin: 0 5px;
+  width: 35px;
+  /*height: 25px;
+  padding: 2px 5px;
+  width: 25px;*/
+}
+
 .video-grid{
   align-content: center;
 }
 
 .video-preview{
   align-items: center;
-  background-color: #ddd;
-  color: #666;
+  background-color: #ffdfef;
+  color: #ff34c0;
   display: flex;
   font-size: 200px;
   height: 300px;
@@ -92,6 +140,16 @@ body{
   width: 100%;
 }
 
+.nickLabel{
+  background: #ffdfef;
+  border: 3px solid #ff34c0;
+  border-radius: 8px;
+  color: #ff34c0;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+
 .main-content {
   display: flex;
   gap: 20px;
@@ -101,6 +159,7 @@ body{
 .chat-container {
   border: 2px solid #ff34c0;
   border-radius: 10px 10px 0 0;
+  color: #ff34c0;
   display: flex;
   flex-direction: column;
   height: 400px;
@@ -123,12 +182,6 @@ body{
   background: white;
 }
 
-.chat-input input {
-  flex-grow: 1;
-  margin-right: 10px;
-  padding: 5px;
-}
-
 .message {
   margin-bottom: 10px;
   padding: 5px;
@@ -136,12 +189,29 @@ body{
 
 .message .user {
   font-weight: bold;
-  color: #2a5885;
+  color: #EA1C6A;
 }
 
 .message .time {
   font-size: 0.8em;
   color: #666;
+}
+
+.chat-container #messageInput{
+  border: 1px solid #B90C5D;
+  background: #ffdfef;
+  color: #ff34c0;
+  flex-grow: 1;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.chat-container #sendButton{
+  background: #EA1C6A;
+  border: 2px solid #B90C5D;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: bold;
 }
 
 
@@ -163,7 +233,7 @@ body{
   ##Screen = 1281px to higher resolution desktops
 */
 @media (min-width: 1281px) and (max-width: 1559px) {
-  body{ border: 3px solid  #fff; }
+  /*body{ border: 3px solid  #fff; }*/
 }
 
 /* 
@@ -171,7 +241,7 @@ body{
   ##Screen = B/w 1025px to 1280px
 */
 @media (min-width: 1025px) and (max-width: 1280px) {
-  body{ border: 3px solid  #f00; }
+  /*body{ border: 3px solid  #f00; }*/
 }
 
 /* 
@@ -180,7 +250,7 @@ body{
 */
 
 @media (min-width: 768px) and (max-width: 1024px) {
-  body{ border: 3px solid  #0f0; }
+  /*body{ border: 3px solid  #0f0; }*/
 }
 
 /* 
@@ -189,7 +259,7 @@ body{
 */
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-  body{ border: 3px solid  #00f; }
+  /*body{ border: 3px solid  #00f; }*/
 }
 
 /* 
@@ -198,7 +268,7 @@ body{
 */
 
 @media (min-width: 481px) and (max-width: 767px) {
-  body{ border: 3px solid  #ff0; }
+  /*body{ border: 3px solid  #ff0; }*/
 }
 
 /* 
@@ -207,24 +277,12 @@ body{
 */
 
 @media (min-width: 320px) and (max-width: 480px) {
-  body{ border: 3px solid  #0ff; }
+  /*body{ border: 3px solid  #0ff; }*/
 
-  .video-preview{
-    font-size: 130px;
-    height: 150px;
-    width: 100%;
-  }
-
-  #roomId{
-    margin-bottom: 10px;
-    width: 90%;
-  }
-
-  #startButton, #joinButton{
-    font-size: 18px;
-  }
-
-  .chat-container {
-    height: 250px;
-  }
+  .video-preview{ font-size: 130px; height: 150px; width: 100%; }
+  #roomId{ margin-bottom: 10px; width: 90%; }
+  #startButton, #joinButton{ font-size: 18px; }
+  #kukurygirl .buttonsVideoCont, #broadcaster .buttonsVideoCont{ font-size: 12px; }
+  #kukurygirl .btn-video, #broadcaster .btn-video{ height: 25px; padding: 2px 5px; width: 25px; }
+  .chat-container { height: 250px; }
 }

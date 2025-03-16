@@ -2241,8 +2241,9 @@ die('...');*/
     return view('site.videoChat02');
   }
 
-  public function videoChat03($type='viewer'){
-    return view('site.videoChat03', compact('type'));
+  public function videoChat03($type='viewer', Request $req){
+    $ip = $req->ip();
+    return view('site.videoChat03', compact('type', 'ip'));
   }
 
   /**

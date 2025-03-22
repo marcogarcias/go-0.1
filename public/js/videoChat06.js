@@ -7,14 +7,11 @@ const configuration = {
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
 };
 
-let localStream;
-let isBroadcaster = false;
 const peerConnections = {};
 const videoElements = {};
-let roomId;
+let roomId, topic, nick, localStream, ip, assets;
 let userType = 'viewer';
-let nick;
-let ip;
+let isBroadcaster = false;
 
 //const socket = io('http://localhost:3001');
 //const socket = io('https://webrtc01.onrender.com');
@@ -33,19 +30,44 @@ function initVideoCam(cfg){
   cfg = (typeof cfg === 'object') ? cfg : {};
   userType = cfg.userType ? cfg.userType : 'viewer';
   ip = cfg.ip ? cfg.ip : '127.0.0.1';
-  nick = prompt("Ingresa un nickname:");
+  assets = cfg.assets ? cfg.assets : './..';
 
   initEvents();
   initButtons();
 }
 
 function initButtons(){
-  userType == 'kukurygirl' && $('#roomId').show();
-  (userType == 'kukurygirl' || userType == 'guest') && $('#startButton').show();
-  userType == 'viewer' && $('#joinButton').show();
+  userType == 'kukurygirl' && $('#topic, #topicButton').show();
+  (userType == 'guest' || userType == 'viewer') && $('#nick, #nickButton').show();
+
+  //userType == 'kukurygirl' && $('#nick, #nickButton').show();
+  //(userType == 'guest') && $('#startButton').show();
+
+  //userType == 'kukurygirl' && $('#roomId').show();
+  //(userType == 'kukurygirl' || userType == 'guest') && $('#startButton').show();
+  //userType == 'viewer' && $('#joinButton').show();
 }
 
 function initEvents(){
+  $(document).on('click', '#topicButton', function(){
+    topic = $('#topic').val();
+    $('#topic').fadeOut(300);
+      $(this).fadeOut(300, ()=>{
+        $('#nick').fadeIn(300);
+        $('#nickButton').fadeIn(300);
+      });
+  });
+
+  $(document).on('click', '#nickButton', function(){
+    nick = $('#nick').val();
+    $('#nick').fadeOut(300);
+      $(this).fadeOut(300, ()=>{
+        userType == 'kukurygirl' && $('#roomId, #startButton').fadeIn(300);
+        userType == 'guest' && $('#startButton').fadeIn(300);
+        userType == 'viewer' && $('#joinButton').fadeIn(300);
+      });
+  });
+
   $(document).on('click', '#startButton', async function(){
     roomId = document.getElementById('roomId').value;
     if(userType == 'kukurygirl' && !roomId){
@@ -61,7 +83,7 @@ function initEvents(){
         video: true, 
         audio: true 
       });
-      $('#buttonsCont .loading').fadeOut(300, ()=>{
+      $('#buttonsCont .loading').fadeOut(100, ()=>{
         $('#joinButton').fadeIn(300);
       });
     }catch(error) {
@@ -76,37 +98,50 @@ function initEvents(){
     if(userType == 'kukurygirl' && !roomId){
       return  alert('Ingresa una sala.');
     }
-    socket.emit('join', { roomId, userType, nick, ip });
-    $('#joinButton').fadeOut(300);
+    $('#joinButton').fadeOut(300, function(){
+      socket.emit('join', { roomId, userType, nick, topic, ip });
+    });
   });
 
   $(document).on('click', '#kukurygirl .btn-video', async function(){
-    if($(this).parent().parent().attr('id') != userType) return false;
+    //if($(this).parent().parent().attr('id') != userType) return false;
+    const userTypeCam = $(this).parent().parent().attr('id');
+    if((userTypeCam == 'kukurygirl' && userType == 'kukurygirl') || (userTypeCam == 'kukurygirl' && userType == 'guest')){
+      const type = $(this).attr('data-type');
+      const container = $(this).closest('.buttonsVideoCont').parent().attr('id');
+      // Identificar qué stream debemos modificar
+      let streamId = null;
+      for (const id in videoElements) {
+        if(videoElements[id].container && videoElements[id].container.id === container) {
+          streamId = id;
+          break;
+        }
+      }
+    
+      if(!streamId) return;
+      console.log('type: ', type, streamId);
 
-    const type = $(this).attr('data-type');
-    const container = $(this).closest('.buttonsVideoCont').parent().attr('id');
-    // Identificar qué stream debemos modificar
-    let streamId = null;
-    for (const id in videoElements) {
-      if(videoElements[id].container && videoElements[id].container.id === container) {
-        streamId = id;
-        break;
+      switch(type) {
+        case 'video':
+          enableDisableVideo(streamId, this);
+          break;
+        case 'audio':
+          enableDisableAudio(streamId, this);
+          break;
+        case 'exit':
+          roomExit(streamId, this);
+          break;
       }
     }
-  
-    if(!streamId) return;
-    console.log('type: ', type, streamId);
+  });
 
-    switch(type) {
-      case 'video':
-        enableDisableVideo(streamId, this);
-        break;
-      case 'audio':
-        enableDisableAudio(streamId, this);
-        break;
-      case 'exit':
-        roomExit(streamId, this);
-        break;
+  $(document).on('click', '.nickLabel', function(){
+    const idUser = $(this).attr('data-iduser');
+    if(idUser){
+      socket.emit('sendHeart', {
+        roomId: roomId,
+        userTo: $(this).attr('data-iduser')
+      });
     }
   });
 
@@ -130,6 +165,32 @@ function initEvents(){
   });
 }
 
+socket.on('sendHeart', (data) => {
+  sendHeart(data);
+});
+
+function sendHeart(data){
+  data = (typeof data === 'object') ? data : {};
+  const userTo = data.userTo ? data.userTo : null;
+  const toCont = $(`#video-${userTo}`).parent();
+  
+  const videoPreview = $(this).siblings('.video-preview');
+    if(userTo){
+      if(toCont.find('img').length === 0) {
+        const imgHtml = `<img src="${assets}img/site/video/hearts-01.gif" style="bottom: 0; position: absolute; width: 100%;">`;
+        toCont.append(imgHtml);
+        console.log('corazon: ', userTo, toCont);
+        setTimeout(function() {
+          toCont.find('img').fadeOut(300, function(){
+            $(this).remove();
+          });
+        }, 3000);
+      } else {
+        console.log('La imagen ya está activa, no se puede agregar nuevamente.');
+      }
+    }
+}
+
 function enableDisableVideo(streamId, this_){
   if(!streamId) return;
 
@@ -141,12 +202,12 @@ function enableDisableVideo(streamId, this_){
     $(this_).css('opacity', newState?1:0.5);
     
     // Notificar al servidor sobre el cambio
-    socket.emit('media-control', {
+    /*socket.emit('media-control', {
       roomId: roomId,
       mediaType: 'video',
       enabled: newState,
       targetStream: streamId
-    });
+    });*/
   }
 }
 
@@ -161,12 +222,12 @@ function enableDisableAudio(streamId, this_){
     $(this_).css('opacity', newState?1:0.5);
         
     // Notificar al servidor sobre el cambio
-    socket.emit('media-control', {
+    /*socket.emit('media-control', {
       roomId: roomId,
       mediaType: 'audio',
       enabled: newState,
       targetStream: streamId
-    });
+    });*/
   }
 }
 
@@ -234,7 +295,7 @@ function createVideoElement(idBroadcaster, type) {
     $('#kukurygirl').empty();
     $('#kukurygirl').append(video);
     $('#kukurygirl').append(buttonsHtml);
-    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('2.1 createVideoElement: kukurygirl viendo a kukurygirl en el video 1');
   }else if((userType == 'kukurygirl' && userTypeBroadcaster == 'guest')){
     videoBox = document.getElementById('broadcaster');
@@ -242,7 +303,7 @@ function createVideoElement(idBroadcaster, type) {
     video.width = $('#broadcaster').width();
     $('#broadcaster').empty();
     $('#broadcaster').append(video);
-    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
   }
 
@@ -252,7 +313,8 @@ function createVideoElement(idBroadcaster, type) {
     video.width = $('#kukurygirl').width();
     $('#kukurygirl').empty();
     $('#kukurygirl').append(video);
-    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#kukurygirl').append(buttonsHtml);
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('3.1 createVideoElement: guest viendo a guest en el video 1');
   }else if((userType == 'guest' && userTypeBroadcaster == 'kukurygirl')){
     videoBox = document.getElementById('broadcaster');
@@ -260,7 +322,7 @@ function createVideoElement(idBroadcaster, type) {
     video.width = $('#broadcaster').width();
     $('#broadcaster').empty();
     $('#broadcaster').append(video);
-    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('3.2 createVideoElement: guest viendo a kukurygirl en el video 2');
   }
 
@@ -270,8 +332,7 @@ function createVideoElement(idBroadcaster, type) {
     video.width = $('#kukurygirl').width();
     $('#kukurygirl').empty();
     $('#kukurygirl').append(video);
-    $('#kukurygirl').append(buttonsHtml);
-    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('4.1 createVideoElement: viewer viendo a kukurygirl en el video 1');
   }else if((userType == 'viewer' && userTypeBroadcaster == 'guest')){
     videoBox = document.getElementById('broadcaster');
@@ -279,7 +340,7 @@ function createVideoElement(idBroadcaster, type) {
     video.width = $('#broadcaster').width();
     $('#broadcaster').empty();
     $('#broadcaster').append(video);
-    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar));
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
     console.log('4.2 createVideoElement: viewer viendo a guest en el video 2');
   }
 
@@ -401,7 +462,8 @@ socket.on('broadcaster-status', async (status) => {
     const videoElement = createVideoElement(idUser, users[idUser].type);
     videoElement.video.srcObject = localStream;
     videoElement.video.muted = true;
-    videoElements['local'] = videoElement;
+    //videoElements['local'] = videoElement;
+    videoElements[idUser] = videoElement;
   } else {
     // Configure connections for viewers
     //statusDiv.textContent = 'Eres un espectador';
@@ -495,6 +557,7 @@ socket.on('broadcaster-disconnected', (broadcasterId) => {
 // Escuchar actualizaciones de control de medios
 socket.on('media-control', (data) => {  
   // Buscar el elemento de video correspondiente
+  /*
   const videoElement = videoElements[userType=='kukurygirl'?data.targetStream:data.userId];
   if (!videoElement || !videoElement.video || !videoElement.video.srcObject) return;
   // Aplicar el cambio según el tipo de media
@@ -519,6 +582,7 @@ socket.on('media-control', (data) => {
       $(button).css('opacity', data.enabled?1:0.5); 
     }
   }
+    */
 });
 
 // Escuchar cuando alguien abandona la sala voluntariamente
@@ -552,10 +616,12 @@ socket.on('room-info', (info) => {
   const broadcasters = info.broadcasters;
   const viewerCount = info.viewerCount;
   const users_ = info.users;
+  const topic = info.topic;
   users = users_;
   //statusDiv.textContent = ` | Broadcasters: ${broadcasters.length}/2 | Espectadores: ${viewerCount}`;
   $("#usersNo").text(Object.keys(users).length);
-  console.log('usersNum', Object.keys(users).length, users);
+  $("#topicHeader").text(topic?`Tema: ${topic}`:'');
+  console.log('usersNum', Object.keys(users).length, users, topic);
 });
 
 
@@ -569,7 +635,10 @@ socket.on('socketErrores', function(data){
       if(usrTtpe=='guest'){
         $('#startButton').show();
       }else if(usrTtpe=='viewer'){
-        $('#joinButton').show();
+        $('#joinButton').fadeIn(300);
+        /*setTimeout(function() {
+          $('#joinButton').show();
+        }, 500);*/
       }
       break;
   }

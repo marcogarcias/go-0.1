@@ -18,7 +18,9 @@
 @endphp
 
 <div class="container-fluid">
-  <div class="line01"> </div>
+  <div class="line01">
+    <h3 id="topicHeader"></h3>
+  </div>
 
   <div class="row">
     <div class="col-3">
@@ -45,11 +47,17 @@
       <div class="row">
         <div id="buttonsCont" class="col-12">
           <input type="text" id="roomId" class="{{ $inputRoomClass }}" placeholder="Nombre sala">
+          <input type="text" id="nick" placeholder="Elige un nick">
+          <input type="text" id="topic" placeholder="Tema del día">
           <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>
+          @if($type == 'kukurygirl' || $type == 'guest')
+            <button id="topicButton">Elegir tema</button>
+          @endif
           @if($type == 'kukurygirl' || $type == 'guest')
             <button id="startButton">Iniciar Cámara</button>
           @endif
           @if($type == 'kukurygirl' || $type == 'guest' || $type == 'viewer')
+            <button id="nickButton">Elegir nick</button>
             <button id="joinButton">Unirse a Chat</button>
           @endif
         </div>
@@ -110,7 +118,7 @@
 <script type="application/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     console.log('type', '{{ $type }}');
-    initVideoCam({ userType: '{{ $type }}', ip: '{{ $ip }}' });
+    initVideoCam({ userType: '{{ $type }}', ip: '{{ $ip }}', assets: '{{ asset("/") }}' });
   });
 </script>
 @endpush

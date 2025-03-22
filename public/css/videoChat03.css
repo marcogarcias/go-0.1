@@ -8,34 +8,13 @@ body{
 }
 
 .row{ margin: 0; }
+.container-fluid{ margin: 0; padding: 0; }
+.line01{ background: #b90c5d; border: 5px solid #EA1C6A; padding: 10px; }
 
-.container-fluid{
-  /*background: linear-gradient(to bottom,  #742e91 0%,#ff2480 100%);*/
-  margin: 0;
-  padding: 0;
-}
-
-.line01{
-  background: #b90c5d;
-  border: 5px solid #EA1C6A;
-  padding: 10px;
-}
-
-#buttonsRedesCont{
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
-
-#buttonsRedesCont li{
-  display: inline-block;
-  margin: 0 10px;
-  padding: 0;
-}
-
-#buttonsRedesCont img{
-  width: 30px;
-}
+.line01 #topicHeader{ color: #ffdfef; font-weight: bold; text-align: center; }
+#buttonsRedesCont{ margin: 0; padding: 0; text-align: center; }
+#buttonsRedesCont li{ display: inline-block; margin: 0 10px; padding: 0; }
+#buttonsRedesCont img{ width: 30px; }
 
 #usersNoCont{
   background: rgba(0, 0, 0, .5);
@@ -57,7 +36,7 @@ body{
 #buttonsCont{ text-align: center; }
 #roomId.viewer{ display: none; }
 
-#roomId{
+#roomId, #nick, #topic{
   border: 2px solid #ff34c0;
   border-radius: 10px;
   margin: 0;
@@ -69,14 +48,14 @@ body{
   width: 200px;
 }
 
-#roomId::placeholder {
+#roomId::placeholder, #nick::placeholder, #topic::placeholder{
   color: #ff90dd;
   opacity: 1; 
 }
 
-#roomId{ display: none; }
+#roomId, #nick, #topic{ display: none; }
 
-#startButton, #joinButton{
+#startButton, #joinButton, #nickButton, #topicButton{
   background: #EA1C6A;
   border: 2px solid #B90C5D;
   border-radius: 10px;
@@ -145,6 +124,7 @@ body{
   border: 3px solid #ff34c0;
   border-radius: 8px;
   color: #ff34c0;
+  cursor: pointer;
   font-weight: bold;
   font-size: 16px;
   text-align: center;
@@ -280,8 +260,8 @@ body{
   /*body{ border: 3px solid  #0ff; }*/
 
   .video-preview{ font-size: 130px; height: 150px; width: 100%; }
-  #roomId{ margin-bottom: 10px; width: 90%; }
-  #startButton, #joinButton{ font-size: 18px; }
+  #roomId, #nick, #topic{ margin-bottom: 10px; width: 90%; }
+  #startButton, #joinButton, #nickButton, #topicButton{ font-size: 18px; }
   #kukurygirl .buttonsVideoCont, #broadcaster .buttonsVideoCont{ font-size: 12px; }
   #kukurygirl .btn-video, #broadcaster .btn-video{ height: 25px; padding: 2px 5px; width: 25px; }
   .chat-container { height: 250px; }

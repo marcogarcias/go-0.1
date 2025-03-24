@@ -118,7 +118,13 @@
 <script type="application/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     console.log('type', '{{ $type }}');
-    initVideoCam({ userType: '{{ $type }}', ip: '{{ $ip }}', assets: '{{ asset("/") }}' });
+    initVideoCam({ 
+      userType: '{{ $type }}', 
+      ip: '{{ $ip }}', 
+      assets: '{{ asset("/") }}',
+      from: '{{ $from }}',
+      fromFull: '{{ $refererDomain }}',
+    });
   });
 </script>
 @endpush

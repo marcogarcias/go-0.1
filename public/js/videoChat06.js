@@ -9,7 +9,7 @@ const configuration = {
 
 const peerConnections = {};
 const videoElements = {};
-let roomId, topic, nick, localStream, ip, assets;
+let roomId, topic, nick, localStream, ip, assets, from, fromFull;
 let userType = 'viewer';
 let isBroadcaster = false;
 
@@ -31,6 +31,8 @@ function initVideoCam(cfg){
   userType = cfg.userType ? cfg.userType : 'viewer';
   ip = cfg.ip ? cfg.ip : '127.0.0.1';
   assets = cfg.assets ? cfg.assets : './..';
+  from = cfg.from ? cfg.from : '';
+  fromFull = cfg.fromFull ? cfg.fromFull : '';
 
   initEvents();
   initButtons();
@@ -99,7 +101,7 @@ function initEvents(){
       return  alert('Ingresa una sala.');
     }
     $('#joinButton').fadeOut(300, function(){
-      socket.emit('join', { roomId, userType, nick, topic, ip });
+      socket.emit('join', { roomId, userType, nick, topic, ip, from, fromFull });
     });
   });
 

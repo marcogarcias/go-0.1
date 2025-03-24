@@ -2242,8 +2242,28 @@ die('...');*/
   }
 
   public function videoChat03($type='viewer', Request $req){
+    $referer = $req->headers->get('referer');
+    $from = null;
+    // Si no hay referer, el usuario probablemente entró directamente
+    if(!$referer){
+      $from = "direct";
+    }
+    // Analizar el dominio del referer
+    $refererDomain = parse_url($referer, PHP_URL_HOST);
+    
+    // Identificar la plataforma según el dominio
+    if(strpos($refererDomain, 'telegram') !== false || strpos($refererDomain, 't.me') !== false){
+      $from = "Telegram";
+    }elseif(strpos($refererDomain, 'whatsapp') !== false || strpos($refererDomain, 'wa.me') !== false){
+      $from = "WhatsApp";
+    }elseif (strpos($refererDomain, 'facebook') !== false || strpos($refererDomain, 'fb.com') !== false){
+      $from = "Facebook";
+    }else{
+      $from = $refererDomain;
+    }
+
     $ip = $req->ip();
-    return view('site.videoChat03', compact('type', 'ip'));
+    return view('site.videoChat03', compact('type', 'ip', 'from', 'refererDomain'));
   }
 
   /**

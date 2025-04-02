@@ -9,7 +9,10 @@ const configuration = {
 
 const peerConnections = {};
 const videoElements = {};
-let roomId, topic, nick, localStream, ip, assets, from, fromFull;
+let roomId, topic, nick, localStream, ip, assets, from, fromFull, rotationInterval;
+let currentRotation = 0;
+let intervalRuleta; 
+let currentIndexRuleta = 0;
 let userType = 'viewer';
 let isBroadcaster = false;
 
@@ -105,6 +108,29 @@ function initEvents(){
     });
   });
 
+  $(document).on('click', '#startGameBtn', function(){
+    socket.emit('startGame', { roomId, userType });
+  });
+  
+  $(document).on('click', '#verdadRetoBtn, #ruletaBtn', function(){
+    const game = $(this).attr('data-game');
+    socket.emit('selectGame', { roomId, userType, game });
+  });
+
+  $(document).on('click', '#verdadRuleta', function(){
+    const start = parseInt($(this).attr('data-start'));
+    socket.emit('startStopVerdad', { roomId, userType, start });
+  });
+
+  $(document).on('click', '#ruletaCont', function(){
+    const start = parseInt($(this).attr('data-start'));
+    socket.emit('startStopRuleta', { roomId, userType, start });
+  });
+
+  $(document).on('click', '.gameClose', function(){
+    socket.emit('gameClose', { roomId, userType });
+  });
+
   $(document).on('click', '#kukurygirl .btn-video', async function(){
     //if($(this).parent().parent().attr('id') != userType) return false;
     const userTypeCam = $(this).parent().parent().attr('id');
@@ -167,9 +193,86 @@ function initEvents(){
   });
 }
 
+socket.on('startGame', function(){
+  $('#buttonsStartGamesCont, #buttonsGamesCont, #verdadRetoCont, #ruletaCont').hide();
+  $('#buttonsGamesCont').show();
+});
+
+socket.on('selectGame', function(data){
+  data = (typeof data === 'object') ? data : {};
+  const game = data.game ? data.game : null;
+  selectGame(game);
+});
+
+socket.on('startStopVerdad', function(data){
+  data = (typeof data === 'object') ? data : {};
+  const start = data.start ? data.start : 0;
+  startStopVerdad(start);
+});
+
+socket.on('startStopRuleta', function(data){
+  data = (typeof data === 'object') ? data : {};
+  const start = data.start ? data.start : 0;
+  startStopRuleta(start);
+});
+
+socket.on('gameClose', function(){
+  $('#buttonsStartGamesCont, #buttonsGamesCont, #verdadRetoCont, #ruletaCont ').hide();
+  $('#buttonsGamesCont').show();
+});
+
 socket.on('sendHeart', (data) => {
   sendHeart(data);
 });
+
+function selectGame(game){
+  $('#buttonsGamesCont, #verdadRetoCont, #ruletaCont').hide();
+  if(game == "verdad")
+    $('#verdadRetoCont').show();
+
+  if(game == "ruleta"){
+    resetRuleta();
+    $('#ruletaCont').show();
+  }
+}
+
+function startStopVerdad(start){
+  if(start === 0){
+    $('#verdadRuleta').attr('data-start', 1);
+    rotationInterval = setInterval(() => {
+      currentRotation += 20;
+      $('#verdadRuleta').css('transform', `rotate(${currentRotation}deg)`);
+    }, 20);
+  }else{
+    $('#verdadRuleta').attr('data-start', 0);
+    if(rotationInterval){
+      clearInterval(rotationInterval);
+      rotationInterval = null;
+    }
+  }
+}
+
+function resetRuleta(){
+  clearInterval(intervalRuleta);
+  $('#ruletaCont ul li').hide();
+  $('#ruletaCont ul li').first().css('display', 'inline-block');
+}
+
+function startStopRuleta(start){
+  const $li = $('#ruletaCont ul li');
+  if(start === 0){
+    $('#ruletaCont').attr('data-start', 1);
+    currentIndexRuleta = 0; // Reinicia el índice
+    intervalRuleta = setInterval(function() {
+      $li.hide();
+      $li.eq(currentIndexRuleta).show(); // Muestra el elemento actual
+      currentIndexRuleta = (currentIndexRuleta + 1) % $li.length; // Incrementa el índice y reinicia si es necesario
+    }, 100);
+  }else{
+    $('#ruletaCont').attr('data-start', 0);
+    clearInterval(intervalRuleta);
+  }
+}
 
 function sendHeart(data){
   data = (typeof data === 'object') ? data : {};

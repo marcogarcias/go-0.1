@@ -7,6 +7,16 @@ body{
   background-position: center; 
 }
 
+.btn-kukury{
+  background: #EA1C6A;
+  border: 2px solid #B90C5D;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 3px 8px;
+}
+
 .row{ margin: 0; }
 .container-fluid{ margin: 0; padding: 0; }
 .line01{ background: #b90c5d; border: 5px solid #EA1C6A; padding: 10px; }
@@ -24,6 +34,34 @@ body{
   font-size: 16px;
   margin: 15px 5px;
   padding: 5px 10px;
+}
+
+#gamesCont{ display: flex; }
+#gamesCont #buttonsStartGamesCont{ margin: auto; }
+#gamesCont #buttonsGamesCont{ align-content: center; display: none; margin: auto; }
+#buttonsGamesCont div{ display: inline-block; font-size: 12px; }
+#verdadRetoCont, #ruletaCont{ 
+  border: 1px solid #ffdfef;
+  border-radius: 10px;
+  display: none; 
+  padding: 5px;
+  position: relative; 
+  width: 100%;
+}
+#verdadRetoCont #verdadRuleta, #verdadRetoCont #verdadFlecha{ display: inline-block; width: 48%; }
+#verdadRetoCont img{ width: 100%; }
+#verdadRetoCont .girar{ transition: transform 2s linear infinite; transform: rotate(0deg); }
+#ruletaCont ul, #ruletaCont li{ margin: 0; padding: 0; text-align: center; }
+#ruletaCont li{ display: none; list-style-type: none; }
+#ruletaCont img{ width: 70px; }
+.gameClose{ 
+  color: #ffdfef; 
+  cursor: pointer;
+  display: inline-block; 
+  font-size: 20px; 
+  position: absolute; 
+  top: -10px;
+  right: -2px;
 }
 
 #logoCont{ text-align: end; }

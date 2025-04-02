@@ -30,7 +30,49 @@
       </div>
     </div>
 
-    <div class="col-9">
+    <div id="gamesCont" class="col-6">
+      <div id="buttonsStartGamesCont">
+        <div id="startGameBtn" class="btn-kukury">
+          Jugar
+        </div>
+      </div>
+
+      <div id="buttonsGamesCont" class="">
+        <div id="verdadRetoBtn" class="btn-kukury" data-game="verdad">
+          Verdad/Reto
+        </div>
+        <div id="ruletaBtn" class="btn-kukury" data-game="ruleta">
+          Ruleta
+        </div>
+      </div>
+
+      <div id="verdadRetoCont">
+        <div id="verdadRuleta" class="girar" data-start="0">
+          <img id="verdadRuletaImg" src="{{ asset('img/site/video/verdad-ruleta.png') }}" title="Ruleta">
+        </div>
+        <div id="verdadFlecha">
+          <img src="{{ asset('img/site/video/verdad-flecha.png') }}" title="Flecha">
+        </div>
+        <div class="gameClose"><i class="fas fa-times-circle" title="Cerrar"></i></div>
+      </div>
+
+      <div id="ruletaCont" data-start="0">
+        <ul>
+          <li><img src="{{ asset('img/site/video/ruleta-bra.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-cuerpo.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-gemido.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-gluteos.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-lengua.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-mano.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-pie.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-piernas.png') }}" title="??"></li>
+          <li><img src="{{ asset('img/site/video/ruleta-tanga.png') }}" title="??"></li>
+        </ul>
+        <div class="gameClose"><i class="fas fa-times-circle" title="Cerrar"></i></div>
+      </div>
+    </div>
+
+    <div class="col-3">
       <div id="logoCont">
         <img src="{{ asset('img/site/video/logo-01.png') }}" alt="Kukury cam">
       </div>

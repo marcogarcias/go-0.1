@@ -37,7 +37,7 @@ body{
 }
 
 #gamesCont{ display: flex; }
-#gamesCont #buttonsStartGamesCont{ margin: auto; }
+#gamesCont #buttonsStartGamesCont, #gamesCont #buttonStartVideoCont{ margin: auto; }
 #gamesCont #buttonsGamesCont{ align-content: center; display: none; margin: auto; }
 #buttonsGamesCont div{ display: inline-block; font-size: 12px; }
 #verdadRetoCont, #ruletaCont{ 

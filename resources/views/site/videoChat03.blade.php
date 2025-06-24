@@ -37,6 +37,12 @@
         </div>
       </div>
 
+      <div id="buttonStartVideoCont">
+        <div id="shareScreenBtn" class="btn-kukury">
+          Transmitir
+        </div>
+      </div>
+
       <div id="buttonsGamesCont" class="">
         <div id="verdadRetoBtn" class="btn-kukury" data-game="verdad">
           Verdad/Reto
@@ -105,18 +111,12 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-6 col-md-6">
+      <div id="videosCont" class="row">
+        <div class="col-6 col-md-6 mx-auto">
           <div id="kukurygirl" class="video-preview">
             <i class="fas fa-user"></i>
           </div>
           <div class="nickLabel">Cámara 1</div>
-        </div>
-        <div class="col-6 col-md-6">
-          <div id="broadcaster" class="video-preview">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="nickLabel">Cámara 2</div>
         </div>
       </div>
 

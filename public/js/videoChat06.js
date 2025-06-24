@@ -15,6 +15,7 @@ let intervalRuleta;
 let currentIndexRuleta = 0;
 let userType = 'viewer';
 let isBroadcaster = false;
+let idSocket = null;
 
 //const socket = io('http://localhost:3001');
 //const socket = io('https://webrtc01.onrender.com');
@@ -106,6 +107,46 @@ function initEvents(){
     $('#joinButton').fadeOut(300, function(){
       socket.emit('join', { roomId, userType, nick, topic, ip, from, fromFull });
     });
+  });
+
+  $(document).on('click', '#shareScreenBtn', async function(){
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const screenTrack = screenStream.getVideoTracks()[0];
+  
+      // Reemplazar video en cada conexión peer
+      Object.values(peerConnections).forEach(pc => {
+        const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+        if (sender) {
+          sender.replaceTrack(screenTrack);
+        }
+      });
+  
+      // Mostrar el stream compartido localmente
+      const myVideo = document.querySelector(`#video-${socket.id}`);
+      if(myVideo) {
+        myVideo.srcObject = screenStream;
+      }
+  
+      // Restaurar cámara cuando se detenga compartir pantalla
+      screenTrack.onended = () => {
+        if (localStream) {
+          const cameraTrack = localStream.getVideoTracks()[0];
+          Object.values(peerConnections).forEach(pc => {
+            const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+            if (sender) {
+              sender.replaceTrack(cameraTrack);
+            }
+          });
+  
+          if (myVideo) {
+            myVideo.srcObject = localStream;
+          }
+        }
+      };
+    } catch (err) {
+      console.error('Error al compartir pantalla:', err);
+    }
   });
 
   $(document).on('click', '#startGameBtn', function(){
@@ -366,6 +407,243 @@ function roomExit(streamId, this_){
 }
 
 function createVideoElement(idBroadcaster, type) {
+  /*const nick = users[idBroadcaster] ? users[idBroadcaster].nick : '';
+  const video = document.createElement('video');
+  let videoCont = `
+  
+  `;
+  video.id = `video-${idBroadcaster}`;
+  video.autoplay = true;
+  video.playsinline = true;
+  video.controls = false;
+  video.style.width = '100%';
+  video.style.maxWidth = '300px';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'video-wrapper';
+  wrapper.style.position = 'relative';
+  wrapper.style.display = 'inline-block';
+  wrapper.style.margin = '5px';
+  wrapper.style.width = '300px';
+
+  const label = document.createElement('div');
+  label.className = 'nickLabel';
+  label.setAttribute('data-iduser', idBroadcaster);
+  label.innerText = nick.substring(0, 12);
+  label.style.position = 'absolute';
+  label.style.bottom = '5px';
+  label.style.left = '5px';
+  label.style.background = 'rgba(0,0,0,0.5)';
+  label.style.color = '#fff';
+  label.style.padding = '2px 6px';
+  label.style.borderRadius = '4px';
+
+  wrapper.appendChild(video);
+  wrapper.appendChild(label);
+
+  const container = document.getElementById('videoGrid');
+  if (container) container.appendChild(wrapper);
+
+  const userTypeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].userType : '';
+  console.log('add video: ', idBroadcaster, type, userTypeBroadcaster, users);
+
+  return { video, container: wrapper };*/
+
+  //const typeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].type : '';
+  const userTypeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].userType : '';
+  const nick = users[idBroadcaster] ? users[idBroadcaster].nick : '';
+  console.log('createVideoElement: ', idBroadcaster, type, userTypeBroadcaster, nick);
+  const maxChar = 13;
+  let videoBoxHtml = `
+    <div class="col-6 col-md-6 mx-auto">
+      <div id="broadcaster-${idBroadcaster}" class="video-preview">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="nickLabel">Cámara 2</div>
+    </div>`;
+  
+  const buttonsHtml = `
+    <div class="buttonsVideoCont">
+      <div class="btn-video" data-type="video">
+        <i class="fas fa-camera"></i>
+      </div>
+      <div class="btn-video" data-type="audio">
+        <i class="fas fa-microphone"></i>
+      </div>
+      <div class="btn-video" data-type="exit">
+        <i class="fas fa-window-close"></i>
+      </div>
+    </div>`;
+  
+  console.log(`1 createVideoElement ${idBroadcaster}, ${type}, ${userTypeBroadcaster}`, users);
+  
+  let videoBox;
+  const video = document.createElement('video');
+  video.id = `video-${idBroadcaster}`;
+  video.autoplay = true;
+  video.playsinline = true;
+
+  // Display logic based on user types
+  if((userType == 'kukurygirl' && userTypeBroadcaster == 'kukurygirl')){
+    videoBox = document.getElementById('kukurygirl');
+    video.height = $('#kukurygirl').height();
+    video.width = $('#kukurygirl').width();
+
+    $('#kukurygirl').empty();
+    $('#kukurygirl').append(video);
+    $('#kukurygirl').append(buttonsHtml);
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.1 createVideoElement: kukurygirl viendo a kukurygirl en el video 1');
+    return { video, container: videoBox };
+  }else if((userType == 'kukurygirl' && userTypeBroadcaster == 'guest')){
+    /*videoBox = document.getElementById('broadcaster');
+    video.height = $('#broadcaster').height();
+    video.width = $('#broadcaster').width();
+    $('#broadcaster').empty();
+    $('#broadcaster').append(video);
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
+    return { video, container: videoBox };*/
+
+    if(!$(`#broadcaster-${idBroadcaster}`)[0]){
+      $('#videosCont').append(videoBoxHtml);
+    }
+    videoBox = $(`#broadcaster-${idBroadcaster}`);
+    video.height = $(`#broadcaster-${idBroadcaster}`).height();
+    video.width = $(`#broadcaster-${idBroadcaster}`).width();
+    $(`#broadcaster-${idBroadcaster}`).empty();
+    $(`#broadcaster-${idBroadcaster}`).append(video);
+    $(`#broadcaster-${idBroadcaster}`).siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
+    return { video, container: videoBox };
+    
+    /*let nick = users[idBroadcaster] ? users[idBroadcaster].nick : '';
+    let video = document.createElement('video');
+    video.id = `video-${idBroadcaster}`;
+    video.autoplay = true;
+    video.playsinline = true;
+    video.controls = false;
+    video.style.width = '100%';
+    video.style.maxWidth = '300px';
+
+    videoBox = document.createElement('div');
+    videoBox.className = 'video-wrapper';
+    videoBox.style.position = 'relative';
+    videoBox.style.display = 'inline-block';
+    videoBox.style.margin = '5px';
+    videoBox.style.width = '300px';
+
+    const label = document.createElement('div');
+    label.className = 'nickLabel';
+    label.setAttribute('data-iduser', idBroadcaster);
+    label.innerText = nick.substring(0, 12);
+    label.style.position = 'absolute';
+    label.style.bottom = '5px';
+    label.style.left = '5px';
+    label.style.background = 'rgba(0,0,0,0.5)';
+    label.style.color = '#fff';
+    label.style.padding = '2px 6px';
+    label.style.borderRadius = '4px';
+
+    videoBox.appendChild(video);
+    videoBox.appendChild(label);
+
+    const container = document.getElementById('videoGrid');
+    if (container) container.appendChild(videoBox);
+
+    const userTypeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].userType : '';
+    console.log('add video: ', idBroadcaster, type, userTypeBroadcaster, users);
+    return { video, container: videoBox };*/
+  }
+
+  if((userType == 'guest' && userTypeBroadcaster == 'guest' && idSocket == idBroadcaster)){
+    videoBox = document.getElementById('kukurygirl');
+    video.height = $('#kukurygirl').height();
+    video.width = $('#kukurygirl').width();
+    $('#kukurygirl').empty();
+    $('#kukurygirl').append(video);
+    $('#kukurygirl').append(buttonsHtml);
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('3.1 createVideoElement: guest viendo a guest en el video 1');
+    return { video, container: videoBox };
+  }else if((userType == 'guest' && userTypeBroadcaster == 'guest')){
+    /*videoBox = document.getElementById('kukurygirl');
+    video.height = $('#kukurygirl').height();
+    video.width = $('#kukurygirl').width();
+    $('#kukurygirl').empty();
+    $('#kukurygirl').append(video);
+    $('#kukurygirl').append(buttonsHtml);
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('3.1 createVideoElement: guest viendo a guest en el video 1');
+    return { video, container: videoBox };*/
+
+    if(!$(`#broadcaster-${idBroadcaster}`)[0]){
+      $('#videosCont').append(videoBoxHtml);
+    }
+    videoBox = $(`#broadcaster-${idBroadcaster}`);
+    video.height = $(`#broadcaster-${idBroadcaster}`).height();
+    video.width = $(`#broadcaster-${idBroadcaster}`).width();
+    $(`#broadcaster-${idBroadcaster}`).empty();
+    $(`#broadcaster-${idBroadcaster}`).append(video);
+    $(`#broadcaster-${idBroadcaster}`).siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
+    return { video, container: videoBox };
+  }else if((userType == 'guest' && userTypeBroadcaster == 'kukurygirl')){
+    /*videoBox = document.getElementById('broadcaster');
+    video.height = $('#broadcaster').height();
+    video.width = $('#broadcaster').width();
+    $('#broadcaster').empty();
+    $('#broadcaster').append(video);
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('3.2 createVideoElement: guest viendo a kukurygirl en el video 2');*/
+
+    if(!$(`#broadcaster-${idBroadcaster}`)[0]){
+      $('#videosCont').append(videoBoxHtml);
+    }
+    videoBox = $(`#broadcaster-${idBroadcaster}`);
+    video.height = $(`#broadcaster-${idBroadcaster}`).height();
+    video.width = $(`#broadcaster-${idBroadcaster}`).width();
+    $(`#broadcaster-${idBroadcaster}`).empty();
+    $(`#broadcaster-${idBroadcaster}`).append(video);
+    $(`#broadcaster-${idBroadcaster}`).siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
+    return { video, container: videoBox };
+  }
+
+  if((userType == 'viewer' && userTypeBroadcaster == 'kukurygirl')){
+    videoBox = document.getElementById('kukurygirl');
+    video.height = $('#kukurygirl').height();
+    video.width = $('#kukurygirl').width();
+    $('#kukurygirl').empty();
+    $('#kukurygirl').append(video);
+    $('#kukurygirl').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('4.1 createVideoElement: viewer viendo a kukurygirl en el video 1');
+  }else if((userType == 'viewer' && userTypeBroadcaster == 'guest')){
+    /*videoBox = document.getElementById('broadcaster');
+    video.height = $('#broadcaster').height();
+    video.width = $('#broadcaster').width();
+    $('#broadcaster').empty();
+    $('#broadcaster').append(video);
+    $('#broadcaster').siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('4.2 createVideoElement: viewer viendo a guest en el video 2');*/
+
+    if(!$(`#broadcaster-${idBroadcaster}`)[0]){
+      $('#videosCont').append(videoBoxHtml);
+    }
+    videoBox = $(`#broadcaster-${idBroadcaster}`);
+    video.height = $(`#broadcaster-${idBroadcaster}`).height();
+    video.width = $(`#broadcaster-${idBroadcaster}`).width();
+    $(`#broadcaster-${idBroadcaster}`).empty();
+    $(`#broadcaster-${idBroadcaster}`).append(video);
+    $(`#broadcaster-${idBroadcaster}`).siblings('.nickLabel').text(nick.substring(0, maxChar)).attr('data-iduser', idBroadcaster);
+    console.log('2.2 createVideoElement: kukurygirl viendo a guest en el video 2');
+    return { video, container: videoBox };
+  }
+
+  return { video, container: videoBox };
+
+  /*
+  CODIGO ORIGINAL
   //const typeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].type : '';
   const userTypeBroadcaster = users[idBroadcaster] ? users[idBroadcaster].userType : '';
   const nick = users[idBroadcaster] ? users[idBroadcaster].nick : '';
@@ -449,7 +727,7 @@ function createVideoElement(idBroadcaster, type) {
     console.log('4.2 createVideoElement: viewer viendo a guest en el video 2');
   }
 
-  return { video, container: videoBox };
+  return { video, container: videoBox };*/
 }
 
 async function createPeerConnection(userIdBroadcaster, isInitiator = false, idUser) {
@@ -559,6 +837,7 @@ socket.on('chat-message', (messageData) => {
 socket.on('broadcaster-status', async (status) => {
   console.log('Estado de broadcaster recibido:', status);
   let idUser = status.idUser;
+  idSocket = idUser;
   isBroadcaster = status.isBroadcaster;
   users = status.users;
     
@@ -631,14 +910,14 @@ socket.on('offer', async ({ offer, offerId }) => {
 socket.on('answer', async ({ answer, answerId }) => {
   console.log('Respuesta recibida de:', answerId);
   const pc = peerConnections[answerId];
-  if (pc) {
+  if(pc){
     await pc.setRemoteDescription(answer);
   }
 });
 
 socket.on('ice-candidate', async ({ candidate, candidateId }) => {
   const pc = peerConnections[candidateId];
-  if (pc) {
+  if(pc){
     await pc.addIceCandidate(candidate);
   }
 });
@@ -648,7 +927,8 @@ socket.on('broadcaster-disconnected', (broadcasterId) => {
   if (element) {
     console.log('Broadcaster desconectado:', broadcasterId, element, element.container);
     element.video.remove();
-    $(element.container).html('<i class="fas fa-user"></i>');
+    //$(element.container).html('<i class="fas fa-user"></i>');
+    $(`#broadcaster-${broadcasterId}`).parent().remove();
     delete videoElements[broadcasterId];
   }
   

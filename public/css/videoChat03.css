@@ -15,13 +15,14 @@ body{
   cursor: pointer;
   font-weight: bold;
   padding: 3px 8px;
+  text-align: center;
 }
 
 .row{ margin: 0; }
 .container-fluid{ margin: 0; padding: 0; }
 .line01{ background: #b90c5d; border: 5px solid #EA1C6A; padding: 10px; }
 
-.line01 #topicHeader{ color: #ffdfef; font-weight: bold; text-align: center; }
+.line01 #topicHeader{ color: #ffdfef; font-size: 20px; font-weight: bold; text-align: left; }
 #buttonsRedesCont{ margin: 0; padding: 0; text-align: center; }
 #buttonsRedesCont li{ display: inline-block; margin: 0 10px; padding: 0; }
 #buttonsRedesCont img{ width: 30px; }
@@ -171,7 +172,7 @@ body{
 .main-content {
   display: flex;
   gap: 20px;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .chat-container {
@@ -201,11 +202,12 @@ body{
 }
 
 .message {
-  margin-bottom: 10px;
-  padding: 5px;
+  margin-bottom: 1px;
+  padding: 1px;
 }
 
 .message .user {
+  font-size: 16px;
   font-weight: bold;
   color: #EA1C6A;
 }
@@ -224,14 +226,50 @@ body{
   padding: 5px;
 }
 
-.chat-container #sendButton{
+.chat-container #sendButton, .chat-container #heartButton{
   background: #EA1C6A;
   border: 2px solid #B90C5D;
-  border-radius: 10px;
+  border-radius: 50%;
   color: #fff;
   font-weight: bold;
 }
 
+.heart-wrapper {
+  position: fixed;
+  /*bottom: -40px;*/
+  animation: floatUp 5s linear forwards;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.heart-float {
+  font-size: 30px;
+  color: red;
+  animation: wave 3s infinite ease-in-out;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-90vh);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes wave {
+  0%   { transform: translateX(0) }
+  25%  { transform: translateX(-60px) }
+  50%  { transform: translateX(0) }
+  75%  { transform: translateX(-60px) }
+  100% { transform: translateX(0) }
+}
 
 
 /* *************************************** */
@@ -302,5 +340,5 @@ body{
   #startButton, #joinButton, #nickButton, #topicButton{ font-size: 18px; }
   #kukurygirl .buttonsVideoCont, #broadcaster .buttonsVideoCont{ font-size: 12px; }
   #kukurygirl .btn-video, #broadcaster .btn-video{ height: 25px; padding: 2px 5px; width: 25px; }
-  .chat-container { height: 250px; }
+  .chat-container { height: 200px; }
 }

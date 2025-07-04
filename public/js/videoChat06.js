@@ -16,6 +16,7 @@ let currentIndexRuleta = 0;
 let userType = 'viewer';
 let isBroadcaster = false;
 let idSocket = null;
+//let rgbUser = '#000';
 
 //const socket = io('http://localhost:3001');
 //const socket = io('https://webrtc01.onrender.com');
@@ -111,39 +112,60 @@ function initEvents(){
 
   $(document).on('click', '#shareScreenBtn', async function(){
     try {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      const screenTrack = screenStream.getVideoTracks()[0];
-  
-      // Reemplazar video en cada conexión peer
-      Object.values(peerConnections).forEach(pc => {
-        const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
-        if (sender) {
-          sender.replaceTrack(screenTrack);
-        }
-      });
-  
-      // Mostrar el stream compartido localmente
-      const myVideo = document.querySelector(`#video-${socket.id}`);
-      if(myVideo) {
-        myVideo.srcObject = screenStream;
-      }
-  
-      // Restaurar cámara cuando se detenga compartir pantalla
-      screenTrack.onended = () => {
-        if (localStream) {
-          const cameraTrack = localStream.getVideoTracks()[0];
-          Object.values(peerConnections).forEach(pc => {
-            const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
-            if (sender) {
-              sender.replaceTrack(cameraTrack);
-            }
-          });
-  
-          if (myVideo) {
-            myVideo.srcObject = localStream;
+      if(roomId && (userType == 'kukurygirl' || userType == 'guest')){
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ 
+          video: true,
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100
           }
+         });
+        const screenTrack = screenStream.getVideoTracks()[0];
+        const screenAudioTrack = screenStream.getAudioTracks()[0];
+    
+        // Reemplazar video en cada conexión peer
+        Object.values(peerConnections).forEach(pc => {
+          const videoSender  = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+          if (videoSender) {
+            videoSender.replaceTrack(screenTrack);
+          }
+          
+          const audioSender = pc.getSenders().find(s => s.track && s.track.kind === 'audio');
+          if(audioSender && screenAudioTrack) {
+            audioSender.replaceTrack(screenAudioTrack);
+          }
+        });
+    
+        // Mostrar el stream compartido localmente
+        const myVideo = document.querySelector(`#video-${socket.id}`);
+        if(myVideo) {
+          myVideo.srcObject = screenStream;
         }
-      };
+    
+        // Restaurar cámara cuando se detenga compartir pantalla
+        screenTrack.onended = () => {
+          if (localStream) {
+            const cameraTrack = localStream.getVideoTracks()[0];
+            const micTrack = localStream.getAudioTracks()[0];
+            Object.values(peerConnections).forEach(pc => {
+              const videoSender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+              if (videoSender) {
+                videoSender.replaceTrack(cameraTrack);
+              }
+
+              const audioSender = pc.getSenders().find(s => s.track && s.track.kind === 'audio');
+              if (audioSender && micTrack) {
+                audioSender.replaceTrack(micTrack);
+              }
+            });
+    
+            if (myVideo) {
+              myVideo.srcObject = localStream;
+            }
+          }
+        };
+      }
     } catch (err) {
       console.error('Error al compartir pantalla:', err);
     }
@@ -204,14 +226,14 @@ function initEvents(){
     }
   });
 
-  $(document).on('click', '.nickLabel', function(){
-    const idUser = $(this).attr('data-iduser');
-    if(idUser){
+  $(document).on('click', '#heartButton', function(){
+    //const idUser = $(this).attr('data-iduser');
+    //if(idUser){
       socket.emit('sendHeart', {
         roomId: roomId,
-        userTo: $(this).attr('data-iduser')
+        //userTo: $(this).attr('data-iduser')
       });
-    }
+    //}
   });
 
   // Handle chat message sending
@@ -316,25 +338,39 @@ function startStopRuleta(start){
 }
 
 function sendHeart(data){
-  data = (typeof data === 'object') ? data : {};
+  /*data = (typeof data === 'object') ? data : {};
   const userTo = data.userTo ? data.userTo : null;
   const toCont = $(`#video-${userTo}`).parent();
   
   const videoPreview = $(this).siblings('.video-preview');
-    if(userTo){
-      if(toCont.find('img').length === 0) {
-        const imgHtml = `<img src="${assets}img/site/video/hearts-01.gif" style="bottom: 0; position: absolute; width: 100%;">`;
-        toCont.append(imgHtml);
-        console.log('corazon: ', userTo, toCont);
-        setTimeout(function() {
-          toCont.find('img').fadeOut(300, function(){
-            $(this).remove();
-          });
-        }, 3000);
-      } else {
-        console.log('La imagen ya está activa, no se puede agregar nuevamente.');
-      }
+  if(userTo){
+    if(toCont.find('img').length === 0) {
+      const imgHtml = `<img src="${assets}img/site/video/hearts-01.gif" style="bottom: 0; position: absolute; width: 100%;">`;
+      toCont.append(imgHtml);
+      console.log('corazon: ', userTo, toCont);
+      setTimeout(function() {
+        toCont.find('img').fadeOut(300, function(){
+          $(this).remove();
+        });
+      }, 3000);
+    } else {
+      console.log('La imagen ya está activa, no se puede agregar nuevamente.');
     }
+  }*/
+  const $wrapper = $('<div class="heart-wrapper"></div>');
+  const $heart = $('<i class="fas fa-heart heart-float"></i>');
+
+  // Posición horizontal aleatoria dentro del viewport (dejando margen)
+  const left = Math.floor(Math.random() * (window.innerWidth - 40)) + 20;
+  $wrapper.css('left', `${left}px`);
+
+  $wrapper.append($heart);
+  $('body').append($wrapper);
+
+  // Eliminar después de la animación
+  setTimeout(() => {
+    $wrapper.remove();
+  }, 5000);
 }
 
 function enableDisableVideo(streamId, this_){
@@ -482,6 +518,7 @@ function createVideoElement(idBroadcaster, type) {
   video.id = `video-${idBroadcaster}`;
   video.autoplay = true;
   video.playsinline = true;
+  //$('#heartButton').attr('data-iduser', idBroadcaster);
 
   // Display logic based on user types
   if((userType == 'kukurygirl' && userTypeBroadcaster == 'kukurygirl')){
@@ -809,12 +846,37 @@ function createMessageElement(messageData) {
   const time = new Date(messageData.timestamp).toLocaleTimeString();
   
   messageDiv.innerHTML = `
-    <span class="user">${messageData.nick}</span>
-    <span class="time">${time}</span>
-    <div class="text">${messageData.message}</div>`;
+    <div>
+      <span class="user" style="color: ${messageData.rgbUser}">${messageData.nick}: </span>
+      <!-- <span class="time">${time}</span> -->
+      <span class="text" style="color: ${messageData.rgbUser}"> ${messageData.message}</span>
+    </div>`;
   
   return messageDiv;
 }
+
+// función para crear un código rgb a aprtir del id del socket del usuario
+/*function socketIdToRGB(id, min = 50, max = 170) {
+  let hash = 0;
+
+  // Crear un hash simple del string
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // Función para mapear un número de 0–255 al rango deseado
+  const scale = (x) => Math.floor(min + ((x / 255) * (max - min)));
+
+  const r = scale((hash >> 16) & 0xFF);
+  const g = scale((hash >> 8) & 0xFF);
+  const b = scale(hash & 0xFF);
+
+  return {
+    r, g, b,
+    rgbString: `${r}, ${g}, ${b}`,
+    hex: `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+  };
+}*/
 
 // agregando la sala
 socket.on('set-room', (data) => {
@@ -838,6 +900,8 @@ socket.on('broadcaster-status', async (status) => {
   console.log('Estado de broadcaster recibido:', status);
   let idUser = status.idUser;
   idSocket = idUser;
+  //rgbUser = socketIdToRGB(idSocket);
+  //rgbUser = rgbUser.hex ? rgbUser.hex : '#000';
   isBroadcaster = status.isBroadcaster;
   users = status.users;
     
@@ -893,7 +957,11 @@ socket.on('viewer-joined', async (viewerId) => {
 });
 
 socket.on('offer', async ({ offer, offerId }) => {
-  console.log('Oferta recibida de:', offerId);
+  await offerFunc({ offer, offerId });
+});
+
+async function offerFunc({offer, offerId}){
+  console.log('Oferta recibida de:', offerId, offer);
   let pc = peerConnections[offerId];
   if (!pc) {
     pc = await createPeerConnection(offerId, false, offerId);
@@ -905,7 +973,7 @@ socket.on('offer', async ({ offer, offerId }) => {
     targetId: offerId,
     answer: answer
   });
-});
+}
 
 socket.on('answer', async ({ answer, answerId }) => {
   console.log('Respuesta recibida de:', answerId);

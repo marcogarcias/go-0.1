@@ -19,7 +19,20 @@
 
 <div class="container-fluid">
   <div class="line01">
-    <h3 id="topicHeader"></h3>
+    <div class="row">
+    @if($type == 'kukurygirl' || $type == 'guest')
+      <div class="col-3">
+        <div id="buttonStartVideoCont">
+          <div id="shareScreenBtn" class="btn-kukury">
+            <i class="fas fa-share-square"></i>
+          </div>
+        </div>
+      </div>
+      @endif
+      <div class="col-9">
+        <h3 id="topicHeader"></h3>
+      </div>
+    </div>
   </div>
 
   <div class="row">
@@ -34,12 +47,6 @@
       <div id="buttonsStartGamesCont">
         <div id="startGameBtn" class="btn-kukury">
           Jugar
-        </div>
-      </div>
-
-      <div id="buttonStartVideoCont">
-        <div id="shareScreenBtn" class="btn-kukury">
-          Transmitir
         </div>
       </div>
 
@@ -128,7 +135,8 @@
           <div class="chat-messages" id="chatMessages"></div>
           <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
-            <button id="sendButton">Enviar</button>
+            <button id="sendButton" class="mr-1"><i class="fas fa-paper-plane"></i></button>
+            <button id="heartButton"><i class="fas fa-heart"></i></button>
           </div>
         </div>
       </div>

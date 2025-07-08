@@ -1,5 +1,3 @@
-
-
 let users = {};
 const cfg = {};
 
@@ -10,6 +8,7 @@ const configuration = {
 const peerConnections = {};
 const videoElements = {};
 let roomId, topic, nick, localStream, ip, assets, from, fromFull, rotationInterval;
+let originalCameraStream = null;
 let currentRotation = 0;
 let intervalRuleta; 
 let currentIndexRuleta = 0;
@@ -86,16 +85,74 @@ function initEvents(){
       $('#startButton').fadeOut(300, ()=>{
         $('#buttonsCont .loading').fadeIn(100);
       });
-      localStream = await navigator.mediaDevices.getUserMedia({ 
-        video: true, 
-        audio: true 
-      });
-      $('#buttonsCont .loading').fadeOut(100, ()=>{
-        $('#joinButton').fadeIn(300);
-      });
+      
+      // Intentar obtener la cámara del usuario
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: true 
+        });
+        originalCameraStream = localStream;
+      } catch (cameraError) {
+        console.log('No se detectó cámara, usando video por defecto:', cameraError);
+        
+        // Crear un stream de video por defecto
+        const defaultVideo = document.createElement('video');
+        defaultVideo.src = assets + 'videos/palpitar02.mp4'; // Ajusta la ruta según tu estructura
+        defaultVideo.loop = true;
+        defaultVideo.muted = true;
+        defaultVideo.autoplay = true;
+        
+        // Crear un canvas para convertir el video a stream
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 640;
+        canvas.height = 480;
+        
+        // Función para dibujar el video en el canvas
+        const drawVideo = () => {
+          ctx.drawImage(defaultVideo, 0, 0, canvas.width, canvas.height);
+          requestAnimationFrame(drawVideo);
+        };
+        
+        // Iniciar el dibujo cuando el video esté listo
+        defaultVideo.addEventListener('playing', () => {
+          drawVideo();
+        });
+        defaultVideo.play();
+        
+        // Crear stream desde el canvas
+        const canvasStream = canvas.captureStream(30); // 30 FPS
+        
+        // Crear un stream de audio silencioso
+        const audioContext = new AudioContext();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 0; // Audio silencioso
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.start();
+        
+        const audioStream = audioContext.createMediaStreamDestination().stream;
+        
+        // Combinar video y audio
+        const videoTrack = canvasStream.getVideoTracks()[0];
+        const audioTrack = audioStream.getAudioTracks()[0];
+        
+        localStream = new MediaStream([videoTrack, audioTrack]);
+        originalCameraStream = localStream;
+        // Ocultar loading después de 2 segundos
+        setTimeout(() => {
+          $('#buttonsCont .loading').fadeOut(100, ()=>{
+            $('#joinButton').fadeIn(300);
+          });
+        }, 200);
+      }
     }catch(error) {
-      console.error('Error accediendo a la cámara:', error);
-      //statusDiv.textContent = 'Error al acceder a la cámara';
+      console.error('Error general:', error);
+      alert('Error al inicializar la transmisión. Por favor, recarga la página.');
+      $('#buttonsCont .loading').fadeOut(100);
+      $('#startButton').fadeIn(300);
     }
   });
 
@@ -120,11 +177,12 @@ function initEvents(){
             noiseSuppression: true,
             sampleRate: 44100
           }
-         });
+        });
+        localStream = screenStream;
         const screenTrack = screenStream.getVideoTracks()[0];
         const screenAudioTrack = screenStream.getAudioTracks()[0];
     
-        // Reemplazar video en cada conexión peer
+        // Reem plazar video en cada conexión peer
         Object.values(peerConnections).forEach(pc => {
           const videoSender  = pc.getSenders().find(s => s.track && s.track.kind === 'video');
           if (videoSender) {
@@ -145,6 +203,7 @@ function initEvents(){
     
         // Restaurar cámara cuando se detenga compartir pantalla
         screenTrack.onended = () => {
+          localStream = originalCameraStream;
           if (localStream) {
             const cameraTrack = localStream.getVideoTracks()[0];
             const micTrack = localStream.getAudioTracks()[0];
@@ -382,14 +441,6 @@ function enableDisableVideo(streamId, this_){
     videoTrack.enabled = newState;
         
     $(this_).css('opacity', newState?1:0.5);
-    
-    // Notificar al servidor sobre el cambio
-    /*socket.emit('media-control', {
-      roomId: roomId,
-      mediaType: 'video',
-      enabled: newState,
-      targetStream: streamId
-    });*/
   }
 }
 
@@ -402,14 +453,6 @@ function enableDisableAudio(streamId, this_){
     audioTrack.enabled = newState;
         
     $(this_).css('opacity', newState?1:0.5);
-        
-    // Notificar al servidor sobre el cambio
-    /*socket.emit('media-control', {
-      roomId: roomId,
-      mediaType: 'audio',
-      enabled: newState,
-      targetStream: streamId
-    });*/
   }
 }
 
@@ -1007,37 +1050,6 @@ socket.on('broadcaster-disconnected', (broadcasterId) => {
   }
 });
 
-// Escuchar actualizaciones de control de medios
-socket.on('media-control', (data) => {  
-  // Buscar el elemento de video correspondiente
-  /*
-  const videoElement = videoElements[userType=='kukurygirl'?data.targetStream:data.userId];
-  if (!videoElement || !videoElement.video || !videoElement.video.srcObject) return;
-  // Aplicar el cambio según el tipo de media
-  if (data.mediaType === 'video') {
-    const videoTrack = videoElement.video.srcObject.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = data.enabled;
-      
-      // Actualizar UI para reflejar el estado
-      const container = $(videoElement.container);
-      const button = container.find(`.btn-video[data-type="video"]`);
-      $(button).css('opacity', data.enabled?1:0.5); 
-    }
-  } else if (data.mediaType === 'audio') {
-    const audioTrack = videoElement.video.srcObject.getAudioTracks()[0];
-    if (audioTrack) {
-      audioTrack.enabled = data.enabled;
-      
-      // Actualizar UI para reflejar el estado
-      const container = $(videoElement.container);
-      const button = container.find(`.btn-video[data-type="audio"]`);
-      $(button).css('opacity', data.enabled?1:0.5); 
-    }
-  }
-    */
-});
-
 // Escuchar cuando alguien abandona la sala voluntariamente
 socket.on('user-left', (userId) => {
   console.log('User left:', userId);
@@ -1097,3 +1109,9 @@ socket.on('socketErrores', function(data){
   }
   console.log(data);
 });
+
+function statusServer(kukuryAdmin){
+  if(kukuryAdmin == "mags"){
+    socket.emit('statusServer', {});
+  }
+}

@@ -93,6 +93,11 @@ function initEvents(){
           audio: true 
         });
         originalCameraStream = localStream;
+        setTimeout(() => {
+          $('#buttonsCont .loading').fadeOut(100, ()=>{
+            $('#joinButton').fadeIn(300);
+          });
+        }, 200);
       } catch (cameraError) {
         console.log('No se detectó cámara, usando video por defecto:', cameraError);
         
@@ -298,7 +303,7 @@ function initEvents(){
   // Handle chat message sending
   sendButton.addEventListener('click', () => {
     const message = messageInput.value.trim();
-    if (message && roomId) {
+    if ((message && roomId) || message.includes('_CMD_')) {
       socket.emit('chat-message', {
         roomId: roomId,
         message: message
@@ -923,7 +928,8 @@ function createMessageElement(messageData) {
 
 // agregando la sala
 socket.on('set-room', (data) => {
-  if(!roomId && data.roomId && (data.userType == 'guest' || data.userType == 'viewer')){
+  //if(!roomId && data.roomId && (data.userType == 'kukurygirl' || data.userType == 'guest' || data.userType == 'viewer')){
+  if(data.roomId && (data.userType == 'kukurygirl' || data.userType == 'guest' || data.userType == 'viewer')){
     roomId = data.roomId;
   }
 });
@@ -1106,6 +1112,8 @@ socket.on('socketErrores', function(data){
         }, 500);*/
       }
       break;
+    case 'existRoom':
+      console.log('ERROR: ', message);
   }
   console.log(data);
 });

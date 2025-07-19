@@ -21,7 +21,7 @@
   <div class="line01">
     <div class="row">
     @if($type == 'kukurygirl' || $type == 'guest')
-      <div class="col-3">
+      <div class="col-3 col-md-1">
         <div id="buttonStartVideoCont">
           <div id="shareScreenBtn" class="btn-kukury">
             <i class="fas fa-share-square"></i>
@@ -143,25 +143,6 @@
     </div>
   </div>
 
-  <div class="line01">
-  <ul id="buttonsRedesCont">
-      <li>
-        <a href="https://www.facebook.com/people/Kukury-Peach/pfbid037ARbR2kPZwwziNAp5rExHPZWedYkA2eEKwqmS7HjbjAqgAEkPbyyLHYg1PmUUbHBl/" target="_blanck">
-          <img src="{{ asset('img/site/video/logo-face-01.png') }}" alt="Facebook">
-        </a>
-      </li>
-      <li>
-        <a href="https://www.instagram.com/kukury_peach" target="_blanck">
-          <img src="{{ asset('img/site/video/logo-insta-01.png') }}" alt="Intagram">
-        </a>
-      </li>
-      <li>
-        <a href="https://t.me/+zLdSNwHHu3gwYzkx?fbclid=IwZXh0bgNhZW0CMTAAAR2ZYgWY-NGl1Csji0ld88DIjsd4heyRxCMzr1wpXz3DREXjpKQj7eqMSJ4_aem_WwD74mVVHjzwkKLRg9YLlw" target="_blanck">
-          <img src="{{ asset('img/site/video/logo-telegram-01.png') }}" alt="Telegram">
-        </a>
-      </li>
-    </ul>
-  </div>
 </div>
 
 @push('scripts')

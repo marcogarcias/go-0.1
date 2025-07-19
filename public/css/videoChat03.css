@@ -137,8 +137,10 @@ body{
   width: 25px;*/
 }
 
-.video-grid{
-  align-content: center;
+.video-grid{ align-content: center; }
+#videosCont .col-12{ padding: 0; }
+#videosCont .col-6, #videosCont .col-12, #videosCont .col-md-6, #videosCont .col-md-12, #videosCont .video-preview, #videosCont video {
+  transition: all 1s cubic-bezier(0.4,0,0.2,1);
 }
 
 .video-preview{

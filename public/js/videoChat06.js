@@ -204,6 +204,7 @@ function initEvents(){
         const myVideo = document.querySelector(`#video-${socket.id}`);
         if(myVideo) {
           myVideo.srcObject = screenStream;
+          socket.emit('screenShare', { roomId, userType, screenShare: true });
         }
     
         // Restaurar cámara cuando se detenga compartir pantalla
@@ -225,6 +226,7 @@ function initEvents(){
             });
     
             if (myVideo) {
+              socket.emit('screenShare', { roomId, userType, screenShare: false });
               myVideo.srcObject = localStream;
             }
           }
@@ -351,6 +353,41 @@ socket.on('gameClose', function(){
 socket.on('sendHeart', (data) => {
   sendHeart(data);
 });
+
+socket.on('screenShare', (data)=>{
+  const userId = data.userId ? data.userId : null;
+  const screenShare_ = data.screenShare ? data.screenShare : null;
+  users[userId].screenShare = screenShare_;
+  console.log('1 screenShare', data);
+  screenShare(userId, screenShare_);
+});
+
+function screenShare(userId, screenShare_){
+  console.log('2 screenShare', userId, screenShare_);
+  const id = `video-${userId}`; 
+  const $video = $(`#${id}`);
+  let colAdd = '', colDel = '', height = 0;
+  if(screenShare_){
+    colAdd = '12';
+    colDel = '6';
+    height = 200;
+  }else{
+    colAdd = '6';
+    colDel = '12';
+    height = 150;
+  }
+  const $container = $video.closest(`.col-${colDel}.col-md-${colDel}.mx-auto`);
+
+  $container
+    .removeClass(`col-${colDel} col-md-${colDel}`)
+    .addClass(`col-${colAdd} col-md-${colAdd}`);
+
+  $video.css('height', `${height}px`)
+    .parent('.video-preview')
+    .css('height', `${height}px`);
+    
+  console.log('3 screenShare', $video, $container, colAdd, colDel, `.col-${colDel} .col-md-${colDel}`, `.col-${colAdd} .col-md-${colAdd}`);
+}
 
 function selectGame(game){
   $('#buttonsGamesCont, #verdadRetoCont, #ruletaCont').hide();
@@ -1100,22 +1137,34 @@ socket.on('socketErrores', function(data){
   const message = data.message ? data.message : '';
   const type = data.type ? data.type : '';
   const usrTtpe = data.userType ? data.userType : '';
-  alert(message);
   switch(type){
     case 'canceledJoin':
+      alert(message);
       if(usrTtpe=='guest'){
         $('#startButton').show();
       }else if(usrTtpe=='viewer'){
         $('#joinButton').fadeIn(300);
-        /*setTimeout(function() {
+        setTimeout(function() {
           $('#joinButton').show();
-        }, 500);*/
+        }, 500);
       }
       break;
     case 'existRoom':
+      alert(message);
       console.log('ERROR: ', message);
+      break;
+    case 'refeshPage':
+      console.log('ERROR: ', message);
+      setTimeout(function() {
+        location.reload();
+      }, 2000);
+      break;
+
+    default:
+      console.log('ERROR: ', message, data);
+      break;
   }
-  console.log(data);
+  //console.log(data);
 });
 
 function statusServer(kukuryAdmin){

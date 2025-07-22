@@ -1153,6 +1153,10 @@ socket.on('socketErrores', function(data){
       alert(message);
       console.log('ERROR: ', message);
       break;
+    case 'createRoom':
+      alert(message);
+      console.log('ERROR: ', message);
+      break;
     case 'refeshPage':
       console.log('ERROR: ', message);
       setTimeout(function() {

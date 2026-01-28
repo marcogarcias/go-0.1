@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ContactOur;
 use App\Mail\ContactUser;
 use App\Models\Publication;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use App\Models\PublicationTag;
 use Illuminate\Support\Facades\Mail;
@@ -21,11 +22,13 @@ class PublicationController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function index(){
+    $sections = Section::where('deleted', 0)->get();
+
     $publications = Publication::whereNull('deleted_at')
       ->with('gallery')
       ->orderBy('created_at', 'desc')
       ->paginate(10);
-    return view('site.publications', compact('publications'));
+    return view('site.publications', compact('publications', 'sections'));
   }
 
   /**

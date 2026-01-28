@@ -50,8 +50,15 @@
 </head>
 
 <body>
-  <div id="app">
-
+@if(true)
+<div class="text-center m-5">
+  <h1 style="font-size: 80px;">503</h1>
+  <hr>
+  <h3>Servicio en mantenimiento.</h3>
+  <h5>El sitio al que intentas acceder se encuentra temporalmente en mantenimiento</h5>
+</div>
+@else
+<div id="app">
     <header id="publications-layout-header">
       <div class="publications-layout-header-left">
         <img id="publications-header-landscape" src="{{ asset('/img/site/logo-md-03.png') }}">
@@ -117,9 +124,6 @@
     </main>
 
     <footer>
-      <div class="row header-line-1">
-        &nbsp;
-      </div>
       <div class="row footer-txt">
         <div class="col-12 col-md-4">
           <p class="footer-warning">
@@ -130,8 +134,7 @@
           <a href="{{ route("termsAndConditions") }}" class="text-white">Términos y condiciones</a>
         </div>
         <div class="col-12 col-md-4 text-center">
-          <p class="footer-contac">Se parte de nuestra comunidad y has crecer tu negocio</p>
-          <p>Tel: 56-24-14-09-29</p>
+          <p class="footer-contac">Se parte de nuestra comunidad y has crecer tu negocio Tel: 56-24-14-09-29</p>
         </div>
       </div>
     </footer>  
@@ -164,5 +167,6 @@ window.addEventListener('load', function() {
   });
 });
 </script>
+@endif
 </body>
 </html>

@@ -13,8 +13,11 @@ trait DatabaseTransactions
     {
         $database = $this->app->make('db');
 
+        $this->app->instance('db.transactions', $transactionsManager = new DatabaseTransactionsManager);
+
         foreach ($this->connectionsToTransact() as $name) {
             $connection = $database->connection($name);
+            $connection->setTransactionManager($transactionsManager);
             $dispatcher = $connection->getEventDispatcher();
 
             $connection->unsetEventDispatcher();
@@ -28,7 +31,7 @@ trait DatabaseTransactions
                 $dispatcher = $connection->getEventDispatcher();
 
                 $connection->unsetEventDispatcher();
-                $connection->rollback();
+                $connection->rollBack();
                 $connection->setEventDispatcher($dispatcher);
                 $connection->disconnect();
             }

@@ -18,9 +18,8 @@
               <div class="col-12 col-md-9 contenido">
                 <h3 class="titulo"> <a href="{{ route('publication', $pub) }}">{{ $pub->title }}</a></h3>
                 <div class="autor-date">
-                  <span class="autor">Por: {{ $pub->pseudonym ? $pub->pseudonym : $pub->pseudonym }}</span> -
-                  <span class="date">{{ date('d/m/Y', strtotime($pub->datetime)) }}</span> -
-                  <span class="hour">{{ date('H:i', strtotime($pub->datetime)) }}</span>
+                  <span class="autor">Por: {{ $pub->pseudonym ? $pub->pseudonym : $pub->pseudonym }}</span>
+                  <span class="date" style="display: none;">{{ date('d/m/Y', strtotime($pub->datetime)) }}</span>
                 </div>
                 <div class="synopsis">{{ (strlen($text) > 250) ? substr($text, 0, 250) . '...' : $text }}</div>
                 <div class="interactions">
@@ -44,6 +43,16 @@
         </div>
         
       </section>
+
+      <nav id="sectionsMenu">
+        <ul class="px-0 py-3 m-0 text-center">
+          @foreach($sections as $sec)
+          <li class="d-inline-block">
+            <a href=""><img src="{{ asset('img/site/btn/'.$sec->image) }}" title="{{ $sec->name }}"></a>
+          </li>
+          @endforeach
+        </ul>
+      </nav>
     </div>
   </div>
 </div>

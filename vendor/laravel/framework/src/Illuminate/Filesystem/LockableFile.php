@@ -61,10 +61,12 @@ class LockableFile
      * @param  string  $path
      * @param  string  $mode
      * @return void
+     *
+     * @throws \Exception
      */
     protected function createResource($path, $mode)
     {
-        $this->handle = @fopen($path, $mode);
+        $this->handle = fopen($path, $mode);
     }
 
     /**
@@ -94,7 +96,7 @@ class LockableFile
      * Write to the file.
      *
      * @param  string  $contents
-     * @return string
+     * @return $this
      */
     public function write($contents)
     {
@@ -124,6 +126,8 @@ class LockableFile
      *
      * @param  bool  $block
      * @return $this
+     *
+     * @throws \Illuminate\Contracts\Filesystem\LockTimeoutException
      */
     public function getSharedLock($block = false)
     {
@@ -141,6 +145,8 @@ class LockableFile
      *
      * @param  bool  $block
      * @return bool
+     *
+     * @throws \Illuminate\Contracts\Filesystem\LockTimeoutException
      */
     public function getExclusiveLock($block = false)
     {

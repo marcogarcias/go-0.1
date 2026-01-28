@@ -14,32 +14,39 @@ declare(strict_types=1);
 
 namespace Ramsey\Collection;
 
+use Closure;
 use Ramsey\Collection\Exception\CollectionMismatchException;
 use Ramsey\Collection\Exception\InvalidArgumentException;
-use Ramsey\Collection\Exception\InvalidSortOrderException;
-use Ramsey\Collection\Exception\OutOfBoundsException;
-use Ramsey\Collection\Exception\ValueExtractionException;
+use Ramsey\Collection\Exception\InvalidPropertyOrMethod;
+use Ramsey\Collection\Exception\NoSuchElementException;
+use Ramsey\Collection\Exception\UnsupportedOperationException;
 use Ramsey\Collection\Tool\TypeTrait;
 use Ramsey\Collection\Tool\ValueExtractorTrait;
 use Ramsey\Collection\Tool\ValueToStringTrait;
 
 use function array_filter;
+use function array_key_first;
+use function array_key_last;
 use function array_map;
 use function array_merge;
+use function array_reduce;
 use function array_search;
 use function array_udiff;
 use function array_uintersect;
-use function current;
-use function end;
 use function in_array;
-use function reset;
+use function is_int;
+use function is_object;
+use function spl_object_id;
 use function sprintf;
-use function unserialize;
 use function usort;
 
 /**
  * This class provides a basic implementation of `CollectionInterface`, to
  * minimize the effort required to implement this interface
+ *
+ * @template T
+ * @extends AbstractArray<T>
+ * @implements CollectionInterface<T>
  */
 abstract class AbstractCollection extends AbstractArray implements CollectionInterface
 {
@@ -48,49 +55,29 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     use ValueExtractorTrait;
 
     /**
-     * Ensures that this collection contains the specified element.
-     *
-     * @param mixed $element The element to add to the collection.
-     *
-     * @return bool `true` if this collection changed as a result of the call.
-     *
-     * @throws InvalidArgumentException when the element does not match the
-     *     specified type for this collection.
+     * @throws InvalidArgumentException if $element is of the wrong type.
      */
-    public function add($element): bool
+    public function add(mixed $element): bool
     {
         $this[] = $element;
 
         return true;
     }
 
-    /**
-     * Returns `true` if this collection contains the specified element.
-     *
-     * @param mixed $element The element to check whether the collection contains.
-     * @param bool $strict Whether to perform a strict type check on the value.
-     */
-    public function contains($element, bool $strict = true): bool
+    public function contains(mixed $element, bool $strict = true): bool
     {
         return in_array($element, $this->data, $strict);
     }
 
     /**
-     * Sets the given value to the given offset in the array.
-     *
-     * @param mixed|null $offset The position to set the value in the array, or
-     *     `null` to append the value to the array.
-     * @param mixed $value The value to set at the given offset.
-     *
-     * @throws InvalidArgumentException when the value does not match the
-     *     specified type for this collection.
+     * @throws InvalidArgumentException if $element is of the wrong type.
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($this->checkType($this->getType(), $value) === false) {
             throw new InvalidArgumentException(
                 'Value must be of type ' . $this->getType() . '; value is '
-                . $this->toolValueToString($value)
+                . $this->toolValueToString($value),
             );
         }
 
@@ -101,18 +88,10 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
         }
     }
 
-    /**
-     * Removes a single instance of the specified element from this collection,
-     * if it is present.
-     *
-     * @param mixed $element The element to remove from the collection.
-     *
-     * @return bool `true` if an element was removed as a result of this call.
-     */
-    public function remove($element): bool
+    public function remove(mixed $element): bool
     {
         if (($position = array_search($element, $this->data, true)) !== false) {
-            unset($this->data[$position]);
+            unset($this[$position]);
 
             return true;
         }
@@ -121,13 +100,12 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     }
 
     /**
-     * Returns the values from given property or method.
+     * @throws InvalidPropertyOrMethod if the $propertyOrMethod does not exist
+     *     on the elements in this collection.
+     * @throws UnsupportedOperationException if unable to call column() on this
+     *     collection.
      *
-     * @param string $propertyOrMethod The property or method name to filter by.
-     *
-     * @return mixed[]
-     *
-     * @throws ValueExtractionException if property or method is not defined.
+     * @inheritDoc
      */
     public function column(string $propertyOrMethod): array
     {
@@ -141,83 +119,66 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     }
 
     /**
-     * Returns the first item of the collection.
+     * @return T
      *
-     * @return mixed
-     *
-     * @throws OutOfBoundsException when the collection is empty.
+     * @throws NoSuchElementException if this collection is empty.
      */
-    public function first()
+    public function first(): mixed
     {
-        if ($this->isEmpty()) {
-            throw new OutOfBoundsException('Can\'t determine first item. Collection is empty');
+        $firstIndex = array_key_first($this->data);
+
+        if ($firstIndex === null) {
+            throw new NoSuchElementException('Can\'t determine first item. Collection is empty');
         }
 
-        reset($this->data);
-
-        return current($this->data);
+        return $this->data[$firstIndex];
     }
 
     /**
-     * Returns the last item of the collection.
+     * @return T
      *
-     * @return mixed
-     *
-     * @throws OutOfBoundsException when the collection is empty.
+     * @throws NoSuchElementException if this collection is empty.
      */
-    public function last()
+    public function last(): mixed
     {
-        if ($this->isEmpty()) {
-            throw new OutOfBoundsException('Can\'t determine last item. Collection is empty');
+        $lastIndex = array_key_last($this->data);
+
+        if ($lastIndex === null) {
+            throw new NoSuchElementException('Can\'t determine last item. Collection is empty');
         }
 
-        $item = end($this->data);
-        reset($this->data);
-
-        return $item;
+        return $this->data[$lastIndex];
     }
 
     /**
-     * Returns a sorted collection.
+     * @return CollectionInterface<T>
      *
-     * {@inheritdoc}
-     *
-     * @param string $propertyOrMethod The property or method to sort by.
-     * @param string $order The sort order for the resulting collection (one of
-     *     this interface's `SORT_*` constants).
-     *
-     * @return CollectionInterface<mixed, mixed>
-     *
-     * @throws InvalidSortOrderException if neither "asc" nor "desc" was given
-     *     as the order.
-     * @throws ValueExtractionException if property or method is not defined.
+     * @throws InvalidPropertyOrMethod if the $propertyOrMethod does not exist
+     *     on the elements in this collection.
+     * @throws UnsupportedOperationException if unable to call sort() on this
+     *     collection.
      */
-    public function sort(string $propertyOrMethod, string $order = self::SORT_ASC): CollectionInterface
+    public function sort(?string $propertyOrMethod = null, Sort $order = Sort::Ascending): CollectionInterface
     {
-        if (!in_array($order, [self::SORT_ASC, self::SORT_DESC], true)) {
-            throw new InvalidSortOrderException('Invalid sort order given: ' . $order);
-        }
-
         $collection = clone $this;
 
-        usort($collection->data, function ($a, $b) use ($propertyOrMethod, $order) {
-            $aValue = $this->extractValue($a, $propertyOrMethod);
-            $bValue = $this->extractValue($b, $propertyOrMethod);
+        usort(
+            $collection->data,
+            function (mixed $a, mixed $b) use ($propertyOrMethod, $order): int {
+                $aValue = $this->extractValue($a, $propertyOrMethod);
+                $bValue = $this->extractValue($b, $propertyOrMethod);
 
-            return ($aValue <=> $bValue) * ($order === self::SORT_DESC ? -1 : 1);
-        });
+                return ($aValue <=> $bValue) * ($order === Sort::Descending ? -1 : 1);
+            },
+        );
 
         return $collection;
     }
 
     /**
-     * Returns a filtered collection.
+     * @param callable(T): bool $callback A callable to use for filtering elements.
      *
-     * {@inheritdoc}
-     *
-     * @param callable $callback A callable to use for filtering elements.
-     *
-     * @return CollectionInterface<mixed, mixed>
+     * @return CollectionInterface<T>
      */
     public function filter(callable $callback): CollectionInterface
     {
@@ -228,182 +189,177 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     }
 
     /**
-     * Returns a collection of matching items.
+     * @return CollectionInterface<T>
      *
-     * {@inheritdoc}
-     *
-     * @param string $propertyOrMethod The property or method to evaluate.
-     * @param mixed  $value The value to match.
-     *
-     * @return CollectionInterface<mixed, mixed>
-     *
-     * @throws ValueExtractionException if property or method is not defined.
+     * @throws InvalidPropertyOrMethod if the $propertyOrMethod does not exist
+     *     on the elements in this collection.
+     * @throws UnsupportedOperationException if unable to call where() on this
+     *     collection.
      */
-    public function where(string $propertyOrMethod, $value): CollectionInterface
+    public function where(?string $propertyOrMethod, mixed $value): CollectionInterface
     {
-        return $this->filter(function ($item) use ($propertyOrMethod, $value) {
-            $accessorValue = $this->extractValue($item, $propertyOrMethod);
-
-            return $accessorValue === $value;
-        });
+        return $this->filter(
+            fn (mixed $item): bool => $this->extractValue($item, $propertyOrMethod) === $value,
+        );
     }
 
     /**
-     * Applies a callback to each item of the collection.
+     * @param callable(T): TCallbackReturn $callback A callable to apply to each
+     *     item of the collection.
      *
-     * {@inheritdoc}
+     * @return CollectionInterface<TCallbackReturn>
      *
-     * @param callable $callback A callable to apply to each item of the
-     *     collection.
-     *
-     * @return CollectionInterface<mixed, mixed>
+     * @template TCallbackReturn
      */
     public function map(callable $callback): CollectionInterface
     {
-        $collection = clone $this;
-        $collection->data = array_map($callback, $collection->data);
-
-        return $collection;
+        return new Collection('mixed', array_map($callback, $this->data));
     }
 
     /**
-     * Create a new collection with divergent items between current and given
-     * collection.
+     * @param callable(TCarry, T): TCarry $callback A callable to apply to each
+     *     item of the collection to reduce it to a single value.
+     * @param TCarry $initial This is the initial value provided to the callback.
      *
-     * @param CollectionInterface<mixed, mixed> $other The collection to check for divergent
+     * @return TCarry
+     *
+     * @template TCarry
+     */
+    public function reduce(callable $callback, mixed $initial): mixed
+    {
+        return array_reduce($this->data, $callback, $initial);
+    }
+
+    /**
+     * @param CollectionInterface<T> $other The collection to check for divergent
      *     items.
      *
-     * @return CollectionInterface<mixed, mixed>
+     * @return CollectionInterface<T>
      *
-     * @throws CollectionMismatchException if the given collection is not of the
-     *     same type.
+     * @throws CollectionMismatchException if the compared collections are of
+     *     differing types.
      */
     public function diff(CollectionInterface $other): CollectionInterface
     {
-        if (!$other instanceof static) {
-            throw new CollectionMismatchException('Collection must be of type ' . static::class);
-        }
+        $this->compareCollectionTypes($other);
 
-        // When using generics (Collection.php, Set.php, etc),
-        // we also need to make sure that the internal types match each other
-        if ($other->getType() !== $this->getType()) {
-            throw new CollectionMismatchException('Collection items must be of type ' . $this->getType());
-        }
-
-        $comparator = function ($a, $b): int {
-            // If the two values are object, we convert them to unique scalars.
-            // If the collection contains mixed values (unlikely) where some are objects
-            // and some are not, we leave them as they are.
-            // The comparator should still work and the result of $a < $b should
-            // be consistent but unpredictable since not documented.
-            if (is_object($a) && is_object($b)) {
-                $a = spl_object_id($a);
-                $b = spl_object_id($b);
-            }
-
-            return $a === $b ? 0 : ($a < $b ? 1 : -1);
-        };
-
-        $diffAtoB = array_udiff($this->data, $other->data, $comparator);
-        $diffBtoA = array_udiff($other->data, $this->data, $comparator);
-        $diff = array_merge($diffAtoB, $diffBtoA);
+        $diffAtoB = array_udiff($this->data, $other->toArray(), $this->getComparator());
+        $diffBtoA = array_udiff($other->toArray(), $this->data, $this->getComparator());
 
         $collection = clone $this;
-        $collection->data = $diff;
+        $collection->data = array_merge($diffAtoB, $diffBtoA);
 
         return $collection;
     }
 
     /**
-     * Create a new collection with intersecting item between current and given
-     * collection.
-     *
-     * @param CollectionInterface<mixed, mixed> $other The collection to check for
+     * @param CollectionInterface<T> $other The collection to check for
      *     intersecting items.
      *
-     * @return CollectionInterface<mixed, mixed>
+     * @return CollectionInterface<T>
      *
-     * @throws CollectionMismatchException if the given collection is not of the
-     *     same type.
+     * @throws CollectionMismatchException if the compared collections are of
+     *     differing types.
      */
     public function intersect(CollectionInterface $other): CollectionInterface
     {
-        if (!$other instanceof static) {
-            throw new CollectionMismatchException('Collection must be of type ' . static::class);
-        }
-
-        // When using generics (Collection.php, Set.php, etc),
-        // we also need to make sure that the internal types match each other
-        if ($other->getType() !== $this->getType()) {
-            throw new CollectionMismatchException('Collection items must be of type ' . $this->getType());
-        }
-
-        $comparator = function ($a, $b): int {
-            // If the two values are object, we convert them to unique scalars.
-            // If the collection contains mixed values (unlikely) where some are objects
-            // and some are not, we leave them as they are.
-            // The comparator should still work and the result of $a < $b should
-            // be consistent but unpredictable since not documented.
-            if (is_object($a) && is_object($b)) {
-                $a = spl_object_id($a);
-                $b = spl_object_id($b);
-            }
-
-            return $a === $b ? 0 : ($a < $b ? 1 : -1);
-        };
-
-        $intersect = array_uintersect($this->data, $other->data, $comparator);
+        $this->compareCollectionTypes($other);
 
         $collection = clone $this;
-        $collection->data = $intersect;
+        $collection->data = array_uintersect($this->data, $other->toArray(), $this->getComparator());
 
         return $collection;
     }
 
     /**
-     * Merge current items and items of given collections into a new one.
+     * @param CollectionInterface<T> ...$collections The collections to merge.
      *
-     * @param CollectionInterface<mixed, mixed> ...$collections The collections to merge.
+     * @return CollectionInterface<T>
      *
-     * @return CollectionInterface<mixed, mixed>
-     *
-     * @throws CollectionMismatchException if any of the given collections are not of the same type.
+     * @throws CollectionMismatchException if unable to merge any of the given
+     *     collections or items within the given collections due to type
+     *     mismatch errors.
      */
     public function merge(CollectionInterface ...$collections): CollectionInterface
     {
-        $temp = [$this->data];
+        $mergedCollection = clone $this;
 
         foreach ($collections as $index => $collection) {
             if (!$collection instanceof static) {
                 throw new CollectionMismatchException(
-                    sprintf('Collection with index %d must be of type %s', $index, static::class)
+                    sprintf('Collection with index %d must be of type %s', $index, static::class),
                 );
             }
 
             // When using generics (Collection.php, Set.php, etc),
             // we also need to make sure that the internal types match each other
-            if ($collection->getType() !== $this->getType()) {
+            if ($this->getUniformType($collection) !== $this->getUniformType($this)) {
                 throw new CollectionMismatchException(
-                    sprintf('Collection items in collection with index %d must be of type %s', $index, $this->getType())
+                    sprintf(
+                        'Collection items in collection with index %d must be of type %s',
+                        $index,
+                        $this->getType(),
+                    ),
                 );
             }
 
-            $temp[] = $collection->toArray();
+            foreach ($collection as $key => $value) {
+                if (is_int($key)) {
+                    $mergedCollection[] = $value;
+                } else {
+                    $mergedCollection[$key] = $value;
+                }
+            }
         }
 
-        $merge = array_merge(...$temp);
-
-        $collection = clone $this;
-        $collection->data = $merge;
-
-        return $collection;
+        return $mergedCollection;
     }
 
     /**
-     * @inheritDoc
+     * @param CollectionInterface<T> $other
+     *
+     * @throws CollectionMismatchException
      */
-    public function unserialize($serialized): void
+    private function compareCollectionTypes(CollectionInterface $other): void
     {
-        $this->data = unserialize($serialized, ['allowed_classes' => [$this->getType()]]);
+        if (!$other instanceof static) {
+            throw new CollectionMismatchException('Collection must be of type ' . static::class);
+        }
+
+        // When using generics (Collection.php, Set.php, etc),
+        // we also need to make sure that the internal types match each other
+        if ($this->getUniformType($other) !== $this->getUniformType($this)) {
+            throw new CollectionMismatchException('Collection items must be of type ' . $this->getType());
+        }
+    }
+
+    private function getComparator(): Closure
+    {
+        return function (mixed $a, mixed $b): int {
+            // If the two values are object, we convert them to unique scalars.
+            // If the collection contains mixed values (unlikely) where some are objects
+            // and some are not, we leave them as they are.
+            // The comparator should still work and the result of $a < $b should
+            // be consistent but unpredictable since not documented.
+            if (is_object($a) && is_object($b)) {
+                $a = spl_object_id($a);
+                $b = spl_object_id($b);
+            }
+
+            return $a === $b ? 0 : ($a < $b ? 1 : -1);
+        };
+    }
+
+    /**
+     * @param CollectionInterface<mixed> $collection
+     */
+    private function getUniformType(CollectionInterface $collection): string
+    {
+        return match ($collection->getType()) {
+            'integer' => 'int',
+            'boolean' => 'bool',
+            'double' => 'float',
+            default => $collection->getType(),
+        };
     }
 }

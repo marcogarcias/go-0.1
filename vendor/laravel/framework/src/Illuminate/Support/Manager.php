@@ -98,12 +98,12 @@ abstract class Manager
         // callbacks allow developers to build their own "drivers" easily using Closures.
         if (isset($this->customCreators[$driver])) {
             return $this->callCustomCreator($driver);
-        } else {
-            $method = 'create'.Str::studly($driver).'Driver';
+        }
 
-            if (method_exists($this, $method)) {
-                return $this->$method();
-            }
+        $method = 'create'.Str::studly($driver).'Driver';
+
+        if (method_exists($this, $method)) {
+            return $this->$method();
         }
 
         throw new InvalidArgumentException("Driver [$driver] not supported.");
@@ -142,6 +142,41 @@ abstract class Manager
     public function getDrivers()
     {
         return $this->drivers;
+    }
+
+    /**
+     * Get the container instance used by the manager.
+     *
+     * @return \Illuminate\Contracts\Container\Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set the container instance used by the manager.
+     *
+     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @return $this
+     */
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Forget all of the resolved driver instances.
+     *
+     * @return $this
+     */
+    public function forgetDrivers()
+    {
+        $this->drivers = [];
+
+        return $this;
     }
 
     /**

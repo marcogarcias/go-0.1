@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Ramsey\Collection;
 
 use Ramsey\Collection\Exception\NoSuchElementException;
+use RuntimeException;
 
 /**
  * A queue is a collection in which the entities in the collection are kept in
@@ -92,6 +93,9 @@ use Ramsey\Collection\Exception\NoSuchElementException;
  * Even in the implementations that permit it, `null` should not be inserted
  * into a queue, as `null` is also used as a special return value by the
  * `poll()` method to indicate that the queue contains no elements.
+ *
+ * @template T
+ * @extends ArrayInterface<T>
  */
 interface QueueInterface extends ArrayInterface
 {
@@ -116,16 +120,16 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::offer()
      *
-     * @param mixed $element The element to add to this queue.
+     * @param T $element The element to add to this queue.
      *
      * @return bool `true` if this queue changed as a result of the call.
      *
-     * @throws \RuntimeException if a queue refuses to add a particular element
+     * @throws RuntimeException if a queue refuses to add a particular element
      *     for any reason other than that it already contains the element.
      *     Implementations should use a more-specific exception that extends
      *     `\RuntimeException`.
      */
-    public function add($element): bool;
+    public function add(mixed $element): bool;
 
     /**
      * Retrieves, but does not remove, the head of this queue.
@@ -135,11 +139,11 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::peek()
      *
-     * @return mixed the head of this queue.
+     * @return T the head of this queue.
      *
      * @throws NoSuchElementException if this queue is empty.
      */
-    public function element();
+    public function element(): mixed;
 
     /**
      * Inserts the specified element into this queue if it is possible to do so
@@ -151,11 +155,11 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::add()
      *
-     * @param mixed $element The element to add to this queue.
+     * @param T $element The element to add to this queue.
      *
      * @return bool `true` if the element was added to this queue, else `false`.
      */
-    public function offer($element): bool;
+    public function offer(mixed $element): bool;
 
     /**
      * Retrieves, but does not remove, the head of this queue, or returns `null`
@@ -163,9 +167,9 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::element()
      *
-     * @return mixed|null the head of this queue, or `null` if this queue is empty.
+     * @return T | null the head of this queue, or `null` if this queue is empty.
      */
-    public function peek();
+    public function peek(): mixed;
 
     /**
      * Retrieves and removes the head of this queue, or returns `null`
@@ -173,9 +177,9 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::remove()
      *
-     * @return mixed|null the head of this queue, or `null` if this queue is empty.
+     * @return T | null the head of this queue, or `null` if this queue is empty.
      */
-    public function poll();
+    public function poll(): mixed;
 
     /**
      * Retrieves and removes the head of this queue.
@@ -185,11 +189,11 @@ interface QueueInterface extends ArrayInterface
      *
      * @see self::poll()
      *
-     * @return mixed the head of this queue.
+     * @return T the head of this queue.
      *
      * @throws NoSuchElementException if this queue is empty.
      */
-    public function remove();
+    public function remove(): mixed;
 
     /**
      * Returns the type associated with this queue.

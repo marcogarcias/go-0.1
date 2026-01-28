@@ -44,7 +44,7 @@
   background-size: cover;
   display: flex;
   /*flex-direction: row;*/
-  height: 450px;
+  height: 350px;
   position: relative;
 }
 
@@ -56,11 +56,12 @@
 .publications-layout-header-left{
   align-items: center;
   display: flex;
-  height: 450px;
+  height: 350px;
+  width: 50%;
 }  
 
 .publications-layout-header-left img{  }
-#publications-header-landscape{ display: inline; margin: auto; width: 80%; }
+#publications-header-landscape{ display: inline; height: 280px; margin: auto; /*width: 80%;*/ }
 #publications-header-portrait{ display: none; margin: 0 auto; width: 80%; }
 
 
@@ -171,6 +172,18 @@
 
 /* *******************************************  */
 /* ***** END - LISTADO DE PUBLICACIONES ******  */
+/* *******************************************  */
+
+/* *******************************************  */
+/* ***** START - MENU SECCIONES ******  */
+/* *******************************************  */
+
+#sectionsMenu{ background: #000; }
+#sectionsMenu ul{ list-style: none; }
+#sectionsMenu img{ width: 100px; }
+
+/* *******************************************  */
+/* ***** END - MENU SECCIONES ******  */
 /* *******************************************  */
 
 /* ********************************  */

@@ -35,9 +35,8 @@
             <h4 class="text-left">{{ $pub->subtitle }}</h4>
             
             <div class="autor-date">
-              <span class="autor">Por: {{ $pub->pseudonym ? $pub->pseudonym : $pub->pseudonym }}</span> -
-              <span class="date">{{ date('d/m/Y', strtotime($pub->datetime)) }}</span> -
-              <span class="hour">{{ date('H:i', strtotime($pub->datetime)) }}</span>
+              <span class="autor">Por: {{ $pub->pseudonym ? $pub->pseudonym : $pub->pseudonym }}</span>
+              <span class="date" style="display: none;">{{ date('d/m/Y', strtotime($pub->datetime)) }}</span>
             </div>
             
             <div class="pub-imageCont">

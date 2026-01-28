@@ -6,7 +6,7 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import { createApp } from 'vue';
 
 /**
  * The following block of code may be used to automatically register your
@@ -28,6 +28,4 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
-    el: '#app',
-});
+createApp({}).mount('#app');

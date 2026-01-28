@@ -58,7 +58,7 @@ class Dispatcher implements QueueingDispatcher
      * @param  \Closure|null  $queueResolver
      * @return void
      */
-    public function __construct(Container $container, Closure $queueResolver = null)
+    public function __construct(Container $container, ?Closure $queueResolver = null)
     {
         $this->container = $container;
         $this->queueResolver = $queueResolver;
@@ -81,7 +81,7 @@ class Dispatcher implements QueueingDispatcher
     /**
      * Dispatch a command to its appropriate handler in the current process.
      *
-     * Queuable jobs will be dispatched to the "sync" queue.
+     * Queueable jobs will be dispatched to the "sync" queue.
      *
      * @param  mixed  $command
      * @param  mixed  $handler
@@ -163,6 +163,7 @@ class Dispatcher implements QueueingDispatcher
     public function chain($jobs)
     {
         $jobs = Collection::wrap($jobs);
+        $jobs = ChainedBatch::prepareNestedBatches($jobs);
 
         return new PendingChain($jobs->shift(), $jobs->toArray());
     }
@@ -209,6 +210,8 @@ class Dispatcher implements QueueingDispatcher
      *
      * @param  mixed  $command
      * @return mixed
+     *
+     * @throws \RuntimeException
      */
     public function dispatchToQueue($command)
     {
@@ -261,7 +264,7 @@ class Dispatcher implements QueueingDispatcher
     public function dispatchAfterResponse($command, $handler = null)
     {
         $this->container->terminating(function () use ($command, $handler) {
-            $this->dispatchNow($command, $handler);
+            $this->dispatchSync($command, $handler);
         });
     }
 

@@ -19,9 +19,15 @@ use Ramsey\Collection\Exception\NoSuchElementException;
 use Ramsey\Collection\Tool\TypeTrait;
 use Ramsey\Collection\Tool\ValueToStringTrait;
 
+use function array_key_first;
+
 /**
  * This class provides a basic implementation of `QueueInterface`, to minimize
  * the effort required to implement this interface.
+ *
+ * @template T
+ * @extends AbstractArray<T>
+ * @implements QueueInterface<T>
  */
 class Queue extends AbstractArray implements QueueInterface
 {
@@ -29,56 +35,32 @@ class Queue extends AbstractArray implements QueueInterface
     use ValueToStringTrait;
 
     /**
-     * The type of elements stored in this queue.
-     *
-     * A queue's type is immutable once it is set. For this reason, this
-     * property is set private.
-     *
-     * @var string
-     */
-    private $queueType;
-
-    /**
-     * The index of the head of the queue.
-     *
-     * @var int
-     */
-    protected $index = 0;
-
-    /**
      * Constructs a queue object of the specified type, optionally with the
      * specified data.
      *
-     * @param string $queueType The type (FQCN) associated with this queue.
-     * @param mixed[] $data The initial items to store in the collection.
+     * @param string $queueType The type or class name associated with this queue.
+     * @param array<array-key, T> $data The initial items to store in the queue.
      */
-    public function __construct(string $queueType, array $data = [])
+    public function __construct(private readonly string $queueType, array $data = [])
     {
-        $this->queueType = $queueType;
         parent::__construct($data);
     }
 
     /**
-     * Sets the given value to the given offset in the queue.
+     * {@inheritDoc}
      *
      * Since arbitrary offsets may not be manipulated in a queue, this method
      * serves only to fulfill the `ArrayAccess` interface requirements. It is
      * invoked by other operations when adding values to the queue.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php ArrayAccess::offsetSet()
-     *
-     * @param mixed|null $offset The offset is ignored and is treated as `null`.
-     * @param mixed $value The value to set at the given offset.
-     *
-     * @throws InvalidArgumentException when the value does not match the
-     *     specified type for this queue.
+     * @throws InvalidArgumentException if $value is of the wrong type.
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($this->checkType($this->getType(), $value) === false) {
             throw new InvalidArgumentException(
                 'Value must be of type ' . $this->getType() . '; value is '
-                . $this->toolValueToString($value)
+                . $this->toolValueToString($value),
             );
         }
 
@@ -86,21 +68,9 @@ class Queue extends AbstractArray implements QueueInterface
     }
 
     /**
-     * Ensures that this queue contains the specified element.
-     *
-     * This method differs from `offer()` only in that it throws an exception if
-     * it cannot add the element to the queue.
-     *
-     * @see self::offer()
-     *
-     * @param mixed $element The element to add to this queue.
-     *
-     * @return bool `true` if this queue changed as a result of the call.
-     *
-     * @throws InvalidArgumentException when the element does not match the
-     *     specified type for this queue.
+     * @throws InvalidArgumentException if $value is of the wrong type.
      */
-    public function add($element): bool
+    public function add(mixed $element): bool
     {
         $this[] = $element;
 
@@ -108,117 +78,69 @@ class Queue extends AbstractArray implements QueueInterface
     }
 
     /**
-     * Retrieves, but does not remove, the head of this queue.
-     *
-     * This method differs from `peek()` only in that it throws an exception if
-     * this queue is empty.
-     *
-     * @see self::peek()
-     *
-     * @return mixed the head of this queue.
+     * @return T
      *
      * @throws NoSuchElementException if this queue is empty.
      */
-    public function element()
+    public function element(): mixed
     {
-        if ($this->count() === 0) {
-            throw new NoSuchElementException(
-                'Can\'t return element from Queue. Queue is empty.'
-            );
-        }
-
-        return $this[$this->index];
+        return $this->peek() ?? throw new NoSuchElementException(
+            'Can\'t return element from Queue. Queue is empty.',
+        );
     }
 
-    /**
-     * Inserts the specified element into this queue.
-     *
-     * This method differs from `add()` only in that it does not throw an
-     * exception if it cannot add the element to the queue.
-     *
-     * @see self::add()
-     *
-     * @param mixed $element The element to add to this queue.
-     *
-     * @return bool `true` if the element was added to this queue, else `false`.
-     */
-    public function offer($element): bool
+    public function offer(mixed $element): bool
     {
         try {
             return $this->add($element);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             return false;
         }
     }
 
     /**
-     * Retrieves, but does not remove, the head of this queue, or returns `null`
-     * if this queue is empty.
-     *
-     * @see self::element()
-     *
-     * @return mixed|null the head of this queue, or `null` if this queue is empty.
+     * @return T | null
      */
-    public function peek()
+    public function peek(): mixed
     {
-        if ($this->count() === 0) {
+        $index = array_key_first($this->data);
+
+        if ($index === null) {
             return null;
         }
 
-        return $this[$this->index];
+        return $this[$index];
     }
 
     /**
-     * Retrieves and removes the head of this queue, or returns `null`
-     * if this queue is empty.
-     *
-     * @see self::remove()
-     *
-     * @return mixed|null the head of this queue, or `null` if this queue is empty.
+     * @return T | null
      */
-    public function poll()
+    public function poll(): mixed
     {
-        if ($this->count() === 0) {
+        $index = array_key_first($this->data);
+
+        if ($index === null) {
             return null;
         }
 
-        $head = $this[$this->index];
-
-        unset($this[$this->index]);
-        $this->index++;
+        $head = $this[$index];
+        unset($this[$index]);
 
         return $head;
     }
 
     /**
-     * Retrieves and removes the head of this queue.
-     *
-     * This method differs from `poll()` only in that it throws an exception if
-     * this queue is empty.
-     *
-     * @see self::poll()
-     *
-     * @return mixed the head of this queue.
+     * @return T
      *
      * @throws NoSuchElementException if this queue is empty.
      */
-    public function remove()
+    public function remove(): mixed
     {
-        if ($this->count() === 0) {
-            throw new NoSuchElementException('Can\'t return element from Queue. Queue is empty.');
-        }
-
-        $head = $this[$this->index];
-
-        unset($this[$this->index]);
-        $this->index++;
-
-        return $head;
+        return $this->poll() ?? throw new NoSuchElementException(
+            'Can\'t return element from Queue. Queue is empty.',
+        );
     }
 
-    /**
-     * Returns the type associated with this queue.
-     */
     public function getType(): string
     {
         return $this->queueType;

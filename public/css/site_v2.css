@@ -133,7 +133,8 @@
 /*  INICIO - Pie de página */
 /* *********************** */
 footer{ background: #24254c; color: #fff; }
-.footer-txt{ padding: 10px; }
+.footer-txt{ padding: 20px; }
+.footer-txt p{ margin: 0px; }
 /*  FIN - Pie de página */
 
 /* ******************************** */

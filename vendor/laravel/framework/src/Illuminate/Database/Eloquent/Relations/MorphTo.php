@@ -6,9 +6,12 @@ use BadMethodCallException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Concerns\InteractsWithDictionary;
 
 class MorphTo extends BelongsTo
 {
+    use InteractsWithDictionary;
+
     /**
      * The type of the polymorphic relation.
      *
@@ -97,7 +100,10 @@ class MorphTo extends BelongsTo
     {
         foreach ($models as $model) {
             if ($model->{$this->morphType}) {
-                $this->dictionary[$model->{$this->morphType}][$model->{$this->foreignKey}][] = $model;
+                $morphTypeKey = $this->getDictionaryKey($model->{$this->morphType});
+                $foreignKeyKey = $this->getDictionaryKey($model->{$this->foreignKey});
+
+                $this->dictionary[$morphTypeKey][$foreignKeyKey][] = $model;
             }
         }
     }
@@ -164,7 +170,7 @@ class MorphTo extends BelongsTo
                     ? array_keys($this->dictionary[$type])
                     : array_map(function ($modelId) {
                         return (string) $modelId;
-                    }, array_keys($this->dictionary[$type]));
+                    }, array_filter(array_keys($this->dictionary[$type])));
     }
 
     /**
@@ -207,7 +213,7 @@ class MorphTo extends BelongsTo
     protected function matchToMorphParents($type, Collection $results)
     {
         foreach ($results as $result) {
-            $ownerKey = ! is_null($this->ownerKey) ? $result->{$this->ownerKey} : $result->getKey();
+            $ownerKey = ! is_null($this->ownerKey) ? $this->getDictionaryKey($result->{$this->ownerKey}) : $result->getKey();
 
             if (isset($this->dictionary[$type][$ownerKey])) {
                 foreach ($this->dictionary[$type][$ownerKey] as $model) {
@@ -220,13 +226,19 @@ class MorphTo extends BelongsTo
     /**
      * Associate the model instance to the given parent.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model|null  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function associate($model)
     {
+        if ($model instanceof Model) {
+            $foreignKey = $this->ownerKey && $model->{$this->ownerKey}
+                            ? $this->ownerKey
+                            : $model->getKeyName();
+        }
+
         $this->parent->setAttribute(
-            $this->foreignKey, $model instanceof Model ? $model->getKey() : null
+            $this->foreignKey, $model instanceof Model ? $model->{$foreignKey} : null
         );
 
         $this->parent->setAttribute(
@@ -324,7 +336,7 @@ class MorphTo extends BelongsTo
     }
 
     /**
-     * Specify constraints on the query for a given morph types.
+     * Specify constraints on the query for a given morph type.
      *
      * @param  array  $callbacks
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
@@ -336,6 +348,57 @@ class MorphTo extends BelongsTo
         );
 
         return $this;
+    }
+
+    /**
+     * Indicate that soft deleted models should be included in the results.
+     *
+     * @return $this
+     */
+    public function withTrashed()
+    {
+        $callback = fn ($query) => $query->hasMacro('withTrashed') ? $query->withTrashed() : $query;
+
+        $this->macroBuffer[] = [
+            'method' => 'when',
+            'parameters' => [true, $callback],
+        ];
+
+        return $this->when(true, $callback);
+    }
+
+    /**
+     * Indicate that soft deleted models should not be included in the results.
+     *
+     * @return $this
+     */
+    public function withoutTrashed()
+    {
+        $callback = fn ($query) => $query->hasMacro('withoutTrashed') ? $query->withoutTrashed() : $query;
+
+        $this->macroBuffer[] = [
+            'method' => 'when',
+            'parameters' => [true, $callback],
+        ];
+
+        return $this->when(true, $callback);
+    }
+
+    /**
+     * Indicate that only soft deleted models should be included in the results.
+     *
+     * @return $this
+     */
+    public function onlyTrashed()
+    {
+        $callback = fn ($query) => $query->hasMacro('onlyTrashed') ? $query->onlyTrashed() : $query;
+
+        $this->macroBuffer[] = [
+            'method' => 'when',
+            'parameters' => [true, $callback],
+        ];
+
+        return $this->when(true, $callback);
     }
 
     /**
@@ -375,7 +438,7 @@ class MorphTo extends BelongsTo
         // If we tried to call a method that does not exist on the parent Builder instance,
         // we'll assume that we want to call a query macro (e.g. withTrashed) that only
         // exists on related models. We will just store the call and replay it later.
-        catch (BadMethodCallException $e) {
+        catch (BadMethodCallException) {
             $this->macroBuffer[] = compact('method', 'parameters');
 
             return $this;

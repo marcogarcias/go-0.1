@@ -17,9 +17,14 @@ let isBroadcaster = false;
 let idSocket = null;
 //let rgbUser = '#000';
 
-//const socket = io('http://localhost:3001');
+/*const socket = io('http://localhost:3001', {
+  reconnection: true,         // Habilitar reconexión automática
+  reconnectionAttempts: 10,  // Número máximo de intentos
+  reconnectionDelay: 2000    // Espera 2 segundo entre intentos
+});*/
+const socket = io('http://localhost:3001');
 //const socket = io('https://webrtc01.onrender.com');
-const socket = io('https://webrtc04.onrender.com');
+//const socket = io('https://webrtc04.onrender.com');
 
 //const videoGrid = document.getElementById('videoGrid');
 //const statusDiv = document.getElementById('status');
@@ -1132,11 +1137,32 @@ socket.on('room-info', (info) => {
   console.log('usersNum', Object.keys(users).length, users, topic);
 });
 
+/*
+// Manejar la reconexión exitosa
+socket.on('connect', () => {
+  console.log('Reconectado al servidor');
+  // Volver a unirse a la sala automáticamente
+  if (roomId) {
+    socket.emit('join', { roomId, userType, nick, topic, ip, from, fromFull });
+    chatMessages.innerHTML += '<div class="message">Reconexión exitosa</div>';
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+});
+
+// Manejar la desconexión
+socket.on('disconnect', () => {
+  console.log('Desconectado del servidor, intentando reconectar...');
+  // Opcional: Mostrar un mensaje al usuario
+  chatMessages.innerHTML += '<div class="message">Conexión perdida, reconectando...</div>';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+*/
 
 socket.on('socketErrores', function(data){
   const message = data.message ? data.message : '';
   const type = data.type ? data.type : '';
   const usrTtpe = data.userType ? data.userType : '';
+  const userId = data.userId ? data.userId : '';
   switch(type){
     case 'canceledJoin':
       alert(message);
@@ -1162,6 +1188,14 @@ socket.on('socketErrores', function(data){
       setTimeout(function() {
         location.reload();
       }, 2000);
+      break;
+    case 'delCam':
+      if(userId == idSocket){
+        alert(message);
+      }
+      const camId = data.camId ? data.camId : null;
+      $(`#${camId}`).parent().parent().remove();
+      console.log('ERROR: ', message);
       break;
 
     default:

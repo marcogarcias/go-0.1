@@ -3,6 +3,7 @@
 namespace Illuminate\Foundation\Http\Middleware;
 
 use Closure;
+use ErrorException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Http\MaintenanceModeBypassCookie;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,7 +20,7 @@ class PreventRequestsDuringMaintenance
     /**
      * The URIs that should be accessible while maintenance mode is enabled.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $except = [];
 
@@ -42,19 +43,30 @@ class PreventRequestsDuringMaintenance
      * @return mixed
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException
+     * @throws \ErrorException
      */
     public function handle($request, Closure $next)
     {
-        if ($this->app->isDownForMaintenance()) {
-            $data = json_decode(file_get_contents($this->app->storagePath().'/framework/down'), true);
+        if ($this->inExceptArray($request)) {
+            return $next($request);
+        }
+
+        if ($this->app->maintenanceMode()->active()) {
+            try {
+                $data = $this->app->maintenanceMode()->data();
+            } catch (ErrorException $exception) {
+                if (! $this->app->maintenanceMode()->active()) {
+                    return $next($request);
+                }
+
+                throw $exception;
+            }
 
             if (isset($data['secret']) && $request->path() === $data['secret']) {
                 return $this->bypassResponse($data['secret']);
             }
 
-            if ($this->hasValidBypassCookie($request, $data) ||
-                $this->inExceptArray($request)) {
+            if ($this->hasValidBypassCookie($request, $data)) {
                 return $next($request);
             }
 
@@ -72,7 +84,7 @@ class PreventRequestsDuringMaintenance
                 return response(
                     $data['template'],
                     $data['status'] ?? 503,
-                    isset($data['retry']) ? ['Retry-After' => $data['retry']] : []
+                    $this->getHeaders($data)
                 );
             }
 
@@ -80,7 +92,7 @@ class PreventRequestsDuringMaintenance
                 $data['status'] ?? 503,
                 'Service Unavailable',
                 null,
-                isset($data['retry']) ? ['Retry-After' => $data['retry']] : []
+                $this->getHeaders($data)
             );
         }
 
@@ -112,7 +124,7 @@ class PreventRequestsDuringMaintenance
      */
     protected function inExceptArray($request)
     {
-        foreach ($this->except as $except) {
+        foreach ($this->getExcludedPaths() as $except) {
             if ($except !== '/') {
                 $except = trim($except, '/');
             }
@@ -136,5 +148,32 @@ class PreventRequestsDuringMaintenance
         return redirect('/')->withCookie(
             MaintenanceModeBypassCookie::create($secret)
         );
+    }
+
+    /**
+     * Get the headers that should be sent with the response.
+     *
+     * @param  array  $data
+     * @return array
+     */
+    protected function getHeaders($data)
+    {
+        $headers = isset($data['retry']) ? ['Retry-After' => $data['retry']] : [];
+
+        if (isset($data['refresh'])) {
+            $headers['Refresh'] = $data['refresh'];
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Get the URIs that should be accessible even when maintenance mode is enabled.
+     *
+     * @return array
+     */
+    public function getExcludedPaths()
+    {
+        return $this->except;
     }
 }

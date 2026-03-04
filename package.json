@@ -9,6 +9,9 @@
         "prod": "npm run production",
         "production": "mix --production"
     },
+    "dependencies": {
+        "webpack-dev-server": ">=5.2.1"
+    },
     "devDependencies": {
         "@vue/compiler-sfc": "^3.5.27",
         "axios": "^1.13.4",

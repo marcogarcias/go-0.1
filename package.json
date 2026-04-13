@@ -10,7 +10,7 @@
         "production": "mix --production"
     },
     "dependencies": {
-        "webpack-dev-server": ">=5.2.1",
+        "webpack-dev-server": "5.2.3",
         "immutable": "5.1.5",
         "svgo": "4.0.1"
     },
@@ -28,12 +28,13 @@
         "sass-loader": "^13.3.3",
         "vue": "^3.5.27",
         "vue-loader": "^16.8.3",
-        "webpack-dev-server": "^5.2.1"
+        "webpack-dev-server": "5.2.3"
     },
     "overrides": {
     "qs": "6.14.2",
     "minimatch": "3.1.5",
     "serialize-javascript": "7.0.3",
+    "webpack-dev-server": "5.2.3",
     "elliptic": "6.6.1",
     "immutable": "5.1.5",
     "svgo": "4.0.1"
